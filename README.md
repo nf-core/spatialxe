@@ -62,7 +62,7 @@ The nf-core/spatialxe pipeline comes with documentation about the pipeline [usag
 
 ## Credits
 
-nf-core/spatialxe was originally written by Florian Heyl.
+nf-core/spatialxe was originally written by @heylf and @khersameesh24.
 
 We thank the following people for their extensive assistance in the development of this pipeline:
 
