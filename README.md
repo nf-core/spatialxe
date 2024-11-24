@@ -12,7 +12,7 @@
 
 ## Introduction
 
-**nf-core/spatialxe** is a bioinformatics best-practice processing and quality control pipeline for Xenium data. **The pipeline is currently under developement and no completed yet!**. The current plan for the pipeline implementation is shown in the metromap below. Please note that the pipeline steps and methods might change as we move forward in the development cycle.
+**nf-core/spatialxe** is a bioinformatics best-practice processing and quality control pipeline for Xenium data. **The pipeline is currently under developement and not completed yet!**. The current plan for the pipeline implementation is shown in the metromap below. Please note that the pipeline steps and methods might change as we move forward in the development cycle.
 
 ![nf-core/spatialxe-metromap](docs/images/spatialxe-metromap.png)
 
