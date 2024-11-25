@@ -24,6 +24,11 @@
                         "branch": "master",
                         "git_sha": "b5e1891a88491d8731b5e68e22bd907726caec4a",
                         "installed_by": ["modules"]
+                    },
+                    "xeniumranger/resegment": {
+                        "branch": "master",
+                        "git_sha": "b5e1891a88491d8731b5e68e22bd907726caec4a",
+                        "installed_by": ["modules"]
                     }
                 }
             }
