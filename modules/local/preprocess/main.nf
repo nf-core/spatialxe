@@ -9,8 +9,8 @@ process PROSEG2BAYSOR {
     path(cell_polygons)
 
     output:
-    path("baysor-transcript-metadata.csv"), emit: baysor_metadata
-    path("baysor-cell-polygons.geojson"), emit: baysor_polygons
+    path("xr-transcript-metadata.csv"), emit: xr_metadata
+    path("xr-cell-polygons.geojson"), emit: xr_polygons
 
     script:
     // Exit if running this module with -profile conda / -profile mamba
@@ -22,8 +22,8 @@ process PROSEG2BAYSOR {
     proseg-to-baysor  \
         ${transcript_metadata} \
         ${cell_polygons} \
-        --output-transcript-metadata baysor-transcript-metadata.csv \
-        --output-cell-polygons baysor-cell-polygons.geojson
+        --output-transcript-metadata xr-transcript-metadata.csv \
+        --output-cell-polygons xr-cell-polygons.geojson
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
@@ -41,8 +41,8 @@ process PROSEG2BAYSOR {
     def prefix = task.ext.prefix ?: "${meta.id}"
 
     """
-    touch expected-counts.csv.gz
-    touch cell-metadata.csv.gz
+    touch xr-transcript-metadata.csv
+    touch xr-cell-polygons.geojson
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
