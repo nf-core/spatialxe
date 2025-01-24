@@ -1,7 +1,4 @@
----
-# yaml-language-server: $schema=https://raw.githubusercontent.com/nf-core/modules/master/modules/meta-schema.json
 name: "proseg"
-## TODO nf-core: Add a description of the module and list keywords
 description: Probabilistic cell segmentation for in situ spatial transcriptomics
 keywords:
   - segmentation
@@ -11,7 +8,6 @@ keywords:
   - in situ spatial transcriptomics
 tools:
   - "proseg":
-      ## TODO nf-core: Add a description and other details for the software below
       description: "Proseg (probabilistic segmentation) is a cell segmentation method for in situ spatial transcriptomics. Xenium, CosMx, and MERSCOPE platforms are currently supported."
       homepage: "https://github.com/dcjones/proseg/tree/main"
       documentation: "https://github.com/dcjones/proseg/blob/main/README.md"
