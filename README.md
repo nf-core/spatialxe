@@ -19,7 +19,9 @@
 
 ## Introduction
 
-**nf-core/spatialxe** is a bioinformatics best-practice processing and quality control pipeline for Xenium data. **The pipeline is currently under developement and no completed yet!**
+**nf-core/spatialxe** is a bioinformatics best-practice processing and quality control pipeline for Xenium data. **The pipeline is currently under developement and not completed yet!**. The current plan for the pipeline implementation is shown in the metromap below. Please note that the pipeline steps and methods might change as we move forward in the development cycle.
+
+![nf-core/spatialxe-metromap](docs/images/spatialxe-metromap.png)
 
 <!-- TODO nf-core: Include a figure that guides the user through the major workflow steps. Many nf-core
      workflows use the "tube map" design for that. See https://nf-co.re/docs/contributing/design_guidelines#examples for examples.   -->
@@ -29,10 +31,9 @@
 
 On release, automated continuous integration tests run the pipeline on a full-sized dataset on the AWS cloud infrastructure. This ensures that the pipeline runs on AWS, has sensible resource allocation defaults set to run on real-world datasets, and permits the persistent storage of results to benchmark between pipeline releases and other analysis sources. The results obtained from the full-sized test can be viewed on the [nf-core website](https://nf-co.re/spatialxe/results).
 
-<!-- TODO nf-core: Describe the minimum required steps to execute the pipeline, e.g. how to prepare samplesheets.
-     Explain what rows and columns represent. For instance (please edit as appropriate):
+## Pipeline summary
 
-First, prepare a samplesheet with your input data that looks as follows:
+## Quick Start
 
 `samplesheet.csv`:
 

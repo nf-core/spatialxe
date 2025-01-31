@@ -5,6 +5,11 @@
         "https://github.com/nf-core/modules.git": {
             "modules": {
                 "nf-core": {
+                    "cellpose": {
+                        "branch": "master",
+                        "git_sha": "666652151335353eef2fcd58880bcef5bc2928e1",
+                        "installed_by": ["modules"]
+                    },
                     "custom/dumpsoftwareversions": {
                         "branch": "master",
                         "git_sha": "c8e35eb2055c099720a75538d1b8adb3fb5a464c",
@@ -21,6 +26,11 @@
                         "installed_by": ["modules"]
                     },
                     "xeniumranger/relabel": {
+                        "branch": "master",
+                        "git_sha": "b5e1891a88491d8731b5e68e22bd907726caec4a",
+                        "installed_by": ["modules"]
+                    },
+                    "xeniumranger/resegment": {
                         "branch": "master",
                         "git_sha": "b5e1891a88491d8731b5e68e22bd907726caec4a",
                         "installed_by": ["modules"]
