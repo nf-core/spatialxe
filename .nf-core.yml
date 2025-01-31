@@ -1,1 +1,11 @@
+nf_core_version: 3.2.0
 repository_type: pipeline
+template:
+  author: Florian Heyl
+  description: A pipeline for spatialomics Xenium data.
+  force: false
+  is_nfcore: true
+  name: spatialxe
+  org: nf-core
+  outdir: .
+  version: 1.0dev
