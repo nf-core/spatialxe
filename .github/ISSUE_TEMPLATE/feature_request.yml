@@ -1,5 +1,5 @@
 name: Feature request
-description: Suggest an idea for the nf-core/spatialxe pipeline. Please write in the title as the first word *module* (suggestin a new module for spatialxe) or *implement* for general feature request.
+description: Suggest an idea for the nf-core/spatialxe pipeline
 labels: enhancement
 body:
   - type: textarea
