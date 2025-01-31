@@ -1,0 +1,76 @@
+name: "proseg"
+description: Probabilistic cell segmentation for in situ spatial transcriptomics
+keywords:
+  - segmentation
+  - cell segmentation
+  - spatialomics
+  - probabilistic segmentation
+  - in situ spatial transcriptomics
+tools:
+  - "proseg":
+      description: "Proseg (probabilistic segmentation) is a cell segmentation method for in situ spatial transcriptomics. Xenium, CosMx, and MERSCOPE platforms are currently supported."
+      homepage: "https://github.com/dcjones/proseg/tree/main"
+      documentation: "https://github.com/dcjones/proseg/blob/main/README.md"
+      tool_dev_url: "https://github.com/dcjones/proseg"
+      doi: ""
+      licence: ["GNU Public License"]
+
+input:
+  - - meta:
+        type: map
+        description: |
+          Groovy Map containing run information
+          e.g. `[ id:'run_id']`
+    - transcripts:
+        type: file
+        description: |
+          File containing the transcript position
+        pattern: "transcripts.csv.gz"
+
+output:
+  - - meta:
+        type: map
+        description: |
+          Groovy Map containing run information
+          e.g. `[ id:'run_id']`
+    - cell_polygons:
+        type: file
+        description: 2D polygons for each cell in GeoJSON format. These are flattened from 3D
+        pattern: "cell-polygons.geojson.gz"
+  - - expected_counts:
+        type: file
+        description: cell-by-gene count matrix
+        pattern: "expected-counts.csv.gz"
+  - - cell_metadata:
+        type: file
+        description: Cell centroids, volume, and other information
+        pattern: "cell-metadata.csv.gz"
+  - - transcript_metadata:
+        type: file
+        description: Transcript ids, genes, revised positions, assignment probability
+        pattern: "transcript-metadata.csv.gz"
+  - - gene_metadata:
+        type: file
+        description: Per-gene summary statistics
+        pattern: "gene-metadata.csv.gz"
+  - - rates:
+        type: file
+        description: Cell-by-gene Poisson rate parameters
+        pattern: "rates.csv.gz"
+  - - cell_polygon_layers:
+        type: file
+        description: A separate, non-overlapping cell polygon for each z-layer, preserving 3D segmentation
+        pattern: "cell-polygons-layers.geojson.gz"
+  - - cell_hulls:
+        type: file
+        description: Convex hulls around assigned transcripts
+        pattern: "cell-hulls.geojson.gz"
+  - - versions:
+      type: file
+      description: File containing software versions
+      pattern: "versions.yml"
+
+authors:
+  - "@khersameesh24"
+maintainers:
+  - "@khersameesh24"
