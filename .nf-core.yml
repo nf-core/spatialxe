@@ -1,1 +1,27 @@
 repository_type: pipeline
+
+nf_core_version: 3.2.0
+
+lint:
+  files_unchanged:
+    - .github/CONTRIBUTING.md
+    - assets/sendmail_template.txt
+    - .github/CONTRIBUTING.md
+    - assets/sendmail_template.txt
+  multiqc_config: false
+  files_exist:
+    - assets/multiqc_config.yml
+    - assets/multiqc_config.yml
+
+template:
+  org: nf-core
+  name: spatialxe
+  description: spatialxe pipeline
+  author: heylf
+  version: 1.0.0dev
+  force: true
+  outdir: .
+  skip_features:
+    - multiqc
+    - fastqc
+  is_nfcore: true
