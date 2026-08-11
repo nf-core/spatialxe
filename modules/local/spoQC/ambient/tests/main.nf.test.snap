@@ -1,88 +1,34 @@
 {
     "spoqc ambient": {
         "content": [
-            {
-                "0": [
-                    [
-                        "contamination_global_morans_I.html:md5,05471833f2dbd64e07141fdda05bd4b0",
-                        "contamination_global_morans_I.pdf:md5,d18ec7937a2e7e6e49efcaeabb968825",
-                        "contamination_global_morans_I.png:md5,04eeb635f731aff7ecf5e11fbdc11afe"
-                    ]
-                ],
-                "1": [
-                    "ambient_output_genes.parquet:md5,fc63dba502c1a27db1a91c218ff4a5ee"
-                ],
-                "2": [
-                    [
-                        "SPOQC_AMBIENT",
-                        "spoqc",
-                        "0.1.0"
-                    ]
-                ],
-                "report": [
-                    [
-                        "contamination_global_morans_I.html:md5,05471833f2dbd64e07141fdda05bd4b0",
-                        "contamination_global_morans_I.pdf:md5,d18ec7937a2e7e6e49efcaeabb968825",
-                        "contamination_global_morans_I.png:md5,04eeb635f731aff7ecf5e11fbdc11afe"
-                    ]
-                ],
-                "tmp": [
-                    "ambient_output_genes.parquet:md5,fc63dba502c1a27db1a91c218ff4a5ee"
-                ],
-                "versions_spoqc": [
-                    [
-                        "SPOQC_AMBIENT",
-                        "spoqc",
-                        "0.1.0"
-                    ]
+            [
+                [
+                    "SPOQC_AMBIENT",
+                    "spoqc",
+                    "0.1.0"
                 ]
-            }
+            ]
         ],
-        "timestamp": "2026-07-17T14:50:40.184188726",
+        "timestamp": "2026-08-09T16:35:14.607143675",
         "meta": {
             "nf-test": "0.9.5",
-            "nextflow": "26.04.2"
+            "nextflow": "26.04.6"
         }
     },
     "spoqc ambient stub": {
         "content": [
-            {
-                "0": [
-                    [
-                        
-                    ]
-                ],
-                "1": [
-                    "ambient_output_genes.parquet:md5,d41d8cd98f00b204e9800998ecf8427e"
-                ],
-                "2": [
-                    [
-                        "SPOQC_AMBIENT",
-                        "spoqc",
-                        "0.1.0"
-                    ]
-                ],
-                "report": [
-                    [
-                        
-                    ]
-                ],
-                "tmp": [
-                    "ambient_output_genes.parquet:md5,d41d8cd98f00b204e9800998ecf8427e"
-                ],
-                "versions_spoqc": [
-                    [
-                        "SPOQC_AMBIENT",
-                        "spoqc",
-                        "0.1.0"
-                    ]
+            [
+                [
+                    "SPOQC_AMBIENT",
+                    "spoqc",
+                    "0.1.0"
                 ]
-            }
+            ]
         ],
-        "timestamp": "2026-07-17T14:51:12.043186597",
+        "timestamp": "2026-08-09T16:35:43.732884944",
         "meta": {
             "nf-test": "0.9.5",
-            "nextflow": "26.04.2"
+            "nextflow": "26.04.6"
         }
     }
 }

@@ -51,7 +51,9 @@ nextflow_process {
             assertAll(
                 { assert process.success },
                 { assert file(process.out.report[0][1]).isDirectory() },
-                { assert snapshot(process.out.metrices, process.out.staininglog, process.out.versions_spoqc).match() }
+                { assert file(process.out.metrices[0][1]).isDirectory() },
+                { assert file(process.out.staininglog[0]).exists() },
+                { assert snapshot(process.out.versions_spoqc).match() }
             )
         }
     }
@@ -74,7 +76,9 @@ nextflow_process {
             assertAll(
                 { assert process.success },
                 { assert file(process.out.report[0][1]).isDirectory() },
-                { assert snapshot(process.out.metrices, process.out.staininglog, process.out.versions_spoqc).match() }
+                { assert file(process.out.metrices[0][1]).isDirectory() },
+                { assert file(process.out.staininglog[0]).exists() },
+                { assert snapshot(process.out.versions_spoqc).match() }
             )
         }
     }

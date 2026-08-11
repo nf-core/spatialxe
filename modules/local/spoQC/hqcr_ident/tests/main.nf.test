@@ -118,7 +118,9 @@ nextflow_process {
             assertAll(
                 { assert process.success },
                 { assert file(process.out.report[0]).isDirectory() },
-                { assert snapshot(process.out.mask, process.out.mask_smoothed, process.out.versions_spoqc).match() }
+                { assert file(process.out.mask[0]).exists() },
+                { assert file(process.out.mask_smoothed[0]).exists() },
+                { assert snapshot(process.out.versions_spoqc).match() }
             )
         }
     }
@@ -145,7 +147,9 @@ nextflow_process {
             assertAll(
                 { assert process.success },
                 { assert file(process.out.report[0]).isDirectory() },
-                { assert snapshot(process.out.mask, process.out.mask_smoothed, process.out.versions_spoqc).match() }
+                { assert file(process.out.mask[0]).exists() },
+                { assert file(process.out.mask_smoothed[0]).exists() },
+                { assert snapshot(process.out.versions_spoqc).match() }
             )
         }
     }

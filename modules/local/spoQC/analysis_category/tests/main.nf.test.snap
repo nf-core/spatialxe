@@ -1,31 +1,31 @@
 {
-    "spoqc finalreport": {
+    "spoqc analysis_category stub": {
         "content": [
             [
                 [
-                    "SPOQC_FINALREPORT",
+                    "SPOQC_ANALYSIS_CATEGORY",
                     "spoqc",
                     "0.1.0"
                 ]
             ]
         ],
-        "timestamp": "2026-08-06T21:48:10.095497666",
+        "timestamp": "2026-08-10T10:42:41.614123792",
         "meta": {
             "nf-test": "0.9.5",
             "nextflow": "26.04.6"
         }
     },
-    "spoqc finalreport stub": {
+    "spoqc analysis_category": {
         "content": [
             [
                 [
-                    "SPOQC_FINALREPORT",
+                    "SPOQC_ANALYSIS_CATEGORY",
                     "spoqc",
                     "0.1.0"
                 ]
             ]
         ],
-        "timestamp": "2026-08-06T21:55:15.338056358",
+        "timestamp": "2026-08-10T10:36:48.193373778",
         "meta": {
             "nf-test": "0.9.5",
             "nextflow": "26.04.6"

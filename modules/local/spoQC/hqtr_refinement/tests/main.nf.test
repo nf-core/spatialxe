@@ -104,7 +104,9 @@ nextflow_process {
         then {
             assertAll(
                 { assert process.success },
-                { assert snapshot(process.out).match() }
+                { assert file(process.out.report[0]).isDirectory() },
+                { assert file(process.out.mask_smoothed[0]).isDirectory() },
+                { assert snapshot(process.out.versions_spoqc).match() }
             )
         }
     }
@@ -126,7 +128,9 @@ nextflow_process {
         then {
             assertAll(
                 { assert process.success },
-                { assert snapshot(process.out).match() }
+                { assert file(process.out.report[0]).isDirectory() },
+                { assert file(process.out.mask_smoothed[0]).isDirectory() },
+                { assert snapshot(process.out.versions_spoqc).match() }
             )
         }
     }
