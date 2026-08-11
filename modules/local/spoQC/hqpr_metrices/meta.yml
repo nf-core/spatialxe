@@ -26,14 +26,9 @@ input:
     - spatialdata:
         type: folder
         description: Path to the SpatialData zarr store to run QC on
-  - annotation:
-      type: file
-      description: |
-        Optional cell-type annotation file. When empty/absent, spoqc is run without the `-a` flag.
-      pattern: "*.tsv"
-  - staining:
-      type: integer
-      description: Staining index to compute metrics for (iterated via Nextflow `each`)
+    - staining:
+        type: integer
+        description: Staining index to compute metrics for
   - step:
       type: string
       description: Name of the spoQC step to run, passed to `spoqc -s`
@@ -44,7 +39,7 @@ output:
     - report:
         type: directory
         description: HTML/plot QC report directory for this staining, tagged with the staining index
-        pattern: "report/hqpr/${staining}/hqpr_metrices"
+        pattern: "report/hqpr/hqpr_metrices/${staining}"
   - - staining:
         type: integer
         description: Staining index

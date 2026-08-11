@@ -1,8 +1,6 @@
 name: spoqc_cellcycle
 description: |
   Run cell-cycle scoring QC on a SpatialData object.
-
-  Unlike the other spoQC modules, this process has no `when:` guard and always executes when included.
 keywords:
   - spatial transcriptomics
   - quality control
@@ -27,11 +25,6 @@ input:
     - spatialdata:
         type: folder
         description: Path to the SpatialData zarr store to run QC on
-  - annotation:
-      type: file
-      description: |
-        Optional cell-type annotation file. When empty/absent, spoqc is run without the `-a` flag.
-      pattern: "*.tsv"
   - step:
       type: string
       description: Name of the spoQC step to run, passed to `spoqc -s`

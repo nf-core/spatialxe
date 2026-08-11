@@ -33,6 +33,7 @@ input:
   - step:
       type: string
       description: Name of the spoQC step to run, passed to `spoqc -s`
+output:
   - report:
       type: directory
       description: HTML/plot QC report directory produced for this step

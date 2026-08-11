@@ -29,14 +29,6 @@ input:
     - staining_idx_sd:
         type: integer
         description: Staining index carried alongside spatialdata to align the per-staining combined channel (Groovy var `_stain_sd`)
-  - - annotation:
-        type: file
-        description: |
-          Optional cell-type annotation file. When empty/absent, spoqc is run without the `-a` flag.
-        pattern: "*.tsv"
-    - staining_idx_ann:
-        type: integer
-        description: Staining index carried alongside annotation to align the per-staining combined channel (Groovy var `_stain_ann`)
   - step:
       type: string
       description: Name of the spoQC step to run, passed to `spoqc -s`
@@ -54,12 +46,12 @@ output:
     - report:
         type: directory
         description: HTML/plot QC report directory for this staining, tagged with the staining index
-        pattern: "report/hqpr/${staining}/hqpr_clustering"
+        pattern: "report/hqpr/hqpr_clustering/${staining}"
   - - staining:
         type: integer
         description: Staining index
     - mask:
-        type: file
+        type: directory
         description: Per-staining HQPR raw probability mask
         pattern: "spoQC_tmp/hqpr_${staining}_output_mask_raw"
   - versions_spoqc:

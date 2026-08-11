@@ -55,19 +55,23 @@ input:
   - report_hqpr_metrices:
       type: directory
       description: Collected per-staining report fragments from SPOQC_HQPR_METRICES
-      pattern: "report/hqpr/metrices/*"
+      pattern: "report/hqpr/hqpr_metrices/*"
   - report_hqpr_clustering:
       type: directory
       description: Collected per-staining report fragments from SPOQC_HQPR_CLUSTERING
-      pattern: "report/hqpr/clustering/*"
+      pattern: "report/hqpr/hqpr_clustering/*"
   - report_hqpr_refinement:
       type: directory
       description: Collected per-staining report fragments from SPOQC_HQPR_REFINEMENT
-      pattern: "report/hqpr/refinement/*"
+      pattern: "report/hqpr/hqpr_refinement/*"
   - report_hqpr_bounding_box:
       type: directory
       description: Collected per-staining report fragments from SPOQC_HQPR_BOUNDING_BOX
-      pattern: "report/hqpr/bounding_box/*"
+      pattern: "report/hqpr/hqpr_bounding_box/*"
+  - report_hqpr_celltype:
+      type: directory
+      description: Report fragment from SPOQC_HQPR_CELLTYPE
+      pattern: "report/hqpr/hqpr_celltype/*"
   - report_hqtr_metrices:
       type: directory
       description: Report fragment from SPOQC_HQTR_METRICES
@@ -92,6 +96,10 @@ input:
       type: directory
       description: Report fragment from SPOQC_HQTR_BOUNDING_BOX
       pattern: "report/hqtr/hqtr_bounding_box"
+  - report_hqtr_celltype:
+      type: directory
+      description: Report fragment from SPOQC_HQTR_CELLTYPE
+      pattern: "report/hqtr/hqtr_celltype"
   - report_combine_masks:
       type: directory
       description: Collected per-staining report fragments from SPOQC_COMBINE_MASKS

@@ -1,8 +1,6 @@
 name: spoqc_hqtr_celltype
 description: |
   Run high-quality transcript region (HQTR) cell-type QC, combining the general/bubble/doublet/void/cell QC outputs with the HQTR probability and mask.
-
-  Currently not wired into the `SPOQC` subworkflow (the call is commented out in `subworkflows/local/spoqc/main.nf`).
 keywords:
   - spatial transcriptomics
   - quality control

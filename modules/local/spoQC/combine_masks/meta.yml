@@ -28,14 +28,6 @@ input:
     - staining_idx_sd:
         type: integer
         description: Staining index carried alongside spatialdata to align the per-staining combined channel (Groovy var `_stain_sd`)
-  - - annotation:
-        type: file
-        description: |
-          Optional cell-type annotation file. When empty/absent, spoqc is run without the `-a` flag.
-        pattern: "*.tsv"
-    - staining_idx_ann:
-        type: integer
-        description: Staining index carried alongside annotation to align the per-staining combined channel (Groovy var `_stain_ann`)
   - step:
       type: string
       description: Name of the spoQC step to run, passed to `spoqc -s`

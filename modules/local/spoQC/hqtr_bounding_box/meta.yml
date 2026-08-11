@@ -26,16 +26,11 @@ input:
     - spatialdata:
         type: folder
         description: Path to the SpatialData zarr store to run QC on
-  - annotation:
-      type: file
-      description: |
-        Optional cell-type annotation file. When empty/absent, spoqc is run without the `-a` flag.
-      pattern: "*.tsv"
   - step:
       type: string
       description: Name of the spoQC step to run, passed to `spoqc -s`
   - edge_strength:
-      type: file
+      type: directory
       description: HQTR spatially smoothed mask (edge-strength input) from SPOQC_HQTR_REFINEMENT
       pattern: "hqtr_output_mask_smoothed_raw"
 output:

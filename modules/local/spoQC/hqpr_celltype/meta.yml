@@ -1,8 +1,6 @@
 name: spoqc_hqpr_celltype
 description: |
   Run per-staining high-quality pixel region (HQPR) cell-type QC, combining the general/bubble/doublet/void/cell QC outputs with the HQPR probability and mask.
-
-  Currently not wired into the `SPOQC` subworkflow (the call is commented out in `subworkflows/local/spoqc/main.nf`).
 keywords:
   - spatial transcriptomics
   - quality control
@@ -87,7 +85,7 @@ output:
   - report:
       type: directory
       description: HTML/plot QC report directory for this staining, tagged with the staining index
-      pattern: "report/hqpr/${staining}/hqpr_celltype"
+      pattern: "report/hqpr/hqpr_celltype/${staining}"
   - versions_spoqc:
       - - "${task.process}":
             type: string
