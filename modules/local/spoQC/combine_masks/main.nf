@@ -19,7 +19,7 @@ process SPOQC_COMBINE_MASKS {
     tuple path(mask_smoothed_hqtr, stageAs: "spoQC_tmp/hqtr_output_mask_smoothed_raw"), val(_stain_smoothed_hqtr)
 
     output:
-    path("report/combine_masks/${staining}")    , emit: report
+    tuple val(meta), path("report/combine_masks/${staining}")    , emit: report
     tuple val("${task.process}"), val('spoqc'), eval("spoqc --version 2>&1 | grep -oP '\\d+\\.\\d+\\.\\d+' || echo unknown"), topic: versions, emit: versions_spoqc
 
     when:

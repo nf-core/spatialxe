@@ -14,8 +14,8 @@ process SPOQC_HQTR_REFINEMENT {
     path(mask, stageAs: "./spoQC_tmp/hqtr_output_mask_raw")
 
     output:
-    path("./report/hqtr/hqtr_refinement")                   , emit: report
-    path("./spoQC_tmp/hqtr_output_mask_smoothed_raw")       , emit: mask_smoothed
+    tuple val(meta), path("./report/hqtr/hqtr_refinement")                   , emit: report
+    tuple val(meta), path("./spoQC_tmp/hqtr_output_mask_smoothed_raw")       , emit: mask_smoothed
     tuple val("${task.process}"), val('spoqc'), eval("spoqc --version 2>&1 | grep -oP '\\d+\\.\\d+\\.\\d+' || echo unknown"), topic: versions, emit: versions_spoqc
 
     when:

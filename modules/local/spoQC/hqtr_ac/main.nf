@@ -15,8 +15,8 @@ process SPOQC_HQTR_AC {
     path(ambient, stageAs: "./spoQC_tmp/ambient_output_genes.parquet")
 
     output:
-    path("./report/hqtr/hqtr_ac")                       , emit: report
-    path("./spoQC_tmp/hqtr_output_ac_prob")             , emit: tmp
+    tuple val(meta), path("./report/hqtr/hqtr_ac")                       , emit: report
+    tuple val(meta), path("./spoQC_tmp/hqtr_output_ac_prob")             , emit: tmp
     tuple val("${task.process}"), val('spoqc'), eval("spoqc --version 2>&1 | grep -oP '\\d+\\.\\d+\\.\\d+' || echo unknown"), topic: versions, emit: versions_spoqc
 
     when:

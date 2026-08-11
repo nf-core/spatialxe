@@ -15,7 +15,7 @@ process SPOQC_HQPR_BOUNDING_BOX {
     tuple val(staining), path(mask, stageAs: "spoQC_tmp/*")
 
     output:
-    tuple val(staining), path("report/hqpr/hqpr_bounding_box/${staining}")    , emit: report
+    tuple val(meta), val(staining), path("report/hqpr/hqpr_bounding_box/${staining}")    , emit: report
     tuple val("${task.process}"), val('spoqc'), eval("spoqc --version 2>&1 | grep -oP '\\d+\\.\\d+\\.\\d+' || echo unknown"), topic: versions, emit: versions_spoqc
 
     when:

@@ -15,8 +15,8 @@ process SPOQC_DOUBLET {
     val(step)
 
     output:
-    path("./report/doubletqc")                          , emit: report
-    path("./spoQC_tmp/doubletqc_output_hqcr.parquet")   , emit: tmp
+    tuple val(meta), path("./report/doubletqc")                          , emit: report
+    tuple val(meta), path("./spoQC_tmp/doubletqc_output_hqcr.parquet")   , emit: tmp
     tuple val("${task.process}"), val('spoqc'), eval("spoqc --version 2>&1 | grep -oP '\\d+\\.\\d+\\.\\d+' || echo unknown"), topic: versions, emit: versions_spoqc
 
     when:

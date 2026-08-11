@@ -14,8 +14,8 @@ process SPOQC_HQTR_QV {
     val(step)
 
     output:
-    path("./report/hqtr/hqtr_qv")                       , emit: report
-    path("./spoQC_tmp/hqtr_output_qv_prob")             , emit: tmp
+    tuple val(meta), path("./report/hqtr/hqtr_qv")                       , emit: report
+    tuple val(meta), path("./spoQC_tmp/hqtr_output_qv_prob")             , emit: tmp
     tuple val("${task.process}"), val('spoqc'), eval("spoqc --version 2>&1 | grep -oP '\\d+\\.\\d+\\.\\d+' || echo unknown"), topic: versions, emit: versions_spoqc
 
     when:

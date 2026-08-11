@@ -29,8 +29,8 @@ process SPOQC_ANALYSIS_OVERVIEW {
     path(mask_hqpr, stageAs: "spoQC_tmp/*")
 
     output:
-    path("report/analysis/overview")                , emit: report
-    path("report/analysis/rna_qc_annotated.h5ad")   , emit: h5ad
+    tuple val(meta), path("report/analysis/overview")                , emit: report
+    tuple val(meta), path("report/analysis/rna_qc_annotated.h5ad")   , emit: h5ad
     tuple val("${task.process}"), val('spoqc'), eval("spoqc --version 2>&1 | grep -oP '\\d+\\.\\d+\\.\\d+' || echo unknown"), topic: versions, emit: versions_spoqc
 
     when:

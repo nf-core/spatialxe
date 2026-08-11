@@ -15,7 +15,7 @@ process SPOQC_TRANSCRIPT {
     val(step)
 
     output:
-    path("./report/transcriptqc")                          , emit: report
+    tuple val(meta), path("./report/transcriptqc")                          , emit: report
     tuple val("${task.process}"), val('spoqc'), eval("spoqc --version 2>&1 | grep -oP '\\d+\\.\\d+\\.\\d+' || echo unknown"), topic: versions, emit: versions_spoqc
 
     when:

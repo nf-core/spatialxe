@@ -13,8 +13,8 @@ process SPOQC_AMBIENT {
     val(step)
 
     output:
-    path("./report/ambientqc")                          , emit: report
-    path("./spoQC_tmp/ambient_output_genes.parquet")    , emit: tmp
+    tuple val(meta), path("./report/ambientqc")                          , emit: report
+    tuple val(meta), path("./spoQC_tmp/ambient_output_genes.parquet")    , emit: tmp
     tuple val("${task.process}"), val('spoqc'), eval("spoqc --version 2>&1 | grep -oP '\\d+\\.\\d+\\.\\d+' || echo unknown"), topic: versions, emit: versions_spoqc
 
     when:

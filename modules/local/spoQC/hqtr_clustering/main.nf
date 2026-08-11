@@ -17,8 +17,8 @@ process SPOQC_HQTR_CLUSTERING {
     path(ac, stageAs: "spoQC_tmp/*")
 
     output:
-    path("report/hqtr/hqtr_clustering")                 , emit: report
-    path("spoQC_tmp/hqtr_output_mask_raw")              , emit: mask
+    tuple val(meta), path("report/hqtr/hqtr_clustering")                 , emit: report
+    tuple val(meta), path("spoQC_tmp/hqtr_output_mask_raw")              , emit: mask
     tuple val("${task.process}"), val('spoqc'), eval("spoqc --version 2>&1 | grep -oP '\\d+\\.\\d+\\.\\d+' || echo unknown"), topic: versions, emit: versions_spoqc
 
     when:

@@ -14,8 +14,11 @@ process SPOQC_CELLCYCLE {
     val(step)
 
     output:
-    path("./report/cellcycleqc")                           , emit: report
+    tuple val(meta), path("./report/cellcycleqc")                           , emit: report
     tuple val("${task.process}"), val('spoqc'), eval("spoqc --version 2>&1 | grep -oP '\\d+\\.\\d+\\.\\d+' || echo unknown"), topic: versions, emit: versions_spoqc
+
+    when:
+    task.ext.when == null || task.ext.when
 
     script:
     // Exit if running this module with -profile conda / -profile mamba

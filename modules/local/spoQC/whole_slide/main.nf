@@ -14,7 +14,7 @@ process SPOQC_WHOLE_SLIDE {
     val(step)
 
     output:
-    path("./report/whole_slide_qc")                     , emit: report
+    tuple val(meta), path("./report/whole_slide_qc")                     , emit: report
     tuple val("${task.process}"), val('spoqc'), eval("spoqc --version 2>&1 | grep -oP '\\d+\\.\\d+\\.\\d+' || echo unknown"), topic: versions, emit: versions_spoqc
 
     when:

@@ -20,8 +20,8 @@ process SPOQC_HQCR_CELLTYPE {
     path(tmp_cell, stageAs: "./spoQC_tmp/cellqc_output_hqcr.parquet")
 
     output:
-    path("./report/hqcr/hqcr_celltype")                                       , emit: report
-    path("./spoQC_tmp/hqcr_output_mask_smoothed_celltype_refined.parquet")    , emit: mask
+    tuple val(meta), path("./report/hqcr/hqcr_celltype")                                       , emit: report
+    tuple val(meta), path("./spoQC_tmp/hqcr_output_mask_smoothed_celltype_refined.parquet")    , emit: mask
     tuple val("${task.process}"), val('spoqc'), eval("spoqc --version 2>&1 | grep -oP '\\d+\\.\\d+\\.\\d+' || echo unknown"), topic: versions, emit: versions_spoqc
 
     when:

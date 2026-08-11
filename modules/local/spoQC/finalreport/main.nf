@@ -21,14 +21,14 @@ process SPOQC_FINALREPORT {
     path(report_hqpr_clustering, stageAs: "report/hqpr/hqpr_clustering/*")
     path(report_hqpr_refinement, stageAs: "report/hqpr/hqpr_refinement/*")
     path(report_hqpr_bounding_box, stageAs: "report/hqpr/hqpr_bounding_box/*")
-    // path(report_hqpr_celltype, stageAs: "report/hqpr/*/hqpr_celltype/*")
+    path(report_hqpr_celltype, stageAs: "report/hqpr/hqpr_celltype/*")
     path(report_hqtr_metrices, stageAs: "report/hqtr/hqtr_metrices")
     path(report_hqtr_ac, stageAs: "report/hqtr/hqtr_ac")
     path(report_hqtr_qv, stageAs: "report/hqtr/hqtr_qv")
     path(report_hqtr_clustering, stageAs: "report/hqtr/hqtr_clustering")
     path(report_hqtr_refinement, stageAs: "report/hqtr/hqtr_refinement")
     path(report_hqtr_bounding_box, stageAs: "report/hqtr/hqtr_bounding_box")
-    // path(report_hqtr_celltype, stageAs: "report/hqtr/hqtr_celltype")
+    path(report_hqtr_celltype, stageAs: "report/hqtr/hqtr_celltype")
     path(report_combine_masks, stageAs: "report/combine_masks/*")
     path(report_transcript, stageAs: "report/transcriptqc")
     path(report_cellcycle, stageAs: "report/cellcycleqc")
@@ -38,7 +38,7 @@ process SPOQC_FINALREPORT {
     path(report_analysis_cluster, stageAs: "report/analysis/cluster")
 
     output:
-    path("report/report.html")                      , emit: report
+    tuple val(meta), path("report/report.html")                      , emit: report
     tuple val("${task.process}"), val('spoqc'), eval("spoqc --version 2>&1 | grep -oP '\\d+\\.\\d+\\.\\d+' || echo unknown"), topic: versions, emit: versions_spoqc
 
     when:

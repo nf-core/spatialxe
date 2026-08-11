@@ -29,7 +29,7 @@ process SPOQC_ANALYSIS_CATEGORY {
     path(mask_hqpr, stageAs: "spoQC_tmp/*")
 
     output:
-    path("report/analysis/category")            , emit: report
+    tuple val(meta), path("report/analysis/category")            , emit: report
     tuple val("${task.process}"), val('spoqc'), eval("spoqc --version 2>&1 | grep -oP '\\d+\\.\\d+\\.\\d+' || echo unknown"), topic: versions, emit: versions_spoqc
 
     when:

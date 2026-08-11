@@ -15,9 +15,9 @@ process SPOQC_HQPR_METRICES {
     val(step)
 
     output:
-    tuple val(staining), path("report/hqpr/hqpr_metrices/${staining}")                       , emit: report
-    tuple val(staining), path("spoQC_tmp/metrices/hqpr/${staining}")                         , emit: metrices
-    path("report/staining_log.txt")                                                          , emit: staininglog
+    tuple val(meta), val(staining), path("report/hqpr/hqpr_metrices/${staining}")                       , emit: report
+    tuple val(meta), val(staining), path("spoQC_tmp/metrices/hqpr/${staining}")                         , emit: metrices
+    tuple val(meta), path("report/staining_log.txt")                                                    , emit: staininglog
     tuple val("${task.process}"), val('spoqc'), eval("spoqc --version 2>&1 | grep -oP '\\d+\\.\\d+\\.\\d+' || echo unknown"), topic: versions, emit: versions_spoqc
 
     when:

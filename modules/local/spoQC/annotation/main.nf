@@ -15,8 +15,8 @@ process SPOQC_ANNOTATION {
     val(step)
 
     output:
-    path("./report/annotation")                                                      , emit: report
-    path("./report/annotation/unsupervised_cell_annotation.tsv")                     , emit: annotation
+    tuple val(meta), path("./report/annotation")                                                      , emit: report
+    tuple val(meta), path("./report/annotation/unsupervised_cell_annotation.tsv")                     , emit: annotation
     tuple val("${task.process}"), val('spoqc'), eval("spoqc --version 2>&1 | grep -oP '\\d+\\.\\d+\\.\\d+' || echo unknown"), topic: versions, emit: versions_spoqc
 
     when:

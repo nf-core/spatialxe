@@ -14,7 +14,7 @@ process SPOQC_HQTR_BOUNDING_BOX {
     path(edge_strength, stageAs: "./spoQC_tmp/hqtr_output_mask_smoothed_raw")
 
     output:
-    path("./report/hqtr/hqtr_bounding_box")                   , emit: report
+    tuple val(meta), path("./report/hqtr/hqtr_bounding_box")                   , emit: report
     tuple val("${task.process}"), val('spoqc'), eval("spoqc --version 2>&1 | grep -oP '\\d+\\.\\d+\\.\\d+' || echo unknown"), topic: versions, emit: versions_spoqc
 
     when:
