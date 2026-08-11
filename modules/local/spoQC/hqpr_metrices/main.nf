@@ -10,8 +10,7 @@ process SPOQC_HQPR_METRICES {
     container "heylf/spoqc:0.0.1"
 
     input:
-    tuple val(meta), path(spatialdata, stageAs: "*")
-    each staining
+    tuple val(meta), path(spatialdata, stageAs: "*"), val(staining)
     val(step)
 
     output:
