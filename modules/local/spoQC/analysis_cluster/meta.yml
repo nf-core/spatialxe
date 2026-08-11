@@ -64,11 +64,11 @@ input:
       description: Smoothed HQCR mask from SPOQC_HQCR_IDENT
       pattern: "hqcr_output_mask_smoothed_raw.parquet"
   - qv:
-      type: file
+      type: directory
       description: HQTR quality-value probability output from SPOQC_HQTR_QV
       pattern: "hqtr_output_qv_prob"
   - ac:
-      type: file
+      type: directory
       description: HQTR ambient-contamination probability output from SPOQC_HQTR_AC
       pattern: "hqtr_output_ac_prob"
   - metrices_hqtr:
@@ -76,11 +76,11 @@ input:
       description: HQTR metrics directory from SPOQC_HQTR_METRICES
       pattern: "spoQC_tmp/metrices/hqtr"
   - mask_smoothed_hqtr:
-      type: file
+      type: directory
       description: Smoothed HQTR mask from SPOQC_HQTR_REFINEMENT
       pattern: "hqtr_output_mask_smoothed_raw"
   - mask_hqtr:
-      type: file
+      type: directory
       description: HQTR raw mask from SPOQC_HQTR_CLUSTERING
       pattern: "hqtr_output_mask_raw"
   - metrices_hqpr:
@@ -88,11 +88,11 @@ input:
       description: Collected per-staining HQPR metrics directories from SPOQC_HQPR_METRICES
       pattern: "spoQC_tmp/metrices/hqpr/*"
   - mask_smoothed_hqpr:
-      type: file
+      type: directory
       description: Collected per-staining smoothed HQPR masks from SPOQC_HQPR_REFINEMENT
       pattern: "spoQC_tmp/*"
   - mask_hqpr:
-      type: file
+      type: directory
       description: Collected per-staining raw HQPR masks from SPOQC_HQPR_CLUSTERING
       pattern: "spoQC_tmp/*"
 output:

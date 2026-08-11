@@ -35,7 +35,7 @@ input:
       type: string
       description: Name of the spoQC step to run, passed to `spoqc -s`
   - mask:
-      type: file
+      type: directory
       description: HQTR raw mask from SPOQC_HQTR_CLUSTERING
       pattern: "hqtr_output_mask_raw"
 output:
@@ -43,7 +43,7 @@ output:
       type: directory
       description: HTML/plot QC report directory produced for this step
   - mask_smoothed:
-      type: file
+      type: directory
       description: Smoothed HQTR mask
       pattern: "hqtr_output_mask_smoothed_raw"
   - versions_spoqc:

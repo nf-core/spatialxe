@@ -39,7 +39,7 @@ output:
       type: directory
       description: HTML/plot QC report directory produced for this step
   - tmp:
-      type: file
+      type: directory
       description: HQTR quality-value probability output
       pattern: "hqtr_output_qv_prob"
   - versions_spoqc:

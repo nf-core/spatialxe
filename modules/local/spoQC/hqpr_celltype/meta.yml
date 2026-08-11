@@ -76,11 +76,11 @@ input:
         type: integer
         description: Staining index
     - mask:
-        type: file
+        type: directory
         description: Per-staining HQPR raw probability mask from SPOQC_HQPR_CLUSTERING
         pattern: "spoQC_tmp/*"
     - mask_smoothed:
-        type: file
+        type: directory
         description: Per-staining smoothed HQPR mask from SPOQC_HQPR_REFINEMENT
         pattern: "spoQC_tmp/*"
 output:

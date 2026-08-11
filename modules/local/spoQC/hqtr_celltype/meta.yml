@@ -57,11 +57,11 @@ input:
       description: Cell QC parquet output from SPOQC_CELL
       pattern: "cellqc_output_hqcr.parquet"
   - mask:
-      type: file
+      type: directory
       description: HQTR raw probability mask from SPOQC_HQTR_CLUSTERING
       pattern: "hqtr_output_mask_raw"
   - mask_smoothed:
-      type: file
+      type: directory
       description: Smoothed HQTR mask from SPOQC_HQTR_REFINEMENT
       pattern: "hqtr_output_mask_smoothed_raw"
 output:

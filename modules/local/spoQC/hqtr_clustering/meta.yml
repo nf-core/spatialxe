@@ -39,11 +39,11 @@ input:
       description: HQTR metrics directory from SPOQC_HQTR_METRICES
       pattern: "spoQC_tmp/metrices/hqtr"
   - qv:
-      type: file
+      type: directory
       description: HQTR quality-value probability output from SPOQC_HQTR_QV
       pattern: "spoQC_tmp/*"
   - ac:
-      type: file
+      type: directory
       description: HQTR ambient-contamination probability output from SPOQC_HQTR_AC
       pattern: "spoQC_tmp/*"
 output:
@@ -51,7 +51,7 @@ output:
       type: directory
       description: HTML/plot QC report directory produced for this step
   - mask:
-      type: file
+      type: directory
       description: HQTR raw probability mask
       pattern: "hqtr_output_mask_raw"
   - versions_spoqc:
