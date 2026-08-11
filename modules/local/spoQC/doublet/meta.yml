@@ -15,7 +15,7 @@ tools:
       homepage: https://github.com/heylf/spoQC
       documentation: https://github.com/heylf/spoQC
       tool_dev_url:
-      licence: []
+      licence: ["MIT license"]
 input:
   - - meta:
         type: map
