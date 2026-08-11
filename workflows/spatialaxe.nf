@@ -386,8 +386,8 @@ workflow SPATIALAXE {
     }
 
     // get annotation
-    ch_annotation = ch_input.map { _meta, _bundle, _image, annotation, _stainings ->
-        annotation
+    ch_annotation = ch_input.map { meta, _bundle, _image, annotation, _stainings ->
+        [meta, annotation]
     }
 
     /*
