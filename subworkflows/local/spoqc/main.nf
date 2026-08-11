@@ -549,5 +549,5 @@ workflow SPOQC {
 
     emit:
 
-    ch_sd_raw       = ch_sd         // channel: [ val(meta), "spatialdata_raw" ]
+    report       = SPOQC_FINALREPORT.out.report
 }

@@ -30,12 +30,14 @@ components:
   - spoQC/hqpr_clustering
   - spoQC/hqpr_refinement
   - spoQC/hqpr_bounding_box
+  - spoQC/hqpr_celltype
   - spoQC/hqtr_metrices
   - spoQC/hqtr_ac
   - spoQC/hqtr_qv
   - spoQC/hqtr_clustering
   - spoQC/hqtr_refinement
   - spoQC/hqtr_bounding_box
+  - spoQC/hqtr_celltype
   - spoQC/combine_masks
   - spoQC/transcript
   - spoQC/cellcycle
@@ -43,8 +45,9 @@ components:
   - spoQC/analysis_overview
   - spoQC/analysis_category
   - spoQC/analysis_cluster
+  - spoQC/finalreport
   # Not currently wired into this subworkflow (calls are commented out in main.nf):
-  # spoQC/hqpr_celltype, spoQC/hqtr_celltype, spoQC/marker
+  # spoQC/marker
 input:
   - ch_bundle_path:
       description: |
@@ -60,12 +63,9 @@ input:
         List of staining indices to iterate the HQPR steps over
         Structure: [ [ 1, 2, ... ] ]
 output:
-  - ch_sd_raw:
+  - report:
       description: |
-        SpatialData object generated from the raw Xenium bundle. This is the only channel emitted
-        by the subworkflow; all spoQC QC steps write their reports/masks/parquet artifacts as
-        side-effect files under `report/` and `spoQC_tmp/` rather than emitting them further.
-        Structure: [ val(meta), path("spatialdata_raw") ]
+        Final combined spoQC HTML report
 authors:
   - "@heylf"
 maintainers:
