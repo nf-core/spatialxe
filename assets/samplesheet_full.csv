@@ -1,2 +1,2 @@
 sample,bundle,image,annotation,stainings
-test_run,https://raw.githubusercontent.com/nf-core/test-datasets/spatialxe/Xenium_V1_Protein_Human_Kidney_tiny_outs.zip,,,0;1
+test_run_full,https://raw.githubusercontent.com/nf-core/test-datasets/spatialxe/Xenium_V1_Protein_Human_Kidney_tiny_outs.zip,,,0;1
