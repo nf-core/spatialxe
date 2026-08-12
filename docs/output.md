@@ -21,7 +21,6 @@ The pipeline is built using [Nextflow](https://www.nextflow.io/) and processes d
   - [Xenium Ranger import segmentation](#xenium-ranger-import-segmentation)
   - [MultiQC](#multiqc) - Aggregate report describing results and QC from the whole pipeline
   - [Pipeline information](#pipeline-information) - Report metrics generated during the workflow execution
-  - [spoQC](https://github.com/heylf/spoQC) - Report and QC metrics (see [documentation of spoQC](soon))
 
 ## Image mode
 
@@ -214,7 +213,7 @@ The pipeline create spatialdata objects (data bundles) on various stages (see me
 
 </details>
 
-### Xenium Ranger Import Segmentation)
+### Xenium Ranger Import Segmentation
 
 This step is needed to import segemntations from different methods into the xenium bundle and is called at different stages of the pipeline.
 
