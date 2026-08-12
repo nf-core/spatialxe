@@ -14,7 +14,6 @@ tools:
         segmentation QC of spatial omics (10x Xenium) data, operating on SpatialData objects.
       homepage: https://github.com/heylf/spoQC
       documentation: https://github.com/heylf/spoQC
-      tool_dev_url:
       licence: ["MIT license"]
 input:
   - - meta:
@@ -23,30 +22,39 @@ input:
           Groovy Map containing sample information
           e.g. [ id:'sample' ]
     - spatialdata:
-        type: folder
+        type: directory
         description: Path to the SpatialData zarr store to run QC on
+        ontologies: []
   - annotation:
       type: file
       description: |
         Optional cell-type annotation file. When empty/absent, spoqc is run without the `-a` flag.
       pattern: "*.tsv"
+      ontologies: []
   - step:
       type: string
       description: Name of the spoQC step to run, passed to `spoqc -s`
 output:
-  - report:
-      type: directory
-      description: HTML/plot QC report directory produced for this step
-  - versions_spoqc:
-      - - "${task.process}":
-            type: string
-            description: The process the versions were collected from
-        - spoqc:
-            type: string
-            description: The tool name
-        - "spoqc --version 2>&1 | grep -oP '\\d+\\.\\d+\\.\\d+' || echo unknown":
-            type: eval
-            description: The expression to obtain the version of the tool
+  report:
+    - - meta:
+          type: map
+          description: |
+            Groovy Map containing sample information
+            e.g. [ id:'sample' ]
+      - "report":
+          type: directory
+          description: HTML/plot QC report directory produced for this step
+          ontologies: []
+  versions_spoqc:
+    - - "${task.process}":
+          type: string
+          description: The process the versions were collected from
+      - spoqc:
+          type: string
+          description: The tool name
+      - "spoqc --version 2>&1 | grep -oP '\\d+\\.\\d+\\.\\d+' || echo unknown":
+          type: eval
+          description: The expression to obtain the version of the tool
 topics:
   versions:
     - - "${task.process}":
@@ -59,4 +67,6 @@ topics:
           type: eval
           description: The expression to obtain the version of the tool
 authors:
+  - "@heylf"
+maintainers:
   - "@heylf"

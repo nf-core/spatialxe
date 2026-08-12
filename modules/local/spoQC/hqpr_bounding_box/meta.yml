@@ -15,7 +15,6 @@ tools:
         segmentation QC of spatial omics (10x Xenium) data, operating on SpatialData objects.
       homepage: https://github.com/heylf/spoQC
       documentation: https://github.com/heylf/spoQC
-      tool_dev_url:
       licence: ["MIT license"]
 input:
   - - meta:
@@ -24,8 +23,9 @@ input:
           Groovy Map containing sample information
           e.g. [ id:'sample' ]
     - spatialdata:
-        type: folder
+        type: directory
         description: Path to the SpatialData zarr store to run QC on
+        ontologies: []
     - staining_idx_sd:
         type: integer
         description: Staining index carried alongside spatialdata to align the per-staining combined channel (Groovy var `_stain_sd`)
@@ -39,24 +39,32 @@ input:
         type: directory
         description: Per-staining smoothed HQPR mask from SPOQC_HQPR_REFINEMENT
         pattern: "spoQC_tmp/*"
+        ontologies: []
 output:
-  - - staining:
-        type: integer
-        description: Staining index
-    - report:
-        type: directory
-        description: HTML/plot QC report directory for this staining, tagged with the staining index
-        pattern: "report/hqpr/hqpr_bounding_box/${staining}"
-  - versions_spoqc:
-      - - "${task.process}":
-            type: string
-            description: The process the versions were collected from
-        - spoqc:
-            type: string
-            description: The tool name
-        - "spoqc --version 2>&1 | grep -oP '\\d+\\.\\d+\\.\\d+' || echo unknown":
-            type: eval
-            description: The expression to obtain the version of the tool
+  report:
+    - - meta:
+          type: map
+          description: |
+            Groovy Map containing sample information
+            e.g. [ id:'sample' ]
+      - staining:
+          type: integer
+          description: Staining index
+      - "report":
+          type: directory
+          description: HTML/plot QC report directory for this staining, tagged with the staining index
+          pattern: "report/hqpr/hqpr_bounding_box/${staining}"
+          ontologies: []
+  versions_spoqc:
+    - - "${task.process}":
+          type: string
+          description: The process the versions were collected from
+      - spoqc:
+          type: string
+          description: The tool name
+      - "spoqc --version 2>&1 | grep -oP '\\d+\\.\\d+\\.\\d+' || echo unknown":
+          type: eval
+          description: The expression to obtain the version of the tool
 topics:
   versions:
     - - "${task.process}":
@@ -69,4 +77,6 @@ topics:
           type: eval
           description: The expression to obtain the version of the tool
 authors:
+  - "@heylf"
+maintainers:
   - "@heylf"

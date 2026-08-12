@@ -15,7 +15,6 @@ tools:
         segmentation QC of spatial omics (10x Xenium) data, operating on SpatialData objects.
       homepage: https://github.com/heylf/spoQC
       documentation: https://github.com/heylf/spoQC
-      tool_dev_url:
       licence: ["MIT license"]
 input:
   - - meta:
@@ -24,13 +23,15 @@ input:
           Groovy Map containing sample information
           e.g. [ id:'sample' ]
     - spatialdata:
-        type: folder
+        type: directory
         description: Path to the SpatialData zarr store to run QC on
+        ontologies: []
   - annotation:
       type: file
       description: |
         Optional cell-type annotation file. When empty/absent, spoqc is run without the `-a` flag.
       pattern: "*.tsv"
+      ontologies: []
   - step:
       type: string
       description: Name of the spoQC step to run, passed to `spoqc -s`
@@ -38,40 +39,59 @@ input:
       type: file
       description: General QC parquet output from SPOQC_GENERAL
       pattern: "generalqc_output_hqcr.parquet"
+      ontologies: []
   - tmp_bubble:
       type: file
       description: Bubble QC parquet output from SPOQC_BUBBLE
       pattern: "bubbleqc_output_hqcr.parquet"
+      ontologies: []
   - tmp_doublet:
       type: file
       description: Doublet QC parquet output from SPOQC_DOUBLET
       pattern: "doubletqc_output_hqcr.parquet"
+      ontologies: []
   - tmp_void:
       type: file
       description: Void QC parquet output from SPOQC_VOID
       pattern: "voidqc_output_hqcr.parquet"
+      ontologies: []
   - tmp_cell:
       type: file
       description: Cell QC parquet output from SPOQC_CELL
       pattern: "cellqc_output_hqcr.parquet"
+      ontologies: []
 output:
-  - report:
-      type: directory
-      description: HTML/plot QC report directory produced for this step
-  - mask:
-      type: file
-      description: Cell-type-refined, smoothed HQCR mask
-      pattern: "hqcr_output_mask_smoothed_celltype_refined.parquet"
-  - versions_spoqc:
-      - - "${task.process}":
-            type: string
-            description: The process the versions were collected from
-        - spoqc:
-            type: string
-            description: The tool name
-        - "spoqc --version 2>&1 | grep -oP '\\d+\\.\\d+\\.\\d+' || echo unknown":
-            type: eval
-            description: The expression to obtain the version of the tool
+  report:
+    - - meta:
+          type: map
+          description: |
+            Groovy Map containing sample information
+            e.g. [ id:'sample' ]
+      - "report":
+          type: directory
+          description: HTML/plot QC report directory produced for this step
+          ontologies: []
+  mask:
+    - - meta:
+          type: map
+          description: |
+            Groovy Map containing sample information
+            e.g. [ id:'sample' ]
+      - "mask":
+          type: file
+          description: Cell-type-refined, smoothed HQCR mask
+          pattern: "hqcr_output_mask_smoothed_celltype_refined.parquet"
+          ontologies: []
+  versions_spoqc:
+    - - "${task.process}":
+          type: string
+          description: The process the versions were collected from
+      - spoqc:
+          type: string
+          description: The tool name
+      - "spoqc --version 2>&1 | grep -oP '\\d+\\.\\d+\\.\\d+' || echo unknown":
+          type: eval
+          description: The expression to obtain the version of the tool
 topics:
   versions:
     - - "${task.process}":
@@ -84,4 +104,6 @@ topics:
           type: eval
           description: The expression to obtain the version of the tool
 authors:
+  - "@heylf"
+maintainers:
   - "@heylf"

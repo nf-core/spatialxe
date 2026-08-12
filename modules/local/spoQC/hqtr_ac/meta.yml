@@ -15,7 +15,6 @@ tools:
         segmentation QC of spatial omics (10x Xenium) data, operating on SpatialData objects.
       homepage: https://github.com/heylf/spoQC
       documentation: https://github.com/heylf/spoQC
-      tool_dev_url:
       licence: ["MIT license"]
 input:
   - - meta:
@@ -24,8 +23,9 @@ input:
           Groovy Map containing sample information
           e.g. [ id:'sample' ]
     - spatialdata:
-        type: folder
+        type: directory
         description: Path to the SpatialData zarr store to run QC on
+        ontologies: []
   - step:
       type: string
       description: Name of the spoQC step to run, passed to `spoqc -s`
@@ -33,24 +33,39 @@ input:
       type: file
       description: Per-gene ambient-RNA QC parquet output from SPOQC_AMBIENT
       pattern: "ambient_output_genes.parquet"
+      ontologies: []
 output:
-  - report:
-      type: directory
-      description: HTML/plot QC report directory produced for this step
-  - tmp:
-      type: directory
-      description: HQTR ambient-contamination probability output
-      pattern: "hqtr_output_ac_prob"
-  - versions_spoqc:
-      - - "${task.process}":
-            type: string
-            description: The process the versions were collected from
-        - spoqc:
-            type: string
-            description: The tool name
-        - "spoqc --version 2>&1 | grep -oP '\\d+\\.\\d+\\.\\d+' || echo unknown":
-            type: eval
-            description: The expression to obtain the version of the tool
+  report:
+    - - meta:
+          type: map
+          description: |
+            Groovy Map containing sample information
+            e.g. [ id:'sample' ]
+      - "report":
+          type: directory
+          description: HTML/plot QC report directory produced for this step
+          ontologies: []
+  tmp:
+    - - meta:
+          type: map
+          description: |
+            Groovy Map containing sample information
+            e.g. [ id:'sample' ]
+      - "tmp":
+          type: directory
+          description: HQTR ambient-contamination probability output
+          pattern: "hqtr_output_ac_prob"
+          ontologies: []
+  versions_spoqc:
+    - - "${task.process}":
+          type: string
+          description: The process the versions were collected from
+      - spoqc:
+          type: string
+          description: The tool name
+      - "spoqc --version 2>&1 | grep -oP '\\d+\\.\\d+\\.\\d+' || echo unknown":
+          type: eval
+          description: The expression to obtain the version of the tool
 topics:
   versions:
     - - "${task.process}":
@@ -63,4 +78,6 @@ topics:
           type: eval
           description: The expression to obtain the version of the tool
 authors:
+  - "@heylf"
+maintainers:
   - "@heylf"

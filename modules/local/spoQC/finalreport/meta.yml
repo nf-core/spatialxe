@@ -14,7 +14,6 @@ tools:
         segmentation QC of spatial omics (10x Xenium) data, operating on SpatialData objects.
       homepage: https://github.com/heylf/spoQC
       documentation: https://github.com/heylf/spoQC
-      tool_dev_url:
       licence: ["MIT license"]
 input:
   - - meta:
@@ -23,8 +22,9 @@ input:
           Groovy Map containing sample information
           e.g. [ id:'sample' ]
     - spatialdata:
-        type: folder
+        type: directory
         description: Path to the SpatialData zarr store to run QC on
+        ontologies: []
   - step:
       type: string
       description: Name of the spoQC step to run, passed to `spoqc -s`
@@ -32,117 +32,149 @@ input:
       type: directory
       description: Report fragment from SPOQC_GENERAL
       pattern: "report/generalqc"
+      ontologies: []
   - report_doublet:
       type: directory
       description: Report fragment from SPOQC_DOUBLET
       pattern: "report/doubletqc"
+      ontologies: []
   - report_void:
       type: directory
       description: Report fragment from SPOQC_VOID
       pattern: "report/voidqc"
+      ontologies: []
   - report_cell:
       type: directory
       description: Report fragment from SPOQC_CELL
       pattern: "report/cellqc"
+      ontologies: []
   - report_hqcr_ident:
       type: directory
       description: Report fragment from SPOQC_HQCR_IDENT
       pattern: "report/hqcr/hqcr_ident"
+      ontologies: []
   - report_hqcr_celltype:
       type: directory
       description: Report fragment from SPOQC_HQCR_CELLTYPE
       pattern: "report/hqcr/hqcr_celltype"
+      ontologies: []
   - report_hqpr_metrices:
       type: directory
       description: Collected per-staining report fragments from SPOQC_HQPR_METRICES
       pattern: "report/hqpr/hqpr_metrices/*"
+      ontologies: []
   - report_hqpr_clustering:
       type: directory
       description: Collected per-staining report fragments from SPOQC_HQPR_CLUSTERING
       pattern: "report/hqpr/hqpr_clustering/*"
+      ontologies: []
   - report_hqpr_refinement:
       type: directory
       description: Collected per-staining report fragments from SPOQC_HQPR_REFINEMENT
       pattern: "report/hqpr/hqpr_refinement/*"
+      ontologies: []
   - report_hqpr_bounding_box:
       type: directory
       description: Collected per-staining report fragments from SPOQC_HQPR_BOUNDING_BOX
       pattern: "report/hqpr/hqpr_bounding_box/*"
+      ontologies: []
   - report_hqpr_celltype:
       type: directory
       description: Report fragment from SPOQC_HQPR_CELLTYPE
       pattern: "report/hqpr/hqpr_celltype/*"
+      ontologies: []
   - report_hqtr_metrices:
       type: directory
       description: Report fragment from SPOQC_HQTR_METRICES
       pattern: "report/hqtr/hqtr_metrices"
+      ontologies: []
   - report_hqtr_ac:
       type: directory
       description: Report fragment from SPOQC_HQTR_AC
       pattern: "report/hqtr/hqtr_ac"
+      ontologies: []
   - report_hqtr_qv:
       type: directory
       description: Report fragment from SPOQC_HQTR_QV
       pattern: "report/hqtr/hqtr_qv"
+      ontologies: []
   - report_hqtr_clustering:
       type: directory
       description: Report fragment from SPOQC_HQTR_CLUSTERING
       pattern: "report/hqtr/hqtr_clustering"
+      ontologies: []
   - report_hqtr_refinement:
       type: directory
       description: Report fragment from SPOQC_HQTR_REFINEMENT
       pattern: "report/hqtr/hqtr_refinement"
+      ontologies: []
   - report_hqtr_bounding_box:
       type: directory
       description: Report fragment from SPOQC_HQTR_BOUNDING_BOX
       pattern: "report/hqtr/hqtr_bounding_box"
+      ontologies: []
   - report_hqtr_celltype:
       type: directory
       description: Report fragment from SPOQC_HQTR_CELLTYPE
       pattern: "report/hqtr/hqtr_celltype"
+      ontologies: []
   - report_combine_masks:
       type: directory
       description: Collected per-staining report fragments from SPOQC_COMBINE_MASKS
       pattern: "report/combine_masks/*"
+      ontologies: []
   - report_transcript:
       type: directory
       description: Report fragment from SPOQC_TRANSCRIPT
       pattern: "report/transcriptqc"
+      ontologies: []
   - report_cellcycle:
       type: directory
       description: Report fragment from SPOQC_CELLCYCLE
       pattern: "report/cellcycleqc"
+      ontologies: []
   - report_model:
       type: directory
       description: Report fragment from SPOQC_MODEL
       pattern: "report/modelqc"
+      ontologies: []
   - report_analysis_overview:
       type: directory
       description: Report fragment from SPOQC_ANALYSIS_OVERVIEW
       pattern: "report/analysis/overview"
+      ontologies: []
   - report_analysis_category:
       type: directory
       description: Report fragment from SPOQC_ANALYSIS_CATEGORY
       pattern: "report/analysis/category"
+      ontologies: []
   - report_analysis_cluster:
       type: directory
       description: Report fragment from SPOQC_ANALYSIS_CLUSTER
       pattern: "report/analysis/cluster"
+      ontologies: []
 output:
-  - report:
-      type: file
-      description: Final combined spoQC HTML report
-      pattern: "report/report.html"
-  - versions_spoqc:
-      - - "${task.process}":
-            type: string
-            description: The process the versions were collected from
-        - spoqc:
-            type: string
-            description: The tool name
-        - "spoqc --version 2>&1 | grep -oP '\\d+\\.\\d+\\.\\d+' || echo unknown":
-            type: eval
-            description: The expression to obtain the version of the tool
+  report:
+    - - meta:
+          type: map
+          description: |
+            Groovy Map containing sample information
+            e.g. [ id:'sample' ]
+      - "report/report.html":
+          type: file
+          description: Final combined spoQC HTML report
+          pattern: "report/report.html"
+          ontologies: []
+  versions_spoqc:
+    - - "${task.process}":
+          type: string
+          description: The process the versions were collected from
+      - spoqc:
+          type: string
+          description: The tool name
+      - "spoqc --version 2>&1 | grep -oP '\\d+\\.\\d+\\.\\d+' || echo unknown":
+          type: eval
+          description: The expression to obtain the version of the tool
 topics:
   versions:
     - - "${task.process}":
@@ -155,4 +187,6 @@ topics:
           type: eval
           description: The expression to obtain the version of the tool
 authors:
+  - "@heylf"
+maintainers:
   - "@heylf"
