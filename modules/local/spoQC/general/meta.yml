@@ -10,8 +10,7 @@ keywords:
 tools:
   - "spoqc":
       description: |
-        spoQC is a custom quality-control toolkit for spatial single-cell and single-transcript
-        segmentation QC of spatial omics (10x Xenium) data, operating on SpatialData objects.
+        spoQC is a modular framework for multimodal quality control (QC) of imaging-based spatially resolved transcriptomics (SRT).
       homepage: https://github.com/heylf/spoQC
       documentation: https://github.com/heylf/spoQC
       licence: ["MIT license"]
