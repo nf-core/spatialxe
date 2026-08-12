@@ -161,47 +161,69 @@ workflow SPOQC {
         "hqpr_metrices",
     )
 
+    // Join every per-staining upstream output onto ch_spatialdata_stainings by the composite
+    // [meta, staining], so their outputs can arrive in a different order than ch_spatialdata_stainings 
+    // declares them in.
+    ch_hqpr_clustering_input = ch_spatialdata_stainings
+        .map { meta, spatialdata, staining -> [[meta, staining], meta, spatialdata, staining] }
+        .join(SPOQC_HQPR_METRICES.out.metrices.map { meta, staining, f -> [[meta, staining], f] })
+        .multiMap { _key, meta, spatialdata, staining, f ->
+            sd:       [meta, spatialdata, staining]
+            metrices: [staining, f]
+        }
+
     SPOQC_HQPR_CLUSTERING(
-        ch_spatialdata_stainings,
+        ch_hqpr_clustering_input.sd,
         "hqpr_clustering",
-        SPOQC_HQPR_METRICES.out.metrices.map { _meta, staining, f -> return [staining, f] },
+        ch_hqpr_clustering_input.metrices,
     )
 
-    ch_spoqc_hpq_clustering = SPOQC_HQPR_CLUSTERING.out.mask.map { _meta, staining, f -> return [staining, f] }
+    ch_hqpr_refinement_input = ch_spatialdata_stainings
+        .map { meta, spatialdata, staining -> [[meta, staining], meta, spatialdata, staining] }
+        .join(SPOQC_HQPR_CLUSTERING.out.mask.map { meta, staining, f -> [[meta, staining], f] })
+        .multiMap { _key, meta, spatialdata, staining, f ->
+            sd:   [meta, spatialdata, staining]
+            mask: [staining, f]
+        }
 
     SPOQC_HQPR_REFINEMENT(
-        ch_spatialdata_stainings,
+        ch_hqpr_refinement_input.sd,
         "hqpr_refinement",
-        ch_spoqc_hpq_clustering,
+        ch_hqpr_refinement_input.mask,
     )
 
-    ch_spoqc_hqpr_refinement = SPOQC_HQPR_REFINEMENT.out.mask_smoothed.map { _meta, staining, f -> return [staining, f] }
+    ch_hqpr_bounding_box_input = ch_spatialdata_stainings
+        .map { meta, spatialdata, staining -> [[meta, staining], meta, spatialdata, staining] }
+        .join(SPOQC_HQPR_REFINEMENT.out.mask_smoothed.map { meta, staining, f -> [[meta, staining], f] })
+        .multiMap { _key, meta, spatialdata, staining, f ->
+            sd:            [meta, spatialdata, staining]
+            mask_smoothed: [staining, f]
+        }
 
     SPOQC_HQPR_BOUNDING_BOX(
-        ch_spatialdata_stainings,
+        ch_hqpr_bounding_box_input.sd,
         "hqpr_bounding_box",
-        ch_spoqc_hqpr_refinement,
+        ch_hqpr_bounding_box_input.mask_smoothed,
     )
 
-    // Same meta.id-keyed pairing as ch_sd_annotation, extended with staining.
-    // combine() is applied after the join so both outputs stay aligned per sample+staining.
+    // Same meta.id-keyed pairing as ch_sd_annotation, extended with staining, and further
+    // joined (by the same composite [meta, staining] key) with the HQPR mask/mask_smoothed
+    // outputs so sd, annotation, and masks all come from the same joined row.
     ch_sd
         .join(ch_annotation_path, by: 0, remainder: true)
         .map { meta, spatialdata, annotation -> [meta, spatialdata, annotation ?: []] }
         .combine(ch_stainings, by: 0)
-        .multiMap { meta, spatialdata, annotation, staining ->
+        .map { meta, spatialdata, annotation, staining -> [[meta, staining], meta, spatialdata, annotation, staining] }
+        .join(
+            SPOQC_HQPR_CLUSTERING.out.mask.map { meta, staining, f -> [[meta, staining], f] }
+                .join(SPOQC_HQPR_REFINEMENT.out.mask_smoothed.map { meta, staining, f -> [[meta, staining], f] })
+        )
+        .multiMap { _key, meta, spatialdata, annotation, staining, mask, mask_smoothed ->
             sd:         [meta, spatialdata, staining]
             annotation: [annotation, staining]
+            masks:      [staining, mask, mask_smoothed]
         }
         .set { ch_sd_annotation_stainings }
-
-    // Join on the composite [meta, staining] key.
-    ch_masks_joined = SPOQC_HQPR_CLUSTERING.out.mask
-        .map { meta, staining, f -> [[meta, staining], f] }
-        .join(
-            SPOQC_HQPR_REFINEMENT.out.mask_smoothed.map { meta, staining, f -> [[meta, staining], f] }
-        )
-        .map { key, m1, m2 -> [key[1], m1, m2] }
 
     SPOQC_HQPR_CELLTYPE(
         ch_sd_annotation_stainings.sd,
@@ -212,7 +234,7 @@ workflow SPOQC {
         SPOQC_DOUBLET.out.tmp.combine(ch_stainings, by: 0).map { _meta, f, staining -> [f, staining] },
         SPOQC_VOID.out.tmp.combine(ch_stainings, by: 0).map { _meta, f, staining -> [f, staining] },
         SPOQC_CELL.out.tmp.combine(ch_stainings, by: 0).map { _meta, f, staining -> [f, staining] },
-        ch_masks_joined,
+        ch_sd_annotation_stainings.masks,
     )
 
     // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -271,15 +293,36 @@ workflow SPOQC {
     // Downstream
     // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+    // As above: join every input onto ch_spatialdata_stainings by the composite [meta, staining]
+    // key in one shot, so all 8 SPOQC_COMBINE_MASKS args come from the same row and can never be
+    // cross-wired between stainings.
+    ch_combine_masks_input = ch_spatialdata_stainings
+        .map { meta, spatialdata, staining -> [[meta, staining], meta, spatialdata, staining] }
+        .join(SPOQC_HQCR_IDENT.out.mask.combine(ch_stainings, by: 0).map { meta, f, staining -> [[meta, staining], f] })
+        .join(SPOQC_HQPR_CLUSTERING.out.mask.map { meta, staining, f -> [[meta, staining], f] })
+        .join(SPOQC_HQTR_CLUSTERING.out.mask.combine(ch_stainings, by: 0).map { meta, f, staining -> [[meta, staining], f] })
+        .join(SPOQC_HQCR_IDENT.out.mask_smoothed.combine(ch_stainings, by: 0).map { meta, f, staining -> [[meta, staining], f] })
+        .join(SPOQC_HQPR_REFINEMENT.out.mask_smoothed.map { meta, staining, f -> [[meta, staining], f] })
+        .join(SPOQC_HQTR_REFINEMENT.out.mask_smoothed.combine(ch_stainings, by: 0).map { meta, f, staining -> [[meta, staining], f] })
+        .multiMap { _key, meta, spatialdata, staining, hqcr_mask, hqpr_mask, hqtr_mask, hqcr_mask_smoothed, hqpr_mask_smoothed, hqtr_mask_smoothed ->
+            sd:                 [meta, spatialdata, staining]
+            hqcr_mask:          [hqcr_mask, staining]
+            hqpr_mask:          [staining, hqpr_mask]
+            hqtr_mask:          [hqtr_mask, staining]
+            hqcr_mask_smoothed: [hqcr_mask_smoothed, staining]
+            hqpr_mask_smoothed: [staining, hqpr_mask_smoothed]
+            hqtr_mask_smoothed: [hqtr_mask_smoothed, staining]
+        }
+
     SPOQC_COMBINE_MASKS(
-        ch_spatialdata_stainings,
+        ch_combine_masks_input.sd,
         "combine_masks",
-        SPOQC_HQCR_IDENT.out.mask.combine(ch_stainings, by: 0).map { _meta, f, staining -> [f, staining] },
-        ch_spoqc_hpq_clustering,
-        SPOQC_HQTR_CLUSTERING.out.mask.combine(ch_stainings, by: 0).map { _meta, f, staining -> [f, staining] },
-        SPOQC_HQCR_IDENT.out.mask_smoothed.combine(ch_stainings, by: 0).map { _meta, f, staining -> [f, staining] },
-        ch_spoqc_hqpr_refinement,
-        SPOQC_HQTR_REFINEMENT.out.mask_smoothed.combine(ch_stainings, by: 0).map { _meta, f, staining -> [f, staining] },
+        ch_combine_masks_input.hqcr_mask,
+        ch_combine_masks_input.hqpr_mask,
+        ch_combine_masks_input.hqtr_mask,
+        ch_combine_masks_input.hqcr_mask_smoothed,
+        ch_combine_masks_input.hqpr_mask_smoothed,
+        ch_combine_masks_input.hqtr_mask_smoothed,
     )
 
     SPOQC_TRANSCRIPT(
