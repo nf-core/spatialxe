@@ -264,6 +264,9 @@
                 "SPOQC_HQPR_BOUNDING_BOX": {
                     "spoqc": "0.1.0"
                 },
+                "SPOQC_HQPR_CELLTYPE": {
+                    "spoqc": "0.1.0"
+                },
                 "SPOQC_HQPR_CLUSTERING": {
                     "spoqc": "0.1.0"
                 },
@@ -277,6 +280,9 @@
                     "spoqc": "0.1.0"
                 },
                 "SPOQC_HQTR_BOUNDING_BOX": {
+                    "spoqc": "0.1.0"
+                },
+                "SPOQC_HQTR_CELLTYPE": {
                     "spoqc": "0.1.0"
                 },
                 "SPOQC_HQTR_CLUSTERING": {
@@ -331,8 +337,23 @@
                 "qc/multiqc/multiqc_data/xenium_transcripts_per_gene.txt",
                 "qc/multiqc/multiqc_plots",
                 "qc/multiqc/multiqc_plots/pdf",
+                "qc/multiqc/multiqc_plots/pdf/xenium_fov_quality_ranges-cnt.pdf",
+                "qc/multiqc/multiqc_plots/pdf/xenium_fov_quality_ranges-pct.pdf",
+                "qc/multiqc/multiqc_plots/pdf/xenium_segmentation.pdf",
+                "qc/multiqc/multiqc_plots/pdf/xenium_transcript_quality_per_sample_table.pdf",
+                "qc/multiqc/multiqc_plots/pdf/xenium_transcripts_per_gene.pdf",
                 "qc/multiqc/multiqc_plots/png",
+                "qc/multiqc/multiqc_plots/png/xenium_fov_quality_ranges-cnt.png",
+                "qc/multiqc/multiqc_plots/png/xenium_fov_quality_ranges-pct.png",
+                "qc/multiqc/multiqc_plots/png/xenium_segmentation.png",
+                "qc/multiqc/multiqc_plots/png/xenium_transcript_quality_per_sample_table.png",
+                "qc/multiqc/multiqc_plots/png/xenium_transcripts_per_gene.png",
                 "qc/multiqc/multiqc_plots/svg",
+                "qc/multiqc/multiqc_plots/svg/xenium_fov_quality_ranges-cnt.svg",
+                "qc/multiqc/multiqc_plots/svg/xenium_fov_quality_ranges-pct.svg",
+                "qc/multiqc/multiqc_plots/svg/xenium_segmentation.svg",
+                "qc/multiqc/multiqc_plots/svg/xenium_transcript_quality_per_sample_table.svg",
+                "qc/multiqc/multiqc_plots/svg/xenium_transcripts_per_gene.svg",
                 "qc/multiqc/multiqc_report.html",
                 "qc/spatialdata",
                 "qc/spatialdata/write",
@@ -608,7 +629,7 @@
             [
                 "multiqc_citations.txt:md5,4c806e63a283ec1b7e78cdae3a923d4f",
                 "multiqc_general_stats.txt:md5,4f529748a8d30e5672ed3058ae59fb41",
-                "multiqc_software_versions.txt:md5,7cb41d1a2497f7f9db0f3224007bc74b",
+                "multiqc_software_versions.txt:md5,1774c1ba6c0b28109544da460f02aad4",
                 "multiqc_xenium.txt:md5,0ee9673aeaa39570a860f79759c62981",
                 "xenium_fov_quality_ranges.txt:md5,4ac36f9b265e6c76e86045875d316cf6",
                 "xenium_segmentation.txt:md5,171e5f89e5dd0a3def24030996dc5732",
@@ -651,7 +672,7 @@
                 "zarr.json:md5,73b113cb0e0dd3c688b7221003ce7062",
                 "zarr.json:md5,83ce0ad0ef9fc5f27b0c737f7bc2c88f",
                 "zarr.json:md5,0fc99ee9a39262fbd42f104d79a9edd8",
-                "part.0.parquet:md5,a5868e8cea2b8ee7f01e8cddbfb1f803",
+                "part.0.parquet:md5,337f117fe6d181afbdf58867ed85a035",
                 "zarr.json:md5,de25227672526995ee814db4cdf6b00e",
                 "zarr.json:md5,457126c0639af2eba0140851c39c1aad",
                 "shapes.parquet:md5,034188401e9a890a058251949bdf6c0f",
@@ -751,7 +772,7 @@
                 "transcripts.zarr.zip:md5,807e63a2ef8340e085cd899507f45395"
             ]
         ],
-        "timestamp": "2026-08-07T17:53:06.06652378",
+        "timestamp": "2026-08-13T13:48:46.587282894",
         "meta": {
             "nf-test": "0.9.5",
             "nextflow": "26.04.6"
@@ -835,6 +856,9 @@
                 "SPOQC_HQPR_BOUNDING_BOX": {
                     "spoqc": "0.1.0"
                 },
+                "SPOQC_HQPR_CELLTYPE": {
+                    "spoqc": "0.1.0"
+                },
                 "SPOQC_HQPR_CLUSTERING": {
                     "spoqc": "0.1.0"
                 },
@@ -848,6 +872,9 @@
                     "spoqc": "0.1.0"
                 },
                 "SPOQC_HQTR_BOUNDING_BOX": {
+                    "spoqc": "0.1.0"
+                },
+                "SPOQC_HQTR_CELLTYPE": {
                     "spoqc": "0.1.0"
                 },
                 "SPOQC_HQTR_CLUSTERING": {
@@ -952,7 +979,7 @@
                 "transcripts.zarr.zip:md5,d41d8cd98f00b204e9800998ecf8427e"
             ]
         ],
-        "timestamp": "2026-08-07T18:01:18.301616487",
+        "timestamp": "2026-08-13T13:55:45.597069208",
         "meta": {
             "nf-test": "0.9.5",
             "nextflow": "26.04.6"

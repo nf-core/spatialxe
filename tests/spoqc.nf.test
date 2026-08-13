@@ -36,11 +36,11 @@ nextflow_pipeline {
                     // All files with stable contents
                     stable_path
                 ).match() },
-                { assert new File("$outputDir/spoqc/report").isDirectory() },
-                { assert new File("$outputDir/spoqc/report/report.html").exists() },
-                { assert new File("$outputDir/spoqc/spoQC_tmp").isDirectory() },
+                { assert new File("$outputDir/spoqc/test_run/report").isDirectory() },
+                { assert new File("$outputDir/spoqc/test_run/report/report.html").exists() },
+                { assert new File("$outputDir/spoqc/test_run/spoQC_tmp").isDirectory() },
                 *spoqc_report_dirs.collect { dir ->
-                    { -> assert new File("$outputDir/spoqc/report/$dir").isDirectory() }
+                    { -> assert new File("$outputDir/spoqc/test_run/report/$dir").isDirectory() }
                 }
             )
         }
@@ -80,11 +80,11 @@ nextflow_pipeline {
                     // All files with stable contents
                     stable_path
                 ).match() },
-                { assert new File("$outputDir/spoqc/report").isDirectory() },
-                { assert new File("$outputDir/spoqc/report/report.html").exists() },
-                { assert new File("$outputDir/spoqc/spoQC_tmp").isDirectory() },
+                { assert new File("$outputDir/spoqc/test_run/report").isDirectory() },
+                { assert new File("$outputDir/spoqc/test_run/report/report.html").exists() },
+                { assert new File("$outputDir/spoqc/test_run/spoQC_tmp").isDirectory() },
                 *spoqc_report_dirs.collect { dir ->
-                    { -> assert new File("$outputDir/spoqc/report/$dir").isDirectory() }
+                    { -> assert new File("$outputDir/spoqc/test_run/report/$dir").isDirectory() }
                 }
             )
         }
