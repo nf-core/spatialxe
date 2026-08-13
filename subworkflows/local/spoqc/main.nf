@@ -162,7 +162,7 @@ workflow SPOQC {
     )
 
     // Join every per-staining upstream output onto ch_spatialdata_stainings by the composite
-    // [meta, staining], so their outputs can arrive in a different order than ch_spatialdata_stainings 
+    // [meta, staining], so their outputs can arrive in a different order than ch_spatialdata_stainings
     // declares them in.
     ch_hqpr_clustering_input = ch_spatialdata_stainings
         .map { meta, spatialdata, staining -> [[meta, staining], meta, spatialdata, staining] }
@@ -351,7 +351,7 @@ workflow SPOQC {
     // Analysis
     // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-    // Group each sample's per-staining HQPR files by meta, so a sample's ANALYSIS_* task only 
+    // Group each sample's per-staining HQPR files by meta, so a sample's ANALYSIS_* task only
     // ever receives its own HQPR files.
     ch_files_hqpr_metrics = SPOQC_HQPR_METRICES.out.metrices
         .map { meta, _staining, p -> [meta, p] }
