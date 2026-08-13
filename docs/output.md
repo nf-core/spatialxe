@@ -22,6 +22,10 @@ The pipeline is built using [Nextflow](https://www.nextflow.io/) and processes d
   - [MultiQC](#multiqc) - Aggregate report describing results and QC from the whole pipeline
   - [Pipeline information](#pipeline-information) - Report metrics generated during the workflow execution
 
+## Quality Control
+
+[Quality Control](qc.md): An overview of the different QC reports.
+
 ## Image mode
 
 <details markdown="1">
