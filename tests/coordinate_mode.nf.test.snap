@@ -51,8 +51,23 @@
                 "coordinate/multiqc/raw_bundle/MultiQC-Pre-Xeniumranger-import-segmentation-Run_multiqc_report_data/xenium_transcripts_per_gene.txt",
                 "coordinate/multiqc/raw_bundle/MultiQC-Pre-Xeniumranger-import-segmentation-Run_multiqc_report_plots",
                 "coordinate/multiqc/raw_bundle/MultiQC-Pre-Xeniumranger-import-segmentation-Run_multiqc_report_plots/pdf",
+                "coordinate/multiqc/raw_bundle/MultiQC-Pre-Xeniumranger-import-segmentation-Run_multiqc_report_plots/pdf/xenium_fov_quality_ranges-cnt.pdf",
+                "coordinate/multiqc/raw_bundle/MultiQC-Pre-Xeniumranger-import-segmentation-Run_multiqc_report_plots/pdf/xenium_fov_quality_ranges-pct.pdf",
+                "coordinate/multiqc/raw_bundle/MultiQC-Pre-Xeniumranger-import-segmentation-Run_multiqc_report_plots/pdf/xenium_segmentation.pdf",
+                "coordinate/multiqc/raw_bundle/MultiQC-Pre-Xeniumranger-import-segmentation-Run_multiqc_report_plots/pdf/xenium_transcript_quality_per_sample_table.pdf",
+                "coordinate/multiqc/raw_bundle/MultiQC-Pre-Xeniumranger-import-segmentation-Run_multiqc_report_plots/pdf/xenium_transcripts_per_gene.pdf",
                 "coordinate/multiqc/raw_bundle/MultiQC-Pre-Xeniumranger-import-segmentation-Run_multiqc_report_plots/png",
+                "coordinate/multiqc/raw_bundle/MultiQC-Pre-Xeniumranger-import-segmentation-Run_multiqc_report_plots/png/xenium_fov_quality_ranges-cnt.png",
+                "coordinate/multiqc/raw_bundle/MultiQC-Pre-Xeniumranger-import-segmentation-Run_multiqc_report_plots/png/xenium_fov_quality_ranges-pct.png",
+                "coordinate/multiqc/raw_bundle/MultiQC-Pre-Xeniumranger-import-segmentation-Run_multiqc_report_plots/png/xenium_segmentation.png",
+                "coordinate/multiqc/raw_bundle/MultiQC-Pre-Xeniumranger-import-segmentation-Run_multiqc_report_plots/png/xenium_transcript_quality_per_sample_table.png",
+                "coordinate/multiqc/raw_bundle/MultiQC-Pre-Xeniumranger-import-segmentation-Run_multiqc_report_plots/png/xenium_transcripts_per_gene.png",
                 "coordinate/multiqc/raw_bundle/MultiQC-Pre-Xeniumranger-import-segmentation-Run_multiqc_report_plots/svg",
+                "coordinate/multiqc/raw_bundle/MultiQC-Pre-Xeniumranger-import-segmentation-Run_multiqc_report_plots/svg/xenium_fov_quality_ranges-cnt.svg",
+                "coordinate/multiqc/raw_bundle/MultiQC-Pre-Xeniumranger-import-segmentation-Run_multiqc_report_plots/svg/xenium_fov_quality_ranges-pct.svg",
+                "coordinate/multiqc/raw_bundle/MultiQC-Pre-Xeniumranger-import-segmentation-Run_multiqc_report_plots/svg/xenium_segmentation.svg",
+                "coordinate/multiqc/raw_bundle/MultiQC-Pre-Xeniumranger-import-segmentation-Run_multiqc_report_plots/svg/xenium_transcript_quality_per_sample_table.svg",
+                "coordinate/multiqc/raw_bundle/MultiQC-Pre-Xeniumranger-import-segmentation-Run_multiqc_report_plots/svg/xenium_transcripts_per_gene.svg",
                 "coordinate/multiqc/redefined_bundle",
                 "coordinate/multiqc/redefined_bundle/MultiQC-Post-Xeniumranger-import-segmentation-Run_multiqc_report.html",
                 "coordinate/multiqc/redefined_bundle/MultiQC-Post-Xeniumranger-import-segmentation-Run_multiqc_report_data",
@@ -483,6 +498,21 @@
                 "xenium_segmentation.txt:md5,abd99ee57c53568a7f915bd10d2ee5af",
                 "xenium_transcript_quality_per_sample_table.txt:md5,d0135a0006f4ad3631b9f3906cc7ee0b",
                 "xenium_transcripts_per_gene.txt:md5,b46b3c414bc660e03e3df0345dd5e3e2",
+                "xenium_fov_quality_ranges-cnt.pdf:md5,4d9d56cd800578e8b230be823154b8fa",
+                "xenium_fov_quality_ranges-pct.pdf:md5,e55e223faf1f05c0aea8b2e770467656",
+                "xenium_segmentation.pdf:md5,5f49aefafa32438864abcb70aaf55d6e",
+                "xenium_transcript_quality_per_sample_table.pdf:md5,5ee456604dd199e014d3ff8701a34ab2",
+                "xenium_transcripts_per_gene.pdf:md5,bea54a6bcb99fc71e868d5ed5dd45d3b",
+                "xenium_fov_quality_ranges-cnt.png:md5,38522fc5662c4aa3bf741ca030852c57",
+                "xenium_fov_quality_ranges-pct.png:md5,6695a225ca1b845035288378a9d975d2",
+                "xenium_segmentation.png:md5,618e841cf7eb6e745cae8b2d94fddacc",
+                "xenium_transcript_quality_per_sample_table.png:md5,5497a0d00bbd70e95dc212788836f36a",
+                "xenium_transcripts_per_gene.png:md5,decd473241060705954e4f899ccdf9eb",
+                "xenium_fov_quality_ranges-cnt.svg:md5,485ce08e3c5da10f05f09a4d5299e03f",
+                "xenium_fov_quality_ranges-pct.svg:md5,333b8b7f44a3a650ddc1511e802332de",
+                "xenium_segmentation.svg:md5,c969eb838fa18bdf22578170e3f3bac0",
+                "xenium_transcript_quality_per_sample_table.svg:md5,b5316a81ca9beb120b1cc61c4c8b6c66",
+                "xenium_transcripts_per_gene.svg:md5,5bbc93d2a379b5e08b46f979c5829536",
                 "multiqc_citations.txt:md5,4c806e63a283ec1b7e78cdae3a923d4f",
                 "multiqc_software_versions.txt:md5,6b25b317ed5e9bda0d2c9ff6fe85eafb",
                 "0:md5,397dc21e479c58fd2ffcbe6c3e627683",
@@ -610,7 +640,7 @@
                 "zarr.json:md5,b98263d3964a5236145ccf6c808f8919"
             ]
         ],
-        "timestamp": "2026-08-07T17:06:03.98293334",
+        "timestamp": "2026-08-13T22:45:30.031436041",
         "meta": {
             "nf-test": "0.9.5",
             "nextflow": "26.04.6"
@@ -734,7 +764,7 @@
                 "fake_file.txt:md5,d41d8cd98f00b204e9800998ecf8427e"
             ]
         ],
-        "timestamp": "2026-08-07T17:06:22.496109056",
+        "timestamp": "2026-08-13T22:45:51.228907394",
         "meta": {
             "nf-test": "0.9.5",
             "nextflow": "26.04.6"
