@@ -1,0 +1,34 @@
+{
+    "spoqc hqtr_celltype stub": {
+        "content": [
+            [
+                [
+                    "SPOQC_HQTR_CELLTYPE",
+                    "spoqc",
+                    "0.1.0"
+                ]
+            ]
+        ],
+        "timestamp": "2026-08-12T18:18:11.089528578",
+        "meta": {
+            "nf-test": "0.9.5",
+            "nextflow": "26.04.6"
+        }
+    },
+    "spoqc hqtr_celltype": {
+        "content": [
+            [
+                [
+                    "SPOQC_HQTR_CELLTYPE",
+                    "spoqc",
+                    "0.1.0"
+                ]
+            ]
+        ],
+        "timestamp": "2026-08-12T18:14:54.24578931",
+        "meta": {
+            "nf-test": "0.9.5",
+            "nextflow": "26.04.6"
+        }
+    }
+}

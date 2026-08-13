@@ -40,9 +40,8 @@ nextflow_process {
         when {
             process {
                 """
-                input[0] = SPATIALDATA_WRITE.out.spatialdata
-                input[1] = 0
-                input[2] = "hqpr_metrices"
+                input[0] = SPATIALDATA_WRITE.out.spatialdata.combine(channel.of(0))
+                input[1] = "hqpr_metrices"
                 """
             }
         }
@@ -50,9 +49,9 @@ nextflow_process {
         then {
             assertAll(
                 { assert process.success },
-                { assert file(process.out.report[0][1]).isDirectory() },
-                { assert file(process.out.metrices[0][1]).isDirectory() },
-                { assert file(process.out.staininglog[0]).exists() },
+                { assert file(process.out.report[0][2]).isDirectory() },
+                { assert file(process.out.metrices[0][2]).isDirectory() },
+                { assert file(process.out.staininglog[0][1]).exists() },
                 { assert snapshot(process.out.versions_spoqc).match() }
             )
         }
@@ -65,9 +64,8 @@ nextflow_process {
         when {
             process {
                 """
-                input[0] = SPATIALDATA_WRITE.out.spatialdata
-                input[1] = 0
-                input[2] = "hqpr_metrices"
+                input[0] = SPATIALDATA_WRITE.out.spatialdata.combine(channel.of(0))
+                input[1] = "hqpr_metrices"
                 """
             }
         }
@@ -75,9 +73,9 @@ nextflow_process {
         then {
             assertAll(
                 { assert process.success },
-                { assert file(process.out.report[0][1]).isDirectory() },
-                { assert file(process.out.metrices[0][1]).isDirectory() },
-                { assert file(process.out.staininglog[0]).exists() },
+                { assert file(process.out.report[0][2]).isDirectory() },
+                { assert file(process.out.metrices[0][2]).isDirectory() },
+                { assert file(process.out.staininglog[0][1]).exists() },
                 { assert snapshot(process.out.versions_spoqc).match() }
             )
         }

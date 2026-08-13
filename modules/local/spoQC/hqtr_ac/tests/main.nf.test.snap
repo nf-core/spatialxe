@@ -1,0 +1,34 @@
+{
+    "spoqc hqtr_ac": {
+        "content": [
+            [
+                [
+                    "SPOQC_HQTR_AC",
+                    "spoqc",
+                    "0.1.0"
+                ]
+            ]
+        ],
+        "timestamp": "2026-08-12T17:43:53.230451909",
+        "meta": {
+            "nf-test": "0.9.5",
+            "nextflow": "26.04.6"
+        }
+    },
+    "spoqc hqtr_ac stub": {
+        "content": [
+            [
+                [
+                    "SPOQC_HQTR_AC",
+                    "spoqc",
+                    "0.1.0"
+                ]
+            ]
+        ],
+        "timestamp": "2026-08-12T17:44:33.559586317",
+        "meta": {
+            "nf-test": "0.9.5",
+            "nextflow": "26.04.6"
+        }
+    }
+}

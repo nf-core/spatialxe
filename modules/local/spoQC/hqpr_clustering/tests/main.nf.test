@@ -38,9 +38,8 @@ nextflow_process {
             script "modules/local/spoQC/hqpr_metrices/main.nf"
             process {
                 """
-                input[0] = SPATIALDATA_WRITE.out.spatialdata
-                input[1] = 0
-                input[2] = "hqpr_metrices"
+                input[0] = SPATIALDATA_WRITE.out.spatialdata.combine(channel.of(0))
+                input[1] = "hqpr_metrices"
                 """
             }
         }
@@ -53,7 +52,7 @@ nextflow_process {
                 """
                 input[0] = SPATIALDATA_WRITE.out.spatialdata.combine(channel.of(0))
                 input[1] = "hqpr_clustering"
-                input[2] = SPOQC_HQPR_METRICES.out.metrices
+                input[2] = SPOQC_HQPR_METRICES.out.metrices.map { _meta, staining, f -> [staining, f] }
                 """
             }
         }
@@ -61,8 +60,8 @@ nextflow_process {
         then {
             assertAll(
                 { assert process.success },
-                { assert file(process.out.report[0][1]).isDirectory() },
-                { assert file(process.out.mask[0][1]).isDirectory() },
+                { assert file(process.out.report[0][2]).isDirectory() },
+                { assert file(process.out.mask[0][2]).isDirectory() },
                 { assert snapshot(process.out.versions_spoqc).match() }
             )
         }
@@ -77,7 +76,7 @@ nextflow_process {
                 """
                 input[0] = SPATIALDATA_WRITE.out.spatialdata.combine(channel.of(0))
                 input[1] = "hqpr_clustering"
-                input[2] = SPOQC_HQPR_METRICES.out.metrices
+                input[2] = SPOQC_HQPR_METRICES.out.metrices.map { _meta, staining, f -> [staining, f] }
                 """
             }
         }
@@ -85,8 +84,8 @@ nextflow_process {
         then {
             assertAll(
                 { assert process.success },
-                { assert file(process.out.report[0][1]).isDirectory() },
-                { assert file(process.out.mask[0][1]).isDirectory() },
+                { assert file(process.out.report[0][2]).isDirectory() },
+                { assert file(process.out.mask[0][2]).isDirectory() },
                 { assert snapshot(process.out.versions_spoqc).match() }
             )
         }

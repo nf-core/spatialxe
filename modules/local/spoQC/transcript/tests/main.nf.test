@@ -52,7 +52,7 @@ nextflow_process {
             process {
                 """
                 input[0] = SPATIALDATA_WRITE.out.spatialdata
-                input[1] = SPOQC_ANNOTATION.out.annotation
+                input[1] = SPOQC_ANNOTATION.out.annotation.map { it[1] }
                 input[2] = "transcriptqc"
                 """
             }
@@ -61,7 +61,7 @@ nextflow_process {
         then {
             assertAll(
                 { assert process.success },
-                { assert file(process.out.report[0]).isDirectory() },
+                { assert file(process.out.report[0][1]).isDirectory() },
                 { assert snapshot(process.out.versions_spoqc).match() }
             )
         }
@@ -75,7 +75,7 @@ nextflow_process {
             process {
                 """
                 input[0] = SPATIALDATA_WRITE.out.spatialdata
-                input[1] = SPOQC_ANNOTATION.out.annotation
+                input[1] = SPOQC_ANNOTATION.out.annotation.map { it[1] }
                 input[2] = "transcriptqc"
                 """
             }
@@ -84,7 +84,7 @@ nextflow_process {
         then {
             assertAll(
                 { assert process.success },
-                { assert file(process.out.report[0]).isDirectory() },
+                { assert file(process.out.report[0][1]).isDirectory() },
                 { assert snapshot(process.out.versions_spoqc).match() }
             )
         }

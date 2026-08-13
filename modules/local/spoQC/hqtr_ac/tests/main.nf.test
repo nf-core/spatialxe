@@ -52,7 +52,7 @@ nextflow_process {
                 """
                 input[0] = SPATIALDATA_WRITE.out.spatialdata
                 input[1] = "hqtr_ac"
-                input[2] = SPOQC_AMBIENT.out.tmp
+                input[2] = SPOQC_AMBIENT.out.tmp.map { it[1] }
                 """
             }
         }
@@ -60,8 +60,8 @@ nextflow_process {
         then {
             assertAll(
                 { assert process.success },
-                { assert file(process.out.report[0]).isDirectory() },
-                { assert file(process.out.tmp[0]).isDirectory() },
+                { assert file(process.out.report[0][1]).isDirectory() },
+                { assert file(process.out.tmp[0][1]).isDirectory() },
                 { assert snapshot(process.out.versions_spoqc).match() }
             )
         }
@@ -76,7 +76,7 @@ nextflow_process {
                 """
                 input[0] = SPATIALDATA_WRITE.out.spatialdata
                 input[1] = "hqtr_ac"
-                input[2] = SPOQC_AMBIENT.out.tmp
+                input[2] = SPOQC_AMBIENT.out.tmp.map { it[1] }
                 """
             }
         }
@@ -84,8 +84,8 @@ nextflow_process {
         then {
             assertAll(
                 { assert process.success },
-                { assert file(process.out.report[0]).isDirectory() },
-                { assert file(process.out.tmp[0]).isDirectory() },
+                { assert file(process.out.report[0][1]).isDirectory() },
+                { assert file(process.out.tmp[0][1]).isDirectory() },
                 { assert snapshot(process.out.versions_spoqc).match() }
             )
         }

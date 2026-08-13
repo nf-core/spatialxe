@@ -50,7 +50,7 @@ nextflow_process {
             process {
                 """
                 input[0] = SPATIALDATA_WRITE.out.spatialdata
-                input[1] = SPOQC_ANNOTATION.out.annotation
+                input[1] = SPOQC_ANNOTATION.out.annotation.map { it[1] }
                 input[2] = "generalqc"
                 """
             }
@@ -71,7 +71,7 @@ nextflow_process {
             process {
                 """
                 input[0] = SPATIALDATA_WRITE.out.spatialdata
-                input[1] = SPOQC_ANNOTATION.out.annotation
+                input[1] = SPOQC_ANNOTATION.out.annotation.map { it[1] }
                 input[2] = "doubletqc"
                 """
             }
@@ -133,7 +133,7 @@ nextflow_process {
                 """
                 input[0] = SPATIALDATA_WRITE.out.spatialdata
                 input[1] = "hqtr_ac"
-                input[2] = SPOQC_AMBIENT.out.tmp
+                input[2] = SPOQC_AMBIENT.out.tmp.map { it[1] }
                 """
             }
         }
@@ -144,9 +144,9 @@ nextflow_process {
                 """
                 input[0] = SPATIALDATA_WRITE.out.spatialdata
                 input[1] = "hqtr_clustering"
-                input[2] = SPOQC_HQTR_METRICES.out.metrices
-                input[3] = SPOQC_HQTR_QV.out.tmp
-                input[4] = SPOQC_HQTR_AC.out.tmp
+                input[2] = SPOQC_HQTR_METRICES.out.metrices.map { it[1] }
+                input[3] = SPOQC_HQTR_QV.out.tmp.map { it[1] }
+                input[4] = SPOQC_HQTR_AC.out.tmp.map { it[1] }
                 """
             }
         }
@@ -157,7 +157,7 @@ nextflow_process {
                 """
                 input[0] = SPATIALDATA_WRITE.out.spatialdata
                 input[1] = "hqtr_refinement"
-                input[2] = SPOQC_HQTR_CLUSTERING.out.mask
+                input[2] = SPOQC_HQTR_CLUSTERING.out.mask.map { it[1] }
                 """
             }
         }
@@ -169,15 +169,15 @@ nextflow_process {
             process {
                 """
                 input[0] = SPATIALDATA_WRITE.out.spatialdata
-                input[1] = SPOQC_ANNOTATION.out.annotation
+                input[1] = SPOQC_ANNOTATION.out.annotation.map { it[1] }
                 input[2] = "hqtr_celltype"
-                input[3] = SPOQC_GENERAL.out.tmp
-                input[4] = SPOQC_BUBBLE.out.tmp
-                input[5] = SPOQC_DOUBLET.out.tmp
-                input[6] = SPOQC_VOID.out.tmp
-                input[7] = SPOQC_CELL.out.tmp
-                input[8] = SPOQC_HQTR_CLUSTERING.out.mask
-                input[9] = SPOQC_HQTR_REFINEMENT.out.mask_smoothed
+                input[3] = SPOQC_GENERAL.out.tmp.map { it[1] }
+                input[4] = SPOQC_BUBBLE.out.tmp.map { it[1] }
+                input[5] = SPOQC_DOUBLET.out.tmp.map { it[1] }
+                input[6] = SPOQC_VOID.out.tmp.map { it[1] }
+                input[7] = SPOQC_CELL.out.tmp.map { it[1] }
+                input[8] = SPOQC_HQTR_CLUSTERING.out.mask.map { it[1] }
+                input[9] = SPOQC_HQTR_REFINEMENT.out.mask_smoothed.map { it[1] }
                 """
             }
         }
@@ -185,7 +185,7 @@ nextflow_process {
         then {
             assertAll(
                 { assert process.success },
-                { assert file(process.out.report[0]).isDirectory() },
+                { assert file(process.out.report[0][1]).isDirectory() },
                 { assert snapshot(process.out.versions_spoqc).match() }
             )
         }
@@ -199,15 +199,15 @@ nextflow_process {
             process {
                 """
                 input[0] = SPATIALDATA_WRITE.out.spatialdata
-                input[1] = SPOQC_ANNOTATION.out.annotation
+                input[1] = SPOQC_ANNOTATION.out.annotation.map { it[1] }
                 input[2] = "hqtr_celltype"
-                input[3] = SPOQC_GENERAL.out.tmp
-                input[4] = SPOQC_BUBBLE.out.tmp
-                input[5] = SPOQC_DOUBLET.out.tmp
-                input[6] = SPOQC_VOID.out.tmp
-                input[7] = SPOQC_CELL.out.tmp
-                input[8] = SPOQC_HQTR_CLUSTERING.out.mask
-                input[9] = SPOQC_HQTR_REFINEMENT.out.mask_smoothed
+                input[3] = SPOQC_GENERAL.out.tmp.map { it[1] }
+                input[4] = SPOQC_BUBBLE.out.tmp.map { it[1] }
+                input[5] = SPOQC_DOUBLET.out.tmp.map { it[1] }
+                input[6] = SPOQC_VOID.out.tmp.map { it[1] }
+                input[7] = SPOQC_CELL.out.tmp.map { it[1] }
+                input[8] = SPOQC_HQTR_CLUSTERING.out.mask.map { it[1] }
+                input[9] = SPOQC_HQTR_REFINEMENT.out.mask_smoothed.map { it[1] }
                 """
             }
         }
@@ -215,7 +215,7 @@ nextflow_process {
         then {
             assertAll(
                 { assert process.success },
-                { assert file(process.out.report[0]).isDirectory() },
+                { assert file(process.out.report[0][1]).isDirectory() },
                 { assert snapshot(process.out.versions_spoqc).match() }
             )
         }

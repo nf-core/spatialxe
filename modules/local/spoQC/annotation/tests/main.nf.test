@@ -50,8 +50,8 @@ nextflow_process {
         then {
             assertAll(
                 { assert process.success },
-                { assert file(process.out.report[0]).isDirectory() },
-                { assert file(process.out.annotation[0]).exists() },
+                { assert file(process.out.report[0][1]).isDirectory() },
+                { assert file(process.out.annotation[0][1]).exists() },
                 { assert snapshot(process.out.versions_spoqc).match() }
             )
         }
@@ -74,8 +74,8 @@ nextflow_process {
         then {
             assertAll(
                 { assert process.success },
-                { assert file(process.out.report[0]).isDirectory() },
-                { assert file(process.out.annotation[0]).exists() },
+                { assert file(process.out.report[0][1]).isDirectory() },
+                { assert file(process.out.annotation[0][1]).exists() },
                 { assert snapshot(process.out.versions_spoqc).match() }
             )
         }
