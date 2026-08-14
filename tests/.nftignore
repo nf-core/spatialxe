@@ -56,10 +56,11 @@ coordinate/multiqc/*/MultiQC-*-Xeniumranger-import-segmentation-Run_multiqc_repo
 coordinate/multiqc/*/MultiQC-*-Xeniumranger-import-segmentation-Run_multiqc_report_data/xenium_*.txt
 
 # OME-Zarr group metadata (member/channel ordering) is not written in a stable
-# order across runs, both for the images subgroup and for each bundle's root
-# store (which declares its images/points/shapes/tables members); the
-# underlying pixel/array chunk data itself is unaffected
+# order across runs, both for the images and labels subgroups and for each
+# bundle's root store (which declares its images/labels/points/shapes/tables
+# members); the underlying pixel/array chunk data itself is unaffected
 **/images/zarr.json
+**/labels/zarr.json
 coordinate/spatialdata/write/spatialdata/test_run/raw_bundle/zarr.json
 coordinate/spatialdata/write/spatialdata/test_run/redefined_bundle/zarr.json
 coordinate/spatialdata/merge/spatialdata/test_run/merged_bundle/zarr.json
