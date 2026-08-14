@@ -773,7 +773,7 @@ workflow SPATIALAXE {
         )
     )
 
-    if (mode == 'image' || mode == 'coordinate') {
+    if (mode == 'qc' || run_qc) {
 
         // get path to the raw bundle
         ch_multiqc_files = ch_multiqc_files.mix(

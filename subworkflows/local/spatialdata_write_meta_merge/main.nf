@@ -23,6 +23,7 @@ workflow SPATIALDATA_WRITE_META_MERGE {
     sd_redefined_bundle = channel.empty()
     sd_merged_bundle    = channel.empty()
     sd_metadata         = channel.empty()
+    ch_coordinate_space_raw = channel.empty()
 
     // check segmentation - only nuclei, cells or both cells & nuclei
     if (mode == 'image') {
@@ -48,6 +49,8 @@ workflow SPATIALDATA_WRITE_META_MERGE {
 
     if (mode == 'qc' || run_qc) {
         ch_coordinate_space_raw = channel.value("all")
+    } else {
+        ch_coordinate_space_raw = channel.value("cells_and_nuclei")
     }
 
     // write spatialdata object from the raw xenium bundle

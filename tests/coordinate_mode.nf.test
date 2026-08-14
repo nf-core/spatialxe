@@ -5,8 +5,55 @@ nextflow_pipeline {
     tag "pipeline"
     config "../conf/tests/test_coordinate_mode.config"
 
-
     test("-profile test") {
+
+        when {
+            params {
+                outdir  = "$outputDir"
+                run_qc  = false
+            }
+        }
+
+        then {
+            // Stable_name: All files + folders in ${params.outdir}/ with a stable name.
+            // Zarr tables store one chunk file per obs/var column, leading to incoherent output files.
+            // Only the tables' existence is checked below instead.
+            // Xeniumranger's secondary analysis is skipped entirely on some runs (writing
+            // a single note.txt instead of the clustering/diffexp/pca/umap tree).
+            def stable_name = getAllFilesFromDir(params.outdir, relative: true, includeDir: true, ignore: [
+                'pipeline_info/*.{html,json,txt}',
+                '**/proseg/preset/**',
+                'coordinate/spatialdata/write/spatialdata/test_run/raw_bundle/tables/**',
+                'coordinate/spatialdata/write/spatialdata/test_run/redefined_bundle/tables/**',
+                'coordinate/spatialdata/merge/spatialdata/test_run/merged_bundle/tables/**',
+                'coordinate/spatialdata/meta/spatialdata/test_run/metadata/tables/**',
+                'xeniumranger/test_run/**',
+                'coordinate/untar/test_run/**',
+            ])
+            // stable_path: All files in ${params.outdir}/ with stable content
+            def stable_path = getAllFilesFromDir(params.outdir, ignoreFile: 'tests/.nftignore')
+            assertAll(
+                { assert workflow.success},
+                { assert snapshot(
+                    // pipeline versions.yml file for multiqc from which Nextflow version is removed because we test pipelines on multiple Nextflow versions
+                    removeNextflowVersion("$outputDir/pipeline_info/nf_core_spatialaxe_software_mqc_versions.yml"),
+                    // All stable path name, with a relative path
+                    stable_name,
+                    // All files with stable contents
+                    stable_path
+                ).match() },
+                { assert file("$outputDir/coordinate/proseg/preset/test_run/proseg-output.zarr").exists() },
+                { assert file("$outputDir/coordinate/spatialdata/write/spatialdata/test_run/raw_bundle/tables/table").exists() },
+                { assert file("$outputDir/coordinate/spatialdata/write/spatialdata/test_run/redefined_bundle/tables/table").exists() },
+                { assert file("$outputDir/coordinate/spatialdata/merge/spatialdata/test_run/merged_bundle/tables/raw_table").exists() },
+                { assert file("$outputDir/coordinate/spatialdata/meta/spatialdata/test_run/metadata/tables/raw_table").exists() },
+                { assert file("$outputDir/xeniumranger/test_run").exists() },
+                { assert file("$outputDir/coordinate/untar/test_run").exists() },
+            )
+        }
+    }
+
+    test("-profile test qc") {
 
         when {
             params {
