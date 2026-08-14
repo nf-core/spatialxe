@@ -1,13 +1,15 @@
 .DS_Store
-multiqc/multiqc_data/fastqc_top_overrepresented_sequences_table.txt
-multiqc/multiqc_data/multiqc.parquet
-multiqc/multiqc_data/multiqc.log
-multiqc/multiqc_data/multiqc_data.json
-multiqc/multiqc_data/multiqc_sources.txt
-multiqc/multiqc_data/multiqc_software_versions.txt
-multiqc/multiqc_data/llms-full.txt
-multiqc/multiqc_plots/{svg,pdf,png}/*.{svg,pdf,png}
-multiqc/multiqc_report.html
+# plain (run_qc=false) coordinate-mode MultiQC report: embeds non-deterministic run data
+coordinate/multiqc/multiqc_data/multiqc.parquet
+coordinate/multiqc/multiqc_data/multiqc.log
+coordinate/multiqc/multiqc_data/multiqc_data.json
+coordinate/multiqc/multiqc_data/multiqc_sources.txt
+coordinate/multiqc/multiqc_data/llms-full.txt
+coordinate/multiqc/multiqc_data/multiqc_general_stats.txt
+coordinate/multiqc/multiqc_data/multiqc_xenium.txt
+coordinate/multiqc/multiqc_data/xenium_*.txt
+coordinate/multiqc/multiqc_plots/{svg,pdf,png}/*.{svg,pdf,png}
+coordinate/multiqc/multiqc_report.html
 pipeline_info/*.{html,json,txt,yml}
 **/proseg/preset/**
 
@@ -63,14 +65,19 @@ coordinate/spatialdata/write/spatialdata/test_run/redefined_bundle/zarr.json
 coordinate/spatialdata/merge/spatialdata/test_run/merged_bundle/zarr.json
 coordinate/spatialdata/meta/spatialdata/test_run/metadata/zarr.json
 
-# spoQC (qc mode) MultiQC report embeds non-deterministic run data
-qc/multiqc/multiqc_data/llms-full.txt
-qc/multiqc/multiqc_data/multiqc.log
-qc/multiqc/multiqc_data/multiqc.parquet
-qc/multiqc/multiqc_data/multiqc_data.json
-qc/multiqc/multiqc_data/multiqc_sources.txt
-qc/multiqc/multiqc_plots/{svg,pdf,png}/*.{svg,pdf,png}
-qc/multiqc/multiqc_report.html
+# spoQC (qc mode) MultiQC pre/post-Xeniumranger reports embed non-deterministic run data;
+# qc mode always uses the raw_bundle/redefined_bundle titled layout (mode == 'qc' is
+# unconditional), same as coordinate mode's MultiQC-*-Xeniumranger-import-segmentation reports
+qc/multiqc/*/MultiQC-*-Xeniumranger-import-segmentation-Run_multiqc_report.html
+qc/multiqc/*/MultiQC-*-Xeniumranger-import-segmentation-Run_multiqc_report_data/llms-full.txt
+qc/multiqc/*/MultiQC-*-Xeniumranger-import-segmentation-Run_multiqc_report_data/multiqc.log
+qc/multiqc/*/MultiQC-*-Xeniumranger-import-segmentation-Run_multiqc_report_data/multiqc.parquet
+qc/multiqc/*/MultiQC-*-Xeniumranger-import-segmentation-Run_multiqc_report_data/multiqc_data.json
+qc/multiqc/*/MultiQC-*-Xeniumranger-import-segmentation-Run_multiqc_report_data/multiqc_sources.txt
+qc/multiqc/*/MultiQC-*-Xeniumranger-import-segmentation-Run_multiqc_report_data/multiqc_general_stats.txt
+qc/multiqc/*/MultiQC-*-Xeniumranger-import-segmentation-Run_multiqc_report_data/multiqc_xenium.txt
+qc/multiqc/*/MultiQC-*-Xeniumranger-import-segmentation-Run_multiqc_report_data/xenium_*.txt
+qc/multiqc/*/MultiQC-*-Xeniumranger-import-segmentation-Run_multiqc_report_plots/{svg,pdf,png}/*.{svg,pdf,png}
 
 # same spatialdata/write module as coordinate mode's raw_bundle: points/shapes/tables
 # parquet writers and the bundle-root zarr.json member ordering are not
