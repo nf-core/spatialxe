@@ -325,7 +325,7 @@
                 "zarr.json:md5,b98263d3964a5236145ccf6c808f8919"
             ]
         ],
-        "timestamp": "2026-08-14T13:50:40.959280088",
+        "timestamp": "2026-08-14T15:24:34.837557935",
         "meta": {
             "nf-test": "0.9.5",
             "nextflow": "26.04.6"
@@ -449,7 +449,7 @@
                 "fake_file.txt:md5,d41d8cd98f00b204e9800998ecf8427e"
             ]
         ],
-        "timestamp": "2026-08-14T13:54:44.862622091",
+        "timestamp": "2026-08-14T15:28:47.60775781",
         "meta": {
             "nf-test": "0.9.5",
             "nextflow": "26.04.6"
@@ -961,7 +961,6 @@
                 "0:md5,4cd5ff674991828d1536bf85d47bcb0a",
                 "zarr.json:md5,73b113cb0e0dd3c688b7221003ce7062",
                 "zarr.json:md5,83ce0ad0ef9fc5f27b0c737f7bc2c88f",
-                "zarr.json:md5,0fc99ee9a39262fbd42f104d79a9edd8",
                 "0:md5,397dc21e479c58fd2ffcbe6c3e627683",
                 "1:md5,f1a6b9238c3095bad7867b22f293e5e6",
                 "zarr.json:md5,893b4d8873fc997d364288c63ef0871f",
@@ -998,7 +997,6 @@
                 "0:md5,4cd5ff674991828d1536bf85d47bcb0a",
                 "zarr.json:md5,73b113cb0e0dd3c688b7221003ce7062",
                 "zarr.json:md5,83ce0ad0ef9fc5f27b0c737f7bc2c88f",
-                "zarr.json:md5,0fc99ee9a39262fbd42f104d79a9edd8",
                 "0:md5,397dc21e479c58fd2ffcbe6c3e627683",
                 "1:md5,f1a6b9238c3095bad7867b22f293e5e6",
                 "zarr.json:md5,893b4d8873fc997d364288c63ef0871f",
@@ -1035,7 +1033,6 @@
                 "0:md5,4cd5ff674991828d1536bf85d47bcb0a",
                 "zarr.json:md5,73b113cb0e0dd3c688b7221003ce7062",
                 "zarr.json:md5,83ce0ad0ef9fc5f27b0c737f7bc2c88f",
-                "zarr.json:md5,0fc99ee9a39262fbd42f104d79a9edd8",
                 "0:md5,397dc21e479c58fd2ffcbe6c3e627683",
                 "1:md5,f1a6b9238c3095bad7867b22f293e5e6",
                 "zarr.json:md5,893b4d8873fc997d364288c63ef0871f",
@@ -1050,7 +1047,7 @@
                 "zarr.json:md5,b98263d3964a5236145ccf6c808f8919"
             ]
         ],
-        "timestamp": "2026-08-14T13:54:18.89435548",
+        "timestamp": "2026-08-14T15:28:21.376352619",
         "meta": {
             "nf-test": "0.9.5",
             "nextflow": "26.04.6"
