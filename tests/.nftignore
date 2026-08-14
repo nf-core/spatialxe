@@ -45,6 +45,14 @@ coordinate/multiqc/*/MultiQC-*-Xeniumranger-import-segmentation-Run_multiqc_repo
 coordinate/multiqc/*/MultiQC-*-Xeniumranger-import-segmentation-Run_multiqc_report_data/multiqc_data.json
 coordinate/multiqc/*/MultiQC-*-Xeniumranger-import-segmentation-Run_multiqc_report_data/multiqc_sources.txt
 
+# xenium MultiQC module (multiqc-xenium-extra) only produces general stats/plots
+# when Xeniumranger's secondary analysis ran that execution, and its pdf/svg
+# plot exports (Plotly/Kaleido) embed a fresh timestamp/random IDs every run
+coordinate/multiqc/*/MultiQC-*-Xeniumranger-import-segmentation-Run_multiqc_report_plots/{svg,pdf,png}/*.{svg,pdf,png}
+coordinate/multiqc/*/MultiQC-*-Xeniumranger-import-segmentation-Run_multiqc_report_data/multiqc_general_stats.txt
+coordinate/multiqc/*/MultiQC-*-Xeniumranger-import-segmentation-Run_multiqc_report_data/multiqc_xenium.txt
+coordinate/multiqc/*/MultiQC-*-Xeniumranger-import-segmentation-Run_multiqc_report_data/xenium_*.txt
+
 # OME-Zarr group metadata (member/channel ordering) is not written in a stable
 # order across runs, both for the images subgroup and for each bundle's root
 # store (which declares its images/points/shapes/tables members); the

@@ -29,6 +29,10 @@ nextflow_pipeline {
                 'coordinate/spatialdata/meta/spatialdata/test_run/metadata/tables/**',
                 'xeniumranger/test_run/**',
                 'coordinate/untar/test_run/**',
+                'coordinate/multiqc/*/MultiQC-*-Xeniumranger-import-segmentation-Run_multiqc_report_plots/**',
+                'coordinate/multiqc/*/MultiQC-*-Xeniumranger-import-segmentation-Run_multiqc_report_data/multiqc_general_stats.txt',
+                'coordinate/multiqc/*/MultiQC-*-Xeniumranger-import-segmentation-Run_multiqc_report_data/multiqc_xenium.txt',
+                'coordinate/multiqc/*/MultiQC-*-Xeniumranger-import-segmentation-Run_multiqc_report_data/xenium_*.txt',
             ])
             // stable_path: All files in ${params.outdir}/ with stable content
             def stable_path = getAllFilesFromDir(params.outdir, ignoreFile: 'tests/.nftignore')
@@ -76,6 +80,10 @@ nextflow_pipeline {
                 'coordinate/spatialdata/meta/spatialdata/test_run/metadata/tables/**',
                 'xeniumranger/test_run/**',
                 'coordinate/untar/test_run/**',
+                'coordinate/multiqc/*/MultiQC-*-Xeniumranger-import-segmentation-Run_multiqc_report_plots/**',
+                'coordinate/multiqc/*/MultiQC-*-Xeniumranger-import-segmentation-Run_multiqc_report_data/multiqc_general_stats.txt',
+                'coordinate/multiqc/*/MultiQC-*-Xeniumranger-import-segmentation-Run_multiqc_report_data/multiqc_xenium.txt',
+                'coordinate/multiqc/*/MultiQC-*-Xeniumranger-import-segmentation-Run_multiqc_report_data/xenium_*.txt',
             ])
             // stable_path: All files in ${params.outdir}/ with stable content
             def stable_path = getAllFilesFromDir(params.outdir, ignoreFile: 'tests/.nftignore')
