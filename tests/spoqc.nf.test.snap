@@ -451,8 +451,7 @@
                 "0:md5,4cd5ff674991828d1536bf85d47bcb0a",
                 "zarr.json:md5,73b113cb0e0dd3c688b7221003ce7062",
                 "zarr.json:md5,83ce0ad0ef9fc5f27b0c737f7bc2c88f",
-                "zarr.json:md5,0fc99ee9a39262fbd42f104d79a9edd8",
-                "part.0.parquet:md5,a19c145825439b116fa4fcb49dad4ed5",
+                "part.0.parquet:md5,3abc305966607d30d3351a3c44401822",
                 "zarr.json:md5,de25227672526995ee814db4cdf6b00e",
                 "zarr.json:md5,457126c0639af2eba0140851c39c1aad",
                 "shapes.parquet:md5,034188401e9a890a058251949bdf6c0f",
@@ -552,7 +551,7 @@
                 "transcripts.zarr.zip:md5,807e63a2ef8340e085cd899507f45395"
             ]
         ],
-        "timestamp": "2026-08-14T14:30:40.99869465",
+        "timestamp": "2026-08-14T17:32:50.474814707",
         "meta": {
             "nf-test": "0.9.5",
             "nextflow": "26.04.6"
@@ -743,7 +742,7 @@
                 "transcripts.zarr.zip:md5,d41d8cd98f00b204e9800998ecf8427e"
             ]
         ],
-        "timestamp": "2026-08-14T14:38:00.122661441",
+        "timestamp": "2026-08-14T17:44:55.986065415",
         "meta": {
             "nf-test": "0.9.5",
             "nextflow": "26.04.6"
