@@ -83,7 +83,7 @@ qc/multiqc/*/MultiQC-*-Xeniumranger-import-segmentation-Run_multiqc_report_plots
 # same spatialdata/write module as coordinate mode's raw_bundle: points/shapes/tables
 # parquet writers and the bundle-root zarr.json member ordering are not
 # run-to-run reproducible
-qc/spatialdata/write/spatialdata/test_run/spatialdata_raw/points/**
-qc/spatialdata/write/spatialdata/test_run/spatialdata_raw/shapes/**
-qc/spatialdata/write/spatialdata/test_run/spatialdata_raw/tables/**
-qc/spatialdata/write/spatialdata/test_run/spatialdata_raw/zarr.json
+qc/spatialdata/write/spatialdata/test_run/raw_bundle/points/**
+qc/spatialdata/write/spatialdata/test_run/raw_bundle/shapes/**
+qc/spatialdata/write/spatialdata/test_run/raw_bundle/tables/**
+qc/spatialdata/write/spatialdata/test_run/raw_bundle/zarr.json
