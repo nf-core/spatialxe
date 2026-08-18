@@ -1,0 +1,34 @@
+{
+    "spoqc bubble": {
+        "content": [
+            [
+                [
+                    "SPOQC_BUBBLE",
+                    "spoqc",
+                    "0.1.0"
+                ]
+            ]
+        ],
+        "timestamp": "2026-08-12T16:24:03.176288069",
+        "meta": {
+            "nf-test": "0.9.5",
+            "nextflow": "26.04.6"
+        }
+    },
+    "spoqc bubble stub": {
+        "content": [
+            [
+                [
+                    "SPOQC_BUBBLE",
+                    "spoqc",
+                    "0.1.0"
+                ]
+            ]
+        ],
+        "timestamp": "2026-08-12T16:24:27.473999654",
+        "meta": {
+            "nf-test": "0.9.5",
+            "nextflow": "26.04.6"
+        }
+    }
+}

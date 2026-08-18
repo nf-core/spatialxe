@@ -1,0 +1,289 @@
+nextflow_process {
+
+    name "Test Process SPOQC_ANALYSIS_CLUSTER"
+    script "../main.nf"
+    process "SPOQC_ANALYSIS_CLUSTER"
+    config "./nextflow.config"
+
+    tag "modules"
+    tag "modules_local"
+    tag "spoqc"
+    tag "spoqc/analysis_cluster"
+
+    setup {
+        run("UNTAR") {
+            script "modules/nf-core/untar/main.nf"
+            process {
+                """
+                input[0] = [[], file('https://raw.githubusercontent.com/nf-core/test-datasets/spatialaxe/xenium_bundle.tar.gz', checkIfExists: true)]
+                """
+            }
+        }
+
+        run("SPATIALDATA_WRITE") {
+            script "modules/local/spatialdata/write/main.nf"
+            process {
+                """
+                input[0] = channel.of([
+                        [id: "test_run_spoqc"],
+                    ]).combine(UNTAR.out.untar.map { it[1] })
+                input[1] = "spatialdata_raw"
+                input[2] = []
+                input[3] = "all"
+                """
+            }
+        }
+
+        run("SPOQC_ANNOTATION") {
+            script "modules/local/spoQC/annotation/main.nf"
+            process {
+                """
+                input[0] = SPATIALDATA_WRITE.out.spatialdata
+                input[1] = []
+                input[2] = "annotation"
+                """
+            }
+        }
+
+        run("SPOQC_GENERAL") {
+            script "modules/local/spoQC/general/main.nf"
+            process {
+                """
+                input[0] = SPATIALDATA_WRITE.out.spatialdata
+                input[1] = SPOQC_ANNOTATION.out.annotation.map { it[1] }
+                input[2] = "generalqc"
+                """
+            }
+        }
+
+        run("SPOQC_BUBBLE") {
+            script "modules/local/spoQC/bubble/main.nf"
+            process {
+                """
+                input[0] = SPATIALDATA_WRITE.out.spatialdata
+                input[1] = "bubbleqc"
+                """
+            }
+        }
+
+        run("SPOQC_DOUBLET") {
+            script "modules/local/spoQC/doublet/main.nf"
+            process {
+                """
+                input[0] = SPATIALDATA_WRITE.out.spatialdata
+                input[1] = SPOQC_ANNOTATION.out.annotation.map { it[1] }
+                input[2] = "doubletqc"
+                """
+            }
+        }
+
+        run("SPOQC_VOID") {
+            script "modules/local/spoQC/void/main.nf"
+            process {
+                """
+                input[0] = SPATIALDATA_WRITE.out.spatialdata
+                input[1] = "voidqc"
+                """
+            }
+        }
+
+        run("SPOQC_CELL") {
+            script "modules/local/spoQC/cell/main.nf"
+            process {
+                """
+                input[0] = SPATIALDATA_WRITE.out.spatialdata
+                input[1] = "cellqc"
+                """
+            }
+        }
+
+        run("SPOQC_HQCR_IDENT") {
+            script "modules/local/spoQC/hqcr_ident/main.nf"
+            process {
+                """
+                input[0] = SPATIALDATA_WRITE.out.spatialdata
+                input[1] = "hqcr_ident"
+                input[2] = SPOQC_GENERAL.out.tmp.map { it[1] }
+                input[3] = SPOQC_BUBBLE.out.tmp.map { it[1] }
+                input[4] = SPOQC_DOUBLET.out.tmp.map { it[1] }
+                input[5] = SPOQC_VOID.out.tmp.map { it[1] }
+                input[6] = SPOQC_CELL.out.tmp.map { it[1] }
+                """
+            }
+        }
+
+        run("SPOQC_AMBIENT") {
+            script "modules/local/spoQC/ambient/main.nf"
+            process {
+                """
+                input[0] = SPATIALDATA_WRITE.out.spatialdata
+                input[1] = "ambientqc"
+                """
+            }
+        }
+
+        run("SPOQC_HQTR_METRICES") {
+            script "modules/local/spoQC/hqtr_metrices/main.nf"
+            process {
+                """
+                input[0] = SPATIALDATA_WRITE.out.spatialdata
+                input[1] = "hqtr_metrices"
+                """
+            }
+        }
+
+        run("SPOQC_HQTR_QV") {
+            script "modules/local/spoQC/hqtr_qv/main.nf"
+            process {
+                """
+                input[0] = SPATIALDATA_WRITE.out.spatialdata
+                input[1] = "hqtr_qv"
+                """
+            }
+        }
+
+        run("SPOQC_HQTR_AC") {
+            script "modules/local/spoQC/hqtr_ac/main.nf"
+            process {
+                """
+                input[0] = SPATIALDATA_WRITE.out.spatialdata
+                input[1] = "hqtr_ac"
+                input[2] = SPOQC_AMBIENT.out.tmp.map { it[1] }
+                """
+            }
+        }
+
+        run("SPOQC_HQTR_CLUSTERING") {
+            script "modules/local/spoQC/hqtr_clustering/main.nf"
+            process {
+                """
+                input[0] = SPATIALDATA_WRITE.out.spatialdata
+                input[1] = "hqtr_clustering"
+                input[2] = SPOQC_HQTR_METRICES.out.metrices.map { it[1] }
+                input[3] = SPOQC_HQTR_QV.out.tmp.map { it[1] }
+                input[4] = SPOQC_HQTR_AC.out.tmp.map { it[1] }
+                """
+            }
+        }
+
+        run("SPOQC_HQTR_REFINEMENT") {
+            script "modules/local/spoQC/hqtr_refinement/main.nf"
+            process {
+                """
+                input[0] = SPATIALDATA_WRITE.out.spatialdata
+                input[1] = "hqtr_refinement"
+                input[2] = SPOQC_HQTR_CLUSTERING.out.mask.map { it[1] }
+                """
+            }
+        }
+
+        run("SPOQC_HQPR_METRICES") {
+            script "modules/local/spoQC/hqpr_metrices/main.nf"
+            process {
+                """
+                input[0] = SPATIALDATA_WRITE.out.spatialdata.combine(channel.of(0))
+                input[1] = "hqpr_metrices"
+                """
+            }
+        }
+
+        run("SPOQC_HQPR_CLUSTERING") {
+            script "modules/local/spoQC/hqpr_clustering/main.nf"
+            process {
+                """
+                input[0] = SPATIALDATA_WRITE.out.spatialdata.combine(channel.of(0))
+                input[1] = "hqpr_clustering"
+                input[2] = SPOQC_HQPR_METRICES.out.metrices.map { _meta, staining, f -> [staining, f] }
+                """
+            }
+        }
+
+        run("SPOQC_HQPR_REFINEMENT") {
+            script "modules/local/spoQC/hqpr_refinement/main.nf"
+            process {
+                """
+                input[0] = SPATIALDATA_WRITE.out.spatialdata.combine(channel.of(0))
+                input[1] = "hqpr_refinement"
+                input[2] = SPOQC_HQPR_CLUSTERING.out.mask.map { _meta, staining, f -> [staining, f] }
+                """
+            }
+        }
+    }
+
+    test("spoqc analysis_cluster") {
+
+        when {
+            process {
+                """
+                input[0] = SPATIALDATA_WRITE.out.spatialdata
+                input[1] = SPOQC_ANNOTATION.out.annotation.map { it[1] }
+                input[2] = "analysis_cluster"
+                input[3] = SPOQC_GENERAL.out.tmp.map { it[1] }
+                input[4] = SPOQC_BUBBLE.out.tmp.map { it[1] }
+                input[5] = SPOQC_DOUBLET.out.tmp.map { it[1] }
+                input[6] = SPOQC_VOID.out.tmp.map { it[1] }
+                input[7] = SPOQC_CELL.out.tmp.map { it[1] }
+                input[8] = SPOQC_HQCR_IDENT.out.mask.map { it[1] }
+                input[9] = SPOQC_HQCR_IDENT.out.mask_smoothed.map { it[1] }
+                input[10] = SPOQC_HQTR_QV.out.tmp.map { it[1] }
+                input[11] = SPOQC_HQTR_AC.out.tmp.map { it[1] }
+                input[12] = SPOQC_HQTR_METRICES.out.metrices.map { it[1] }
+                input[13] = SPOQC_HQTR_REFINEMENT.out.mask_smoothed.map { it[1] }
+                input[14] = SPOQC_HQTR_CLUSTERING.out.mask.map { it[1] }
+                input[15] = SPOQC_HQPR_METRICES.out.metrices.map { _meta, _staining, p -> p }.collect()
+                input[16] = SPOQC_HQPR_REFINEMENT.out.mask_smoothed.map { _meta, _staining, p -> p }.collect()
+                input[17] = SPOQC_HQPR_CLUSTERING.out.mask.map { _meta, _staining, p -> p }.collect()
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert process.success },
+                { assert file(process.out.report[0][1]).isDirectory() },
+                { assert file(process.out.h5ad[0][1]).exists() },
+                { assert snapshot(process.out.versions_spoqc).match() }
+            )
+        }
+    }
+
+    test("spoqc analysis_cluster stub") {
+
+        options "-stub"
+
+        when {
+            process {
+                """
+                input[0] = SPATIALDATA_WRITE.out.spatialdata
+                input[1] = SPOQC_ANNOTATION.out.annotation.map { it[1] }
+                input[2] = "analysis_cluster"
+                input[3] = SPOQC_GENERAL.out.tmp.map { it[1] }
+                input[4] = SPOQC_BUBBLE.out.tmp.map { it[1] }
+                input[5] = SPOQC_DOUBLET.out.tmp.map { it[1] }
+                input[6] = SPOQC_VOID.out.tmp.map { it[1] }
+                input[7] = SPOQC_CELL.out.tmp.map { it[1] }
+                input[8] = SPOQC_HQCR_IDENT.out.mask.map { it[1] }
+                input[9] = SPOQC_HQCR_IDENT.out.mask_smoothed.map { it[1] }
+                input[10] = SPOQC_HQTR_QV.out.tmp.map { it[1] }
+                input[11] = SPOQC_HQTR_AC.out.tmp.map { it[1] }
+                input[12] = SPOQC_HQTR_METRICES.out.metrices.map { it[1] }
+                input[13] = SPOQC_HQTR_REFINEMENT.out.mask_smoothed.map { it[1] }
+                input[14] = SPOQC_HQTR_CLUSTERING.out.mask.map { it[1] }
+                input[15] = SPOQC_HQPR_METRICES.out.metrices.map { _meta, _staining, p -> p }.collect()
+                input[16] = SPOQC_HQPR_REFINEMENT.out.mask_smoothed.map { _meta, _staining, p -> p }.collect()
+                input[17] = SPOQC_HQPR_CLUSTERING.out.mask.map { _meta, _staining, p -> p }.collect()
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert process.success },
+                { assert file(process.out.report[0][1]).isDirectory() },
+                { assert file(process.out.h5ad[0][1]).exists() },
+                { assert snapshot(process.out.versions_spoqc).match() }
+            )
+        }
+    }
+
+}

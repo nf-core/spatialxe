@@ -22,6 +22,10 @@ The pipeline is built using [Nextflow](https://www.nextflow.io/) and processes d
   - [MultiQC](#multiqc) - Aggregate report describing results and QC from the whole pipeline
   - [Pipeline information](#pipeline-information) - Report metrics generated during the workflow execution
 
+## Quality Control
+
+[Quality Control](qc.md): An overview of the different QC reports.
+
 ## Image mode
 
 <details markdown="1">
@@ -127,6 +131,55 @@ The pipeline is built using [Nextflow](https://www.nextflow.io/) and processes d
     - `*.tsv` TSV file containing the gene and transcript information to which each probe aligns
   - `stat/`
     - `*.tsv` TSV file containing the summary stats
+- `spoqc/`
+  - `report/`
+    - `annotation/`
+      - `unsupervised_cell_annotation.tsv` unsupervised cell-type annotation, generated only when no annotation file was supplied as input
+    - `whole_slide_qc/` whole-slide QC overview report
+    - `generalqc/` general-purpose QC report
+    - `bubbleqc/` bubble-artifact QC report
+    - `doubletqc/` doublet-detection QC report
+    - `voidqc/` void/empty-region QC report
+    - `cellqc/` cell-level QC report
+    - `ambientqc/` ambient-RNA (background gene) QC report
+    - `hqcr/`
+      - `hqcr_ident/` high-quality cell region (HQCR) identification report
+      - `hqcr_celltype/` cell-type-refined HQCR report
+    - `hqpr/`
+      - `hqpr_metrices/${staining}/` per-staining high-quality pixel region (HQPR) metrics report
+      - `hqpr_clustering/${staining}/` per-staining HQPR clustering report
+      - `hqpr_refinement/${staining}/` per-staining HQPR mask refinement report
+      - `hqpr_bounding_box/${staining}/` per-staining HQPR bounding-box report
+    - `hqtr/`
+      - `hqtr_metrices/` high-quality transcript region (HQTR) metrics report
+      - `hqtr_ac/` HQTR ambient-contamination probability report
+      - `hqtr_qv/` HQTR quality-value probability report
+      - `hqtr_clustering/` HQTR clustering report
+      - `hqtr_refinement/` HQTR mask refinement report
+      - `hqtr_bounding_box/` HQTR bounding-box report
+    - `combine_masks/${staining}/` report combining the HQCR, HQPR and HQTR masks per staining
+    - `transcriptqc/` transcript-level QC report (against the reference gene panel)
+    - `cellcycleqc/` cell-cycle scoring QC report
+    - `modelqc/` model-based QC scoring report
+    - `analysis/`
+      - `overview/` downstream QC analysis overview report
+      - `rna_qc_annotated.h5ad` AnnData object annotated with the combined QC results
+      - `category/` downstream per-category QC analysis report
+      - `cluster/` downstream clustering QC analysis report
+      - `rna_cluster.h5ad` AnnData object with clustering results
+    - `staining_log.txt` log of the stainings processed by spoQC
+    - `report.html` final self-contained HTML report aggregating every spoQC step above
+  - `spoQC_tmp/` intermediate data consumed by later spoQC steps
+    - `generalqc_output_hqcr.parquet`, `bubbleqc_output_hqcr.parquet`, `doubletqc_output_hqcr.parquet`, `voidqc_output_hqcr.parquet`, `cellqc_output_hqcr.parquet` per-step HQCR contribution scores
+    - `ambient_output_genes.parquet` ambient RNA gene-signal estimate
+    - `hqcr_output_mask_raw.parquet` / `hqcr_output_mask_smoothed_raw.parquet` combined raw/smoothed HQCR mask
+    - `hqcr_output_mask_smoothed_celltype_refined.parquet` cell-type-refined smoothed HQCR mask
+    - `metrices/hqpr/${staining}/` per-staining HQPR metrics
+    - `hqpr_${staining}_output_mask_raw/` / `hqpr_${staining}_output_mask_smoothed_raw/` per-staining raw/smoothed HQPR mask
+    - `metrices/hqtr/` HQTR metrics
+    - `hqtr_output_ac_prob/` HQTR ambient-contamination probabilities
+    - `hqtr_output_qv_prob/` HQTR quality-value probabilities
+    - `hqtr_output_mask_raw/` / `hqtr_output_mask_smoothed_raw/` raw/smoothed HQTR mask
 - `multiqc/`
   - `multiqc_report.html`: a standalone HTML file that can be viewed in your web browser.
   - `multiqc_data/`: directory containing parsed statistics from the different tools used in the pipeline.
@@ -164,7 +217,7 @@ The pipeline create spatialdata objects (data bundles) on various stages (see me
 
 </details>
 
-### Xenium Ranger Import Segmentation)
+### Xenium Ranger Import Segmentation
 
 This step is needed to import segemntations from different methods into the xenium bundle and is called at different stages of the pipeline.
 

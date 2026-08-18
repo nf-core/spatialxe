@@ -79,6 +79,7 @@ workflow NFCORE_SPATIALAXE {
         params.stardist_nuclei_model,
         params.tiling,
         params.xeniumranger_only,
+        params.spoqc,
     )
     emit:
     multiqc_report = SPATIALAXE.out.multiqc_report // channel: /path/to/multiqc_report.html

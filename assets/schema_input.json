@@ -22,6 +22,16 @@
                 "type": "string",
                 "pattern": "^\\S+$",
                 "errorMessage": "You can provide an image. If you do not then please leave the field empty."
+            },
+            "annotation": {
+                "type": "string",
+                "pattern": "^\\S+$",
+                "errorMessage": "You can provide an annotation. If you do not then please leave the field empty."
+            },
+            "stainings": {
+                "type": "string",
+                "pattern": "^\\S+$",
+                "errorMessage": "The indices of the image channels of the individual stainings you want to analyse."
             }
         },
         "required": ["sample", "bundle"]

@@ -98,7 +98,8 @@ workflow PIPELINE_INITIALISATION {
         show_hidden,
         before_text,
         after_text,
-        command
+        command,
+        null
     )
 
     //
@@ -135,8 +136,8 @@ workflow PIPELINE_INITIALISATION {
     try {
 
         channel.fromList(samplesheetToList(input, "${projectDir}/assets/schema_input.json"))
-            .map { meta, bundle, image ->
-                return [[id: meta.id], bundle, image]
+            .map { meta, bundle, image, annotation, stainings ->
+                return [[id: meta.id], bundle, image, annotation, stainings]
             }
             .set { ch_samplesheet }
 
@@ -231,7 +232,7 @@ def validateInputParameters(
     }
 
     // check if the samplesheet provided with the test config is assets/samplesheet.csv
-    if (workflow.profile.contains('test') && !"${input}".endsWith("assets/samplesheet.csv")) {
+    if (workflow.profile.contains('test') && !"${input}".endsWith("assets/samplesheet.csv") && !workflow.profile.contains('test_full')) {
         error("❌ Error: Use the samplesheet at: ${projectDir}/assets/samplesheet.csv with `--input` when running the pipeline in test profile.")
     }
 

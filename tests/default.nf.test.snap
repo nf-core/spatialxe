@@ -24,7 +24,7 @@
                     "untar": 1.34
                 },
                 "Workflow": {
-                    "nf-core/spatialaxe": "v1.0.1"
+                    "nf-core/spatialaxe": "v1.0.1dev"
                 },
                 "XENIUMRANGER_IMPORTSEGMENTATION": {
                     "xeniumranger": "4.0.1.1"
@@ -111,38 +111,13 @@
                 ".stub:md5,d41d8cd98f00b204e9800998ecf8427e",
                 ".stub:md5,d41d8cd98f00b204e9800998ecf8427e",
                 "multiqc_report.html:md5,d41d8cd98f00b204e9800998ecf8427e",
-                "cell-polygons.geojson:md5,d41d8cd98f00b204e9800998ecf8427e",
-                "transcript-metadata.csv:md5,d41d8cd98f00b204e9800998ecf8427e",
                 "fake_file.txt:md5,d41d8cd98f00b204e9800998ecf8427e",
                 "fake_file.txt:md5,d41d8cd98f00b204e9800998ecf8427e",
                 "fake_file.txt:md5,d41d8cd98f00b204e9800998ecf8427e",
-                "fake_file.txt:md5,d41d8cd98f00b204e9800998ecf8427e",
-                ".end-of-run:md5,d41d8cd98f00b204e9800998ecf8427e",
-                "analysis.tar.gz:md5,d41d8cd98f00b204e9800998ecf8427e",
-                "analysis.zarr.zip:md5,d41d8cd98f00b204e9800998ecf8427e",
-                "analysis_summary.html:md5,d41d8cd98f00b204e9800998ecf8427e",
-                "aux_outputs.tar.gz:md5,d41d8cd98f00b204e9800998ecf8427e",
-                "cell_boundaries.csv.gz:md5,d41d8cd98f00b204e9800998ecf8427e",
-                "cell_boundaries.parquet:md5,d41d8cd98f00b204e9800998ecf8427e",
-                "cell_feature_matrix.h5:md5,d41d8cd98f00b204e9800998ecf8427e",
-                "cell_feature_matrix.tar.gz:md5,d41d8cd98f00b204e9800998ecf8427e",
-                "cell_feature_matrix.zarr.zip:md5,d41d8cd98f00b204e9800998ecf8427e",
-                "cells.csv.gz:md5,d41d8cd98f00b204e9800998ecf8427e",
-                "cells.parquet:md5,d41d8cd98f00b204e9800998ecf8427e",
-                "cells.zarr.zip:md5,d41d8cd98f00b204e9800998ecf8427e",
-                "experiment.xenium:md5,d41d8cd98f00b204e9800998ecf8427e",
-                "gene_panel.json:md5,d41d8cd98f00b204e9800998ecf8427e",
-                "metrics_summary.csv:md5,d41d8cd98f00b204e9800998ecf8427e",
-                "morphology.ome.tif:md5,d41d8cd98f00b204e9800998ecf8427e",
-                "morphology_focus_0000.ome.tif:md5,d41d8cd98f00b204e9800998ecf8427e",
-                "nucleus_boundaries.csv.gz:md5,d41d8cd98f00b204e9800998ecf8427e",
-                "nucleus_boundaries.parquet:md5,d41d8cd98f00b204e9800998ecf8427e",
-                "transcripts.parquet:md5,d41d8cd98f00b204e9800998ecf8427e",
-                "transcripts.zarr.zip:md5,d41d8cd98f00b204e9800998ecf8427e",
-                "experiment.xenium:md5,d41d8cd98f00b204e9800998ecf8427e"
+                "fake_file.txt:md5,d41d8cd98f00b204e9800998ecf8427e"
             ]
         ],
-        "timestamp": "2026-07-28T12:20:41.663589777",
+        "timestamp": "2026-08-14T11:35:32.776028015",
         "meta": {
             "nf-test": "0.9.5",
             "nextflow": "26.04.6"

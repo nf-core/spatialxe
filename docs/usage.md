@@ -106,9 +106,21 @@ nextflow run nf-core/spatialaxe \
    --mode qc
 ```
 
+To run [spoQC](https://github.com/heylf/spoQC) you have to set an additional option:
+
+```bash
+nextflow run nf-core/spatialaxe \
+   -profile <docker/singularity/.../institute> \
+   --input samplesheet.csv \
+   --outdir <OUTDIR> \
+   --mode qc \
+   --spoqc true
+```
+
 - QC methods:
   - [MultiQC Xenium Extra Plugin](https://github.com/MultiQC/xenium-extra)
   - [OPT](https://github.com/JEFworks-Lab/off-target-probe-tracker)
+  - [spoQC](https://github.com/heylf/spoQC)
 
 ### Image-based Segmentation mode (--mode image): <br>
 

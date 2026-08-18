@@ -1,0 +1,95 @@
+name: spoqc_hqpr_clustering
+description: |
+  Cluster per-staining high-quality pixel region (HQPR) metrics into a probability mask.
+keywords:
+  - spatial transcriptomics
+  - quality control
+  - spoqc
+  - xenium
+  - hqpr
+  - clustering
+tools:
+  - "spoqc":
+      description: |
+        spoQC is a modular framework for multimodal quality control (QC) of imaging-based spatially resolved transcriptomics (SRT).
+      homepage: https://github.com/heylf/spoQC
+      documentation: https://github.com/heylf/spoQC
+      licence: ["MIT license"]
+input:
+  - - meta:
+        type: map
+        description: |
+          Groovy Map containing sample information
+          e.g. [ id:'sample' ]
+    - spatialdata:
+        type: directory
+        description: Path to the SpatialData zarr store to run QC on
+        ontologies: []
+    - staining_idx_sd:
+        type: integer
+        description: Staining index carried alongside spatialdata to align the per-staining combined channel (Groovy var `_stain_sd`)
+  - step:
+      type: string
+      description: Name of the spoQC step to run, passed to `spoqc -s`
+  - - staining:
+        type: integer
+        description: Staining index
+    - metrices:
+        type: directory
+        description: Per-staining HQPR metrics directory from SPOQC_HQPR_METRICES
+        pattern: "spoQC_tmp/metrices/hqpr/*"
+        ontologies: []
+output:
+  report:
+    - - meta:
+          type: map
+          description: |
+            Groovy Map containing sample information
+            e.g. [ id:'sample' ]
+      - staining:
+          type: integer
+          description: Staining index
+      - "report":
+          type: directory
+          description: HTML/plot QC report directory for this staining, tagged with the staining index
+          pattern: "report/hqpr/hqpr_clustering/${staining}"
+          ontologies: []
+  mask:
+    - - meta:
+          type: map
+          description: |
+            Groovy Map containing sample information
+            e.g. [ id:'sample' ]
+      - staining:
+          type: integer
+          description: Staining index
+      - "mask":
+          type: directory
+          description: Per-staining HQPR raw probability mask
+          pattern: "spoQC_tmp/hqpr_${staining}_output_mask_raw"
+          ontologies: []
+  versions_spoqc:
+    - - "${task.process}":
+          type: string
+          description: The process the versions were collected from
+      - spoqc:
+          type: string
+          description: The tool name
+      - "spoqc --version 2>&1 | grep -oP '\\d+\\.\\d+\\.\\d+' || echo unknown":
+          type: eval
+          description: The expression to obtain the version of the tool
+topics:
+  versions:
+    - - "${task.process}":
+          type: string
+          description: The process the versions were collected from
+      - spoqc:
+          type: string
+          description: The tool name
+      - "spoqc --version 2>&1 | grep -oP '\\d+\\.\\d+\\.\\d+' || echo unknown":
+          type: eval
+          description: The expression to obtain the version of the tool
+authors:
+  - "@heylf"
+maintainers:
+  - "@heylf"

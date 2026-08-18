@@ -12,7 +12,7 @@
                     "untar": 1.34
                 },
                 "Workflow": {
-                    "nf-core/spatialaxe": "v1.0.1"
+                    "nf-core/spatialaxe": "v1.0.1dev"
                 }
             },
             [
@@ -27,11 +27,18 @@
                 "segfree/baysor/segfree/test_run",
                 "segfree/baysor/segfree/test_run/ncvs.loom",
                 "segfree/multiqc",
-                "segfree/multiqc/multiqc_data",
-                "segfree/multiqc/multiqc_data/.stub",
-                "segfree/multiqc/multiqc_plots",
-                "segfree/multiqc/multiqc_plots/.stub",
-                "segfree/multiqc/multiqc_report.html",
+                "segfree/multiqc/raw_bundle",
+                "segfree/multiqc/raw_bundle/multiqc_data",
+                "segfree/multiqc/raw_bundle/multiqc_data/.stub",
+                "segfree/multiqc/raw_bundle/multiqc_plots",
+                "segfree/multiqc/raw_bundle/multiqc_plots/.stub",
+                "segfree/multiqc/raw_bundle/multiqc_report.html",
+                "segfree/multiqc/redefined_bundle",
+                "segfree/multiqc/redefined_bundle/multiqc_data",
+                "segfree/multiqc/redefined_bundle/multiqc_data/.stub",
+                "segfree/multiqc/redefined_bundle/multiqc_plots",
+                "segfree/multiqc/redefined_bundle/multiqc_plots/.stub",
+                "segfree/multiqc/redefined_bundle/multiqc_report.html",
                 "segfree/untar",
                 "segfree/untar/test_run",
                 "segfree/untar/test_run/.end-of-run",
@@ -64,6 +71,9 @@
                 ".stub:md5,d41d8cd98f00b204e9800998ecf8427e",
                 ".stub:md5,d41d8cd98f00b204e9800998ecf8427e",
                 "multiqc_report.html:md5,d41d8cd98f00b204e9800998ecf8427e",
+                ".stub:md5,d41d8cd98f00b204e9800998ecf8427e",
+                ".stub:md5,d41d8cd98f00b204e9800998ecf8427e",
+                "multiqc_report.html:md5,d41d8cd98f00b204e9800998ecf8427e",
                 ".end-of-run:md5,d41d8cd98f00b204e9800998ecf8427e",
                 "analysis.tar.gz:md5,d41d8cd98f00b204e9800998ecf8427e",
                 "analysis.zarr.zip:md5,d41d8cd98f00b204e9800998ecf8427e",
@@ -88,7 +98,7 @@
                 "transcripts.zarr.zip:md5,d41d8cd98f00b204e9800998ecf8427e"
             ]
         ],
-        "timestamp": "2026-07-23T15:57:58.134363385",
+        "timestamp": "2026-08-14T11:36:49.488134053",
         "meta": {
             "nf-test": "0.9.5",
             "nextflow": "26.04.6"

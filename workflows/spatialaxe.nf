@@ -17,6 +17,7 @@ include { paramsSummaryMap                                 } from 'plugin/nf-sch
 
 // nf-core modules
 include { UNTAR                                            } from '../modules/nf-core/untar/main'
+include { UNZIP                                            } from '../modules/nf-core/unzip/main'
 
 // coordinate-based segmentation subworklfows
 include { SEGGER_CREATE_TRAIN_PREDICT                      } from '../subworkflows/local/segger_create_train_predict/main'
@@ -45,6 +46,7 @@ include { SPATIALDATA_WRITE_META_MERGE                     } from '../subworkflo
 
 // qc layer subworkflows
 include { OPT_FLIP_TRACK_STAT                              } from '../subworkflows/local/opt_flip_track_stat/main'
+include { SPOQC                                            } from '../subworkflows/local/spoqc/main'
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -94,6 +96,7 @@ workflow SPATIALAXE {
     stardist_nuclei_model
     tiling
     xeniumranger_only
+    spoqc
 
     main:
 
@@ -137,25 +140,46 @@ workflow SPATIALAXE {
     if (workflow.profile.contains('test')) {
 
         // get sample, xenium bundle and image path
-        ch_input_untar = ch_samplesheet.map { meta, bundle, _image ->
+        ch_input_compressed = ch_samplesheet.map { meta, bundle, _image, _annotation, _stainings ->
             return [meta, bundle]
         }
 
-        // get testdata
-        UNTAR(ch_input_untar)
+        if (workflow.profile.contains('test_full')) {
 
-        ch_untar_outs = UNTAR.out.untar.map { meta, bundle ->
-            // use toUriString() (not toString()) so the URI scheme (e.g. s3://)
-            // is preserved when the work dir is on object storage
-            return [meta, bundle.toUriString()]
-        }
+            // get testdata
+            UNZIP(ch_input_compressed)
 
-        ch_samplesheet
-            .combine(ch_untar_outs, by: 0)
-            .map { meta, _url, image, test_bundle ->
-                return [meta, test_bundle, image]
+            ch_unzip_outs = UNZIP.out.unzipped_archive.map { meta, bundle ->
+                // use toUriString() (not toString()) so the URI scheme (e.g. s3://)
+                // is preserved when the work dir is on object storage
+                return [meta, bundle.toUriString()]
             }
-            .set { ch_input }
+
+            ch_samplesheet
+                .combine(ch_unzip_outs, by: 0)
+                .map { meta, _url, image, annotation, stainings, test_bundle ->
+                    return [meta, test_bundle, image, annotation, stainings]
+                }
+                .set { ch_input }
+
+        } else {
+
+            // get testdata
+            UNTAR(ch_input_compressed)
+
+            ch_untar_outs = UNTAR.out.untar.map { meta, bundle ->
+                // use toUriString() (not toString()) so the URI scheme (e.g. s3://)
+                // is preserved when the work dir is on object storage
+                return [meta, bundle.toUriString()]
+            }
+
+            ch_samplesheet
+                .combine(ch_untar_outs, by: 0)
+                .map { meta, _url, image, annotation, stainings, test_bundle ->
+                    return [meta, test_bundle, image, annotation, stainings]
+                }
+                .set { ch_input }
+        }
     }
     else {
         // for all other profile runs
@@ -164,8 +188,8 @@ workflow SPATIALAXE {
         if (buffer_samples) {
             ch_input = ch_samplesheet.buffer(size: buffer_size).map
             { buffered_sample ->
-                def (meta, bundle, tif) = buffered_sample[0]
-                tuple(meta, bundle, tif)
+                def (meta, bundle, tif, ann, sta) = buffered_sample[0]
+                tuple(meta, bundle, tif, ann, sta)
             }
         }
         else {
@@ -187,7 +211,6 @@ workflow SPATIALAXE {
         "gene_panel.json",
         "metrics_summary.csv",
         "morphology.ome.tif",
-        "morphology_focus/",
         "nucleus_boundaries.csv.gz",
         "nucleus_boundaries.parquet",
         "transcripts.parquet",
@@ -197,10 +220,11 @@ workflow SPATIALAXE {
         "analysis.tar.gz",
         "analysis.zarr.zip",
         "analysis_summary.html",
+        "morphology_focus/",
     ]
 
     // path to bundle input
-    ch_bundle_path = ch_input.map { meta, bundle, _image ->
+    ch_bundle_path = ch_input.map { meta, bundle, _image, _annotation, _stainings ->
 
         def bundle_path = file(bundle)
         if( !bundle_path.exists() ) {
@@ -222,7 +246,7 @@ workflow SPATIALAXE {
     }
 
     // get transcript.parquet from the xenium bundle
-    ch_transcripts_file = ch_input.map { meta, bundle, _image ->
+    ch_transcripts_file = ch_input.map { meta, bundle, _image, _annotation, _stainings ->
         def transcripts_parquet = file(
             file(bundle).toUriString().replaceFirst(/\/$/, '') + "/transcripts.parquet",
             checkIfExists: true
@@ -236,7 +260,7 @@ workflow SPATIALAXE {
     //   v4+:   morphology_focus/ch0000_dapi.ome.tif
     //   v1.x:  morphology_focus.ome.tif (single file at bundle root)
     //   fallback: morphology.ome.tif (multi-Z stack, not ideal for Cellpose)
-    ch_morphology_image = ch_input.map { meta, bundle, image ->
+    ch_morphology_image = ch_input.map { meta, bundle, image, _annotation, _stainings ->
         def morphology_img
         if (image) {
             morphology_img = file(image)
@@ -259,7 +283,7 @@ workflow SPATIALAXE {
     }
 
     // get experiment metdata - experiment.xenium
-    ch_exp_metadata = ch_input.map { meta, bundle, _image ->
+    ch_exp_metadata = ch_input.map { meta, bundle, _image, _annotation, _stainings ->
         def exp_metadata = file(
             file(bundle).toUriString().replaceFirst(/\/$/, '') + "/experiment.xenium",
             checkIfExists: true
@@ -338,20 +362,33 @@ workflow SPATIALAXE {
     if (gene_panel) {
 
         def gene_panel_file = file(gene_panel, checkIfExists: true)
-        ch_gene_panel = ch_input.map { meta, _bundle, _image ->
+        ch_gene_panel = ch_input.map { meta, _bundle, _image, _annotation, _stainings ->
             return [meta, gene_panel_file]
         }
     }
     else {
 
         // gene panel to use if only --relabel_genes is provided
-        ch_gene_panel = ch_input.map { meta, bundle, _image ->
+        ch_gene_panel = ch_input.map { meta, bundle, _image, _annotation, _stainings ->
             def gene_panel_file = file(
                 file(bundle).toUriString().replaceFirst(/\/$/, '') + "/gene_panel.json",
                 checkIfExists: true
             )
             return [meta, gene_panel_file]
         }
+    }
+
+    // get stainings, keyed by meta so per-sample staining lists never mix across samples
+    ch_stainings = ch_input.flatMap { meta, _bundle, _image, _annotation, stainings ->
+        def staining_list = (stainings instanceof List)
+            ? stainings
+            : stainings.tokenize(';')*.toInteger()
+        staining_list.collect { staining -> [meta, staining] }
+    }
+
+    // get annotation
+    ch_annotation = ch_input.map { meta, _bundle, _image, annotation, _stainings ->
+        [meta, annotation]
     }
 
     /*
@@ -589,7 +626,7 @@ workflow SPATIALAXE {
     */
 
     // run spatialdata modules to generate sd objects in image or coordinate mode
-    if (mode == 'image' || mode == 'coordinate') {
+    if (mode == 'image' || mode == 'coordinate' || mode == 'qc') {
 
         SPATIALDATA_WRITE_META_MERGE(
             ch_bundle_path,
@@ -598,6 +635,7 @@ workflow SPATIALAXE {
             cell_segmentation_only,
             mode,
             nucleus_segmentation_only,
+            run_qc,
         )
     }
 
@@ -619,6 +657,16 @@ workflow SPATIALAXE {
                 ch_gene_synonyms,
             )
         }
+
+
+        if (spoqc){
+            SPOQC (
+                SPATIALDATA_WRITE_META_MERGE.out.sd_raw_bundle,
+                ch_annotation,
+                ch_stainings,
+            )
+        }
+
     }
 
 
@@ -725,7 +773,7 @@ workflow SPATIALAXE {
         )
     )
 
-    if (mode == 'image' || mode == 'coordinate') {
+    if (mode == 'qc' || run_qc) {
 
         // get path to the raw bundle
         ch_multiqc_files = ch_multiqc_files.mix(

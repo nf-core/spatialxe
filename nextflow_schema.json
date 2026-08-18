@@ -129,8 +129,7 @@
                 },
                 "offtarget_probe_tracking": {
                     "type": "boolean",
-                    "description": "Whether to run the off-target probe tracking.",
-                    "default": false
+                    "description": "Whether to run the off-target probe tracking."
                 },
                 "segmentation_refinement": {
                     "type": "boolean",
@@ -146,7 +145,8 @@
                 },
                 "cell_segmentation_only": {
                     "type": "boolean",
-                    "description": "Whether to only run nucleus segmentation."
+                    "description": "Whether to only run nucleus segmentation.",
+                    "default": true
                 },
                 "nucleus_segmentation_only": {
                     "type": "boolean",
@@ -155,7 +155,7 @@
                 "expansion_distance": {
                     "type": "integer",
                     "default": 5,
-                    "description": "Nuclei boundary expansion distance in µm. Default: 5 (Min: 0, Max: 15 if either boundary-stain or interior-stain are enabled and 100 if nucleus-expansion only)"
+                    "description": "Nuclei boundary expansion distance in \u00b5m. Default: 5 (Min: 0, Max: 15 if either boundary-stain or interior-stain are enabled and 100 if nucleus-expansion only)"
                 },
                 "dapi_filter": {
                     "type": "integer",
@@ -174,7 +174,6 @@
                 },
                 "use_gpu": {
                     "type": "boolean",
-                    "default": false,
                     "description": "Enable GPU acceleration (set automatically by the gpu profile)."
                 },
                 "gpu_queue": {
@@ -187,7 +186,6 @@
                 },
                 "cellpose_downscale": {
                     "type": "boolean",
-                    "default": false,
                     "description": "Pre-downscale morphology image to avoid Cellpose OOM on large images."
                 },
                 "sharpen_tiff": {
@@ -256,8 +254,7 @@
                 },
                 "filter_transcripts": {
                     "type": "boolean",
-                    "description": "Whether to filter the transcripts.parquet file before running Baysor segmentation.",
-                    "default": false
+                    "description": "Whether to filter the transcripts.parquet file before running Baysor segmentation."
                 },
                 "baysor_scale": {
                     "type": "integer",
@@ -325,7 +322,8 @@
                 },
                 "max_x": {
                     "type": "number",
-                    "description": "only keep transcripts whose x-coordinate is less than specified limit, if no limit is specified, the default value will retain all transcripts since Xenium slide is <24000 microns in x and y (default: 24000.0)"
+                    "description": "only keep transcripts whose x-coordinate is less than specified limit, if no limit is specified, the default value will retain all transcripts since Xenium slide is <24000 microns in x and y (default: 24000.0)",
+                    "default": 24000
                 },
                 "min_y": {
                     "type": "number",
@@ -333,12 +331,12 @@
                 },
                 "max_y": {
                     "type": "number",
-                    "description": "only keep transcripts whose y-coordinate is less than specified limit, if no limit is specified, the default value will retain all transcripts since Xenium slide is <24000 microns in x and y (default: 24000.0)"
+                    "description": "only keep transcripts whose y-coordinate is less than specified limit, if no limit is specified, the default value will retain all transcripts since Xenium slide is <24000 microns in x and y (default: 24000.0)",
+                    "default": 24000
                 },
                 "tiling": {
                     "type": "boolean",
-                    "description": "Enable tiled segmentation for large datasets. Divides transcripts into overlapping patches, runs segmentation in parallel per patch, then stitches results.",
-                    "default": false
+                    "description": "Enable tiled segmentation for large datasets. Divides transcripts into overlapping patches, runs segmentation in parallel per patch, then stitches results."
                 },
                 "patch_grid": {
                     "type": "string",
@@ -358,12 +356,12 @@
                 "patch_filter_iqr_multiplier": {
                     "type": "number",
                     "description": "IQR multiplier for empirical cell size filtering during stitching.",
-                    "default": 3.0
+                    "default": 3
                 },
                 "patch_filter_z_threshold": {
                     "type": "number",
                     "description": "Z-score threshold for distribution-based cell size filtering during stitching.",
-                    "default": 4.0
+                    "default": 4
                 },
                 "csplit_x_bins": {
                     "type": "integer",
@@ -407,18 +405,27 @@
                 },
                 "cc_analysis": {
                     "type": "boolean",
-                    "description": "Whether to use connected components for grouping transcripts without direct nucleus association",
-                    "default": false
+                    "description": "Whether to use connected components for grouping transcripts without direct nucleus association"
                 },
                 "buffer_samples": {
                     "type": "boolean",
-                    "description": "Process only one sample at a time from a multi-sample samplesheet.",
-                    "default": false
+                    "description": "Process only one sample at a time from a multi-sample samplesheet."
                 },
                 "buffer_size": {
                     "type": "integer",
                     "description": "Number of sample(s) to process at a time from a multi-sample samplesheet. Works if buffered_samples is true.",
                     "default": 1
+                }
+            }
+        },
+        "qc_options": {
+            "title": "QC options",
+            "type": "object",
+            "description": "",
+            "default": "",
+            "properties": {
+                "spoqc": {
+                    "type": "boolean"
                 }
             }
         },
@@ -597,6 +604,9 @@
         },
         {
             "$ref": "#/$defs/segmentation_options"
+        },
+        {
+            "$ref": "#/$defs/qc_options"
         },
         {
             "$ref": "#/$defs/institutional_config_options"

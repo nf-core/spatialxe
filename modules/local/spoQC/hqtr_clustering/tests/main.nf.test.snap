@@ -1,0 +1,34 @@
+{
+    "spoqc hqtr_clustering stub": {
+        "content": [
+            [
+                [
+                    "SPOQC_HQTR_CLUSTERING",
+                    "spoqc",
+                    "0.1.0"
+                ]
+            ]
+        ],
+        "timestamp": "2026-08-12T18:36:21.878073172",
+        "meta": {
+            "nf-test": "0.9.5",
+            "nextflow": "26.04.6"
+        }
+    },
+    "spoqc hqtr_clustering": {
+        "content": [
+            [
+                [
+                    "SPOQC_HQTR_CLUSTERING",
+                    "spoqc",
+                    "0.1.0"
+                ]
+            ]
+        ],
+        "timestamp": "2026-08-12T18:34:54.523078946",
+        "meta": {
+            "nf-test": "0.9.5",
+            "nextflow": "26.04.6"
+        }
+    }
+}

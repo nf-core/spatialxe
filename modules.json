@@ -49,13 +49,13 @@
                     },
                     "unzip": {
                         "branch": "master",
-                        "git_sha": "4dd9d8439a429c7ee566e0e2347f76ddeef27e66",
+                        "git_sha": "1c43a7e22f04cf19c9f9d3de7e7e5a3addd9382a",
                         "installed_by": ["modules"],
                         "patch": "modules/nf-core/unzip/unzip.diff"
                     },
                     "xeniumranger/importsegmentation": {
                         "branch": "master",
-                        "git_sha": "1fa9ed32cfd532e7d2191b5ffdcc86c783878fb0",
+                        "git_sha": "39365e944e936511e33b993cdd978e0f12adac9a",
                         "installed_by": ["modules"]
                     },
                     "xeniumranger/relabel": {
@@ -74,7 +74,7 @@
                 "nf-core": {
                     "utils_nextflow_pipeline": {
                         "branch": "master",
-                        "git_sha": "05954dab2ff481bcb999f24455da29a5828af08d",
+                        "git_sha": "1a545fcbd762911c21a64ced3dbef99b2b51ac75",
                         "installed_by": ["subworkflows"]
                     },
                     "utils_nfcore_pipeline": {
@@ -84,7 +84,7 @@
                     },
                     "utils_nfschema_plugin": {
                         "branch": "master",
-                        "git_sha": "4b406a74dc0449c0401ed87d5bfff4252fd277fd",
+                        "git_sha": "a7b27fd25bfa8dcc07d299e88bd790585901a436",
                         "installed_by": ["subworkflows"]
                     }
                 }

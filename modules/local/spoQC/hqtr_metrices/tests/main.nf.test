@@ -1,0 +1,82 @@
+nextflow_process {
+
+    name "Test Process SPOQC_HQTR_METRICES"
+    script "../main.nf"
+    process "SPOQC_HQTR_METRICES"
+    config "./nextflow.config"
+
+    tag "modules"
+    tag "modules_local"
+    tag "spoqc"
+    tag "spoqc/hqtr_metrices"
+
+    setup {
+        run("UNTAR") {
+            script "modules/nf-core/untar/main.nf"
+            process {
+                """
+                input[0] = [[], file('https://raw.githubusercontent.com/nf-core/test-datasets/spatialaxe/xenium_bundle.tar.gz', checkIfExists: true)]
+                """
+            }
+        }
+
+        run("SPATIALDATA_WRITE") {
+            script "modules/local/spatialdata/write/main.nf"
+            process {
+                """
+                input[0] = channel.of([
+                        [id: "test_run_spoqc"],
+                    ]).combine(UNTAR.out.untar.map { it[1] })
+                input[1] = "spatialdata_raw"
+                input[2] = []
+                input[3] = "all"
+                """
+            }
+        }
+    }
+
+    test("spoqc hqtr_metrices") {
+
+        when {
+            process {
+                """
+                input[0] = SPATIALDATA_WRITE.out.spatialdata
+                input[1] = "hqtr_metrices"
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert process.success },
+                { assert file(process.out.report[0][1]).isDirectory() },
+                { assert file(process.out.metrices[0][1]).isDirectory() },
+                { assert snapshot(process.out.versions_spoqc).match() }
+            )
+        }
+    }
+
+    test("spoqc hqtr_metrices stub") {
+
+        options "-stub"
+
+        when {
+            process {
+                """
+                input[0] = SPATIALDATA_WRITE.out.spatialdata
+                input[1] = "hqtr_metrices"
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert process.success },
+                { assert file(process.out.report[0][1]).isDirectory() },
+                { assert file(process.out.metrices[0][1]).isDirectory() },
+                { assert snapshot(process.out.versions_spoqc).match() }
+            )
+        }
+    }
+
+}
