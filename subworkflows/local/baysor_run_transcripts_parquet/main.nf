@@ -17,25 +17,27 @@ include { XENIUM_PATCH_STITCH              } from '../../../modules/local/xenium
 include { PARQUET2CSV                      } from '../../../modules/local/utility/parquet2csv/main'
 include { BAYSOR_PREPROCESS_TRANSCRIPTS    } from '../../../modules/local/utility/preprocess/main'
 include { RECONSTRUCT_PATCHES              } from '../../../modules/local/utility/reconstruct_patches/main'
-include { BAYSOR_ESTIMATE_SCALE_FACTOR     } from '../../../modules/local/utility/estimatescalefactor/main'
+include { XENIUMRANGER_IMPORTSEGMENTATION  } from '../../../modules/nf-core/xeniumranger/importsegmentation/main'
 
 
 workflow BAYSOR_RUN_TRANSCRIPTS_PARQUET {
 
     take:
-    ch_bundle_path           // channel: [ val(meta), ["path-to-xenium-bundle"] ]
-    ch_transcripts_parquet   // channel: [ val(meta), ["transcripts.parquet"] ]
-    ch_morphology_image      // channel: [ val(meta), ["morphology_focus.ome.tif"] ]
-    ch_config                // channel: ["path-to-xenium.toml"]
-    ch_prior_mask            // channel: [ val(meta), ["resized_mask.tif"] ] or empty (cellpose)
-    baysor_tiling            // value: bool — enable tiling
-    max_x                    // value: spatial filter upper x bound
-    max_y                    // value: spatial filter upper y bound
-    min_qv                   // value: minimum transcript QV
-    min_x                    // value: spatial filter lower x bound
-    min_y                    // value: spatial filter lower y bound
-    ch_prior_column          // channel: [val("cell_id")] or empty (no prior)
-    ch_transcripts_per_cell  // channel: [val(min_transcripts_per_cell)]
+    ch_bundle_path         // channel: [ val(meta), ["path-to-xenium-bundle"] ]
+    ch_transcripts_file // channel: [ val(meta), ["transcripts.parquet"] ]
+    ch_morphology_image    // channel: [ val(meta), ["morphology_focus.ome.tif"] ]
+    ch_config              // channel: ["path-to-xenium.toml"]
+    ch_prior_mask          // channel: [ val(meta), ["resized_mask.tif"] ] or empty (cellpose)
+    baysor_config          // value: path to baysor config TOML (or null)
+    baysor_scale           // value: Baysor --scale for non-tiled runs
+    baysor_tiling          // value: bool — enable tiling
+    baysor_tiling_scale    // value: Baysor --scale for tiled runs
+    max_x                  // value: spatial filter upper x bound
+    max_y                  // value: spatial filter upper y bound
+    min_qv                 // value: minimum transcript QV
+    min_x                  // value: spatial filter lower x bound
+    min_y                  // value: spatial filter lower y bound
+    expansion_distance     // value: nuclear expansion distance
 
     main:
 
@@ -134,11 +136,12 @@ workflow BAYSOR_RUN_TRANSCRIPTS_PARQUET {
                     xr_transcript_metadata,
                     xr_cell_polygons,
                     [], [], [],
-                    "microns"
+                    "microns",
+                    expansion_distance,
                 )
             }
 
-        XENIUMRANGER_IMPORT_SEGMENTATION (ch_xr)
+        XENIUMRANGER_IMPORTSEGMENTATION (ch_xr)
 
     } else {
 
@@ -177,13 +180,14 @@ workflow BAYSOR_RUN_TRANSCRIPTS_PARQUET {
                     segmentation_csv,
                     polygons2d,
                     [], [], [],
-                    ch_coordinate_space.val)
+                    ch_coordinate_space.val,
+                    expansion_distance)
             }
-        XENIUMRANGER_IMPORT_SEGMENTATION(ch_xr)
+
+        XENIUMRANGER_IMPORTSEGMENTATION(ch_xr)
     }
 
     emit:
-
-    redefined_bundle = XENIUMRANGER_IMPORT_SEGMENTATION.out.outs
+    redefined_bundle = XENIUMRANGER_IMPORTSEGMENTATION.out.outs
     coordinate_space = ch_coordinate_space
 }

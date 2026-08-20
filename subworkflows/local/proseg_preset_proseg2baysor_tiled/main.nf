@@ -2,9 +2,11 @@
 // Runs proseg with tiling: divide transcripts -> proseg per patch -> proseg2baysor -> stitch -> xeniumranger
 //
 
-include { PROSEG                           } from '../../../modules/nf-core/proseg/proseg/main'
-include { PROSEG2BAYSOR                    } from '../../../modules/nf-core/proseg/proseg2baysor/main'
-include { XENIUMRANGER_IMPORT_SEGMENTATION } from '../../../modules/nf-core/xeniumranger/import-segmentation/main'
+include { XENIUM_PATCH_DIVIDE              } from '../../../modules/local/xenium_patch/divide/main'
+include { PROSEG                           } from '../../../modules/local/proseg/preset/main'
+include { PROSEG2BAYSOR                    } from '../../../modules/local/proseg/proseg2baysor/main'
+include { XENIUM_PATCH_STITCH              } from '../../../modules/local/xenium_patch/stitch/main'
+include { XENIUMRANGER_IMPORTSEGMENTATION  } from '../../../modules/nf-core/xeniumranger/importsegmentation/main'
 
 include { XENIUM_PATCH_STITCH              } from '../../../modules/local/xenium_patch/stitch/main'
 include { XENIUM_PATCH_DIVIDE              } from '../../../modules/local/xenium_patch/divide/main'
@@ -13,7 +15,8 @@ workflow PROSEG_PRESET_PROSEG2BAYSOR_TILED {
 
     take:
     ch_bundle_path         // channel: [ val(meta), ["path-to-xenium-bundle"] ]
-    ch_transcripts_parquet // channel: [ val(meta), [ "transcripts.parquet" ] ]
+    ch_transcripts_file // channel: [ val(meta), [ "transcripts.parquet" ] ]
+    expansion_distance      // value: nuclear expansion distance
 
     main:
 
@@ -78,13 +81,13 @@ workflow PROSEG_PRESET_PROSEG2BAYSOR_TILED {
         .combine(XENIUM_PATCH_STITCH.out.xr_polygons_transcript, by: 0)
         .combine(ch_coordinate_space)
         .map { meta, bundle, geojson, csv, coord_space ->
-            tuple(meta, bundle, csv, geojson, [], [], [], coord_space)
+            tuple(meta, bundle, csv, geojson, [], [], [], coord_space, expansion_distance)
         }
 
-    XENIUMRANGER_IMPORT_SEGMENTATION ( ch_xr )
+    XENIUMRANGER_IMPORTSEGMENTATION ( ch_xr )
 
     emit:
 
     coordinate_space = ch_coordinate_space                          // channel: [ "microns" ]
-    redefined_bundle = XENIUMRANGER_IMPORT_SEGMENTATION.out.outs    // channel: [ val(meta), ["redefined-xenium-bundle"] ]
+    redefined_bundle = XENIUMRANGER_IMPORTSEGMENTATION.out.outs    // channel: [ val(meta), ["redefined-xenium-bundle"] ]
 }

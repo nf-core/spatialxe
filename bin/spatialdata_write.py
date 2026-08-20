@@ -130,6 +130,17 @@ def main():
         nucleus_labels = False
         cells_as_circles = False
 
+    # set sd variables based on the coordinate space
+    if args.coordinate_space == "all":
+        cells_labels = True
+        nucleus_labels = True
+        cells_boundaries = True
+        nucleus_boundaries = True
+        cells_as_circles = True
+
+    print(f"[NOTE] Apply cells_boundaries {cells_boundaries}")
+    print(f"[NOTE] Apply nucleus_boundaries {nucleus_boundaries}")
+
     if args.format == "xenium":
         sd_xenium_obj = xenium(
             args.bundle,

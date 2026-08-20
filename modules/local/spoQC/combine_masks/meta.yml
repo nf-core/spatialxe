@@ -1,0 +1,117 @@
+name: spoqc_combine_masks
+description: |
+  Combine the HQCR, HQPR and HQTR masks into a single per-staining QC report.
+keywords:
+  - spatial transcriptomics
+  - quality control
+  - spoqc
+  - xenium
+  - mask combination
+tools:
+  - "spoqc":
+      description: |
+        spoQC is a modular framework for multimodal quality control (QC) of imaging-based spatially resolved transcriptomics (SRT).
+      homepage: https://github.com/heylf/spoQC
+      documentation: https://github.com/heylf/spoQC
+      licence: ["MIT license"]
+input:
+  - - meta:
+        type: map
+        description: |
+          Groovy Map containing sample information
+          e.g. [ id:'sample' ]
+    - spatialdata:
+        type: directory
+        description: Path to the SpatialData zarr store to run QC on
+        ontologies: []
+    - staining_idx_sd:
+        type: integer
+        description: Staining index carried alongside spatialdata to align the per-staining combined channel (Groovy var `_stain_sd`)
+  - step:
+      type: string
+      description: Name of the spoQC step to run, passed to `spoqc -s`
+  - - mask_hqcr:
+        type: file
+        description: HQCR raw mask from SPOQC_HQCR_IDENT
+        pattern: "hqcr_output_mask_raw.parquet"
+        ontologies: []
+    - staining_idx_hqcr:
+        type: integer
+        description: Staining index carried alongside mask_hqcr to align the combined channel (Groovy var `_stain_hqcr`)
+  - - staining:
+        type: integer
+        description: Staining index
+    - mask_hqpr:
+        type: directory
+        description: Per-staining raw HQPR mask from SPOQC_HQPR_CLUSTERING
+        pattern: "spoQC_tmp/*"
+        ontologies: []
+  - - mask_hqtr:
+        type: directory
+        description: HQTR raw mask from SPOQC_HQTR_CLUSTERING
+        pattern: "hqtr_output_mask_raw"
+        ontologies: []
+    - staining_idx_hqtr:
+        type: integer
+        description: Staining index carried alongside mask_hqtr to align the combined channel (Groovy var `_stain_hqtr`)
+  - - mask_smoothed_hqcr:
+        type: file
+        description: Smoothed HQCR mask from SPOQC_HQCR_IDENT
+        pattern: "hqcr_output_mask_smoothed_raw.parquet"
+        ontologies: []
+    - staining_idx_smoothed_hqcr:
+        type: integer
+        description: Staining index carried alongside mask_smoothed_hqcr to align the combined channel (Groovy var `_stain_smoothed_hqcr`)
+  - - staining_idx_smoothed_hqpr:
+        type: integer
+        description: Staining index carried alongside mask_smoothed_hqpr to align the combined channel (Groovy var `_s`)
+    - mask_smoothed_hqpr:
+        type: directory
+        description: Per-staining smoothed HQPR mask from SPOQC_HQPR_REFINEMENT
+        pattern: "spoQC_tmp/*"
+        ontologies: []
+  - - mask_smoothed_hqtr:
+        type: directory
+        description: Smoothed HQTR mask from SPOQC_HQTR_REFINEMENT
+        pattern: "hqtr_output_mask_smoothed_raw"
+        ontologies: []
+    - staining_idx_smoothed_hqtr:
+        type: integer
+        description: Staining index carried alongside mask_smoothed_hqtr to align the combined channel (Groovy var `_stain_smoothed_hqtr`)
+output:
+  report:
+    - - meta:
+          type: map
+          description: |
+            Groovy Map containing sample information
+            e.g. [ id:'sample' ]
+      - "report/combine_masks/${staining}":
+          type: directory
+          description: HTML/plot QC report directory for this staining, tagged with the staining index
+          pattern: "report/combine_masks/${staining}"
+          ontologies: []
+  versions_spoqc:
+    - - "${task.process}":
+          type: string
+          description: The process the versions were collected from
+      - spoqc:
+          type: string
+          description: The tool name
+      - "spoqc --version 2>&1 | grep -oP '\\d+\\.\\d+\\.\\d+' || echo unknown":
+          type: eval
+          description: The expression to obtain the version of the tool
+topics:
+  versions:
+    - - "${task.process}":
+          type: string
+          description: The process the versions were collected from
+      - spoqc:
+          type: string
+          description: The tool name
+      - "spoqc --version 2>&1 | grep -oP '\\d+\\.\\d+\\.\\d+' || echo unknown":
+          type: eval
+          description: The expression to obtain the version of the tool
+authors:
+  - "@heylf"
+maintainers:
+  - "@heylf"

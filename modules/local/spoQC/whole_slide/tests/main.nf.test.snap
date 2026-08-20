@@ -1,0 +1,34 @@
+{
+    "spoqc whole_slide stub": {
+        "content": [
+            [
+                [
+                    "SPOQC_WHOLE_SLIDE",
+                    "spoqc",
+                    "0.1.0"
+                ]
+            ]
+        ],
+        "timestamp": "2026-08-13T09:53:13.863446176",
+        "meta": {
+            "nf-test": "0.9.5",
+            "nextflow": "26.04.6"
+        }
+    },
+    "spoqc whole_slide": {
+        "content": [
+            [
+                [
+                    "SPOQC_WHOLE_SLIDE",
+                    "spoqc",
+                    "0.1.0"
+                ]
+            ]
+        ],
+        "timestamp": "2026-08-13T09:52:35.665231657",
+        "meta": {
+            "nf-test": "0.9.5",
+            "nextflow": "26.04.6"
+        }
+    }
+}

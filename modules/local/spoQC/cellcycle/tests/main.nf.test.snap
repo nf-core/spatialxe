@@ -1,0 +1,34 @@
+{
+    "spoqc cellcycle stub": {
+        "content": [
+            [
+                [
+                    "SPOQC_CELLCYCLE",
+                    "spoqc",
+                    "0.1.0"
+                ]
+            ]
+        ],
+        "timestamp": "2026-08-12T16:29:35.665483138",
+        "meta": {
+            "nf-test": "0.9.5",
+            "nextflow": "26.04.6"
+        }
+    },
+    "spoqc cellcycle": {
+        "content": [
+            [
+                [
+                    "SPOQC_CELLCYCLE",
+                    "spoqc",
+                    "0.1.0"
+                ]
+            ]
+        ],
+        "timestamp": "2026-08-12T16:29:10.884938612",
+        "meta": {
+            "nf-test": "0.9.5",
+            "nextflow": "26.04.6"
+        }
+    }
+}

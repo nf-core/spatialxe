@@ -6,13 +6,14 @@ include { SEGGER2XR                        } from '../../../modules/local/utilit
 include { SEGGER_TRAIN                     } from '../../../modules/local/segger/train/main'
 include { SEGGER_PREDICT                   } from '../../../modules/local/segger/predict/main'
 include { SEGGER_CREATE_DATASET            } from '../../../modules/local/segger/create_dataset/main'
-include { XENIUMRANGER_IMPORT_SEGMENTATION } from '../../../modules/nf-core/xeniumranger/import-segmentation/main'
+include { XENIUMRANGER_IMPORTSEGMENTATION  } from '../../../modules/nf-core/xeniumranger/importsegmentation/main'
 
 workflow SEGGER_CREATE_TRAIN_PREDICT {
     take:
     ch_bundle              // channel: [ val(meta), ["path-to-xenium-bundle"] ]
     ch_transcripts_file // channel: [ val(meta), [bundle + "/transcripts.parquet"]]
     segger_model           // value: path to a pre-trained segger model checkpoint (or null)
+    expansion_distance      // value: nuclear expansion distance
 
     main:
 
@@ -64,15 +65,15 @@ workflow SEGGER_CREATE_TRAIN_PREDICT {
                 [],  // cells
                 [],  // coordinate_transform
                 ch_coordinate_space.val,
+                expansion_distance,
             )
         }
 
-    XENIUMRANGER_IMPORT_SEGMENTATION(
+    XENIUMRANGER_IMPORTSEGMENTATION(
         ch_imp_seg_inputs
     )
 
     emit:
-
-    coordinate_space = ch_coordinate_space                       // channel: [ "microns" ]
-    redefined_bundle = XENIUMRANGER_IMPORT_SEGMENTATION.out.outs // channel: [ val(meta), ["redefined-xenium-bundle"] ]
+    coordinate_space = ch_coordinate_space // channel: [ "microns" ]
+    redefined_bundle = XENIUMRANGER_IMPORTSEGMENTATION.out.outs // channel: [ val(meta), ["redefined-xenium-bundle"] ]
 }

@@ -2,15 +2,15 @@
 // Runs proseg for the xenium format and proseg2baysor to generate cell ploygons
 //
 
-include { PROSEG                           } from '../../../modules/nf-core/proseg/proseg/main'
-include { PROSEG2BAYSOR                    } from '../../../modules/nf-core/proseg/proseg2baysor/main'
-
-include { XENIUMRANGER_IMPORT_SEGMENTATION } from '../../../modules/nf-core/xeniumranger/import-segmentation/main'
+include { PROSEG                           } from '../../../modules/local/proseg/preset/main'
+include { PROSEG2BAYSOR                    } from '../../../modules/local/proseg/proseg2baysor/main'
+include { XENIUMRANGER_IMPORTSEGMENTATION  } from '../../../modules/nf-core/xeniumranger/importsegmentation/main'
 
 workflow PROSEG_PRESET_PROSEG2BAYSOR {
     take:
     ch_bundle_path         // channel: [ val(meta), ["path-to-xenium-bundle"] ]
-    ch_transcripts_parquet // channel: [ val(meta), [ "transcripts.parquet" ] ]
+    ch_transcripts_file // channel: [ val(meta), [ "transcripts.parquet" ] ]
+    expansion_distance      // value: nuclear expansion distance
 
     main:
 
@@ -39,12 +39,15 @@ workflow PROSEG_PRESET_PROSEG2BAYSOR {
                 [],
                 [],
                 ch_coordinate_space.val,
+                expansion_distance,
             )
         }
-    XENIUMRANGER_IMPORT_SEGMENTATION(ch_imp_seg_inputs)
+
+    XENIUMRANGER_IMPORTSEGMENTATION(
+        ch_imp_seg_inputs
+    )
 
     emit:
-
-    coordinate_space = ch_coordinate_space                       // channel: [ "microns" ]
-    redefined_bundle = XENIUMRANGER_IMPORT_SEGMENTATION.out.outs // channel: [ val(meta), ["redefined-xenium-bundle"] ]
+    coordinate_space = ch_coordinate_space // channel: [ "microns" ]
+    redefined_bundle = XENIUMRANGER_IMPORTSEGMENTATION.out.outs // channel: [ val(meta), ["redefined-xenium-bundle"] ]
 }

@@ -9,7 +9,7 @@ include { CELLPOSE as CELLPOSE_CELLS       } from '../../../modules/nf-core/cell
 include { EXTRACT_DAPI                     } from '../../../modules/local/utility/extract_dapi/main'
 include { STARDIST as STARDIST_NUCLEI      } from '../../../modules/nf-core/stardist/main'
 include { CONVERT_MASK_UINT32              } from '../../../modules/local/utility/convert_mask_uint32/main'
-include { XENIUMRANGER_IMPORT_SEGMENTATION } from '../../../modules/nf-core/xeniumranger/import-segmentation/main'
+include { XENIUMRANGER_IMPORTSEGMENTATION  } from '../../../modules/nf-core/xeniumranger/importsegmentation/main'
 
 workflow CELLPOSE_RESOLIFT_MORPHOLOGY_OME_TIF {
     take:
@@ -20,6 +20,7 @@ workflow CELLPOSE_RESOLIFT_MORPHOLOGY_OME_TIF {
     nucleus_segmentation_only  // value: bool
     sharpen_tiff               // value: bool
     stardist_nuclei_model      // value: stardist pretrained model name
+    expansion_distance         // value: nuclear expansion distance
 
     main:
 
@@ -106,9 +107,10 @@ workflow CELLPOSE_RESOLIFT_MORPHOLOGY_OME_TIF {
                     [],
                     [],
                     coord_space,
+                    expansion_distance,
                 )
             }
-        XENIUMRANGER_IMPORT_SEGMENTATION(
+        XENIUMRANGER_IMPORTSEGMENTATION(
             ch_imp_seg_inputs
         )
     }
@@ -128,14 +130,15 @@ workflow CELLPOSE_RESOLIFT_MORPHOLOGY_OME_TIF {
                     cells_seg,
                     [],
                     coord_space,
+                    expansion_distance,
                 )
             }
-        XENIUMRANGER_IMPORT_SEGMENTATION(
+        XENIUMRANGER_IMPORTSEGMENTATION(
             ch_imp_seg_inputs
         )
     }
 
     emit:
     coordinate_space = ch_coordinate_space // channel: [ ["pixels"] ]
-    redefined_bundle = XENIUMRANGER_IMPORT_SEGMENTATION.out.outs // channel: [ val(meta), ["redefined-xenium-bundle"] ]
+    redefined_bundle = XENIUMRANGER_IMPORTSEGMENTATION.out.outs // channel: [ val(meta), ["redefined-xenium-bundle"] ]
 }

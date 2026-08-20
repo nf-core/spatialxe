@@ -1,0 +1,34 @@
+{
+    "spoqc combine_masks": {
+        "content": [
+            [
+                [
+                    "SPOQC_COMBINE_MASKS",
+                    "spoqc",
+                    "0.1.0"
+                ]
+            ]
+        ],
+        "timestamp": "2026-08-12T16:08:49.679401464",
+        "meta": {
+            "nf-test": "0.9.5",
+            "nextflow": "26.04.6"
+        }
+    },
+    "spoqc combine_masks stub": {
+        "content": [
+            [
+                [
+                    "SPOQC_COMBINE_MASKS",
+                    "spoqc",
+                    "0.1.0"
+                ]
+            ]
+        ],
+        "timestamp": "2026-08-12T16:12:54.234002727",
+        "meta": {
+            "nf-test": "0.9.5",
+            "nextflow": "26.04.6"
+        }
+    }
+}

@@ -1,0 +1,157 @@
+nextflow_process {
+
+    name "Test Process SPOQC_HQCR_IDENT"
+    script "../main.nf"
+    process "SPOQC_HQCR_IDENT"
+    config "./nextflow.config"
+
+    tag "modules"
+    tag "modules_local"
+    tag "spoqc"
+    tag "spoqc/hqcr_ident"
+
+    setup {
+        run("UNTAR") {
+            script "modules/nf-core/untar/main.nf"
+            process {
+                """
+                input[0] = [[], file('https://raw.githubusercontent.com/nf-core/test-datasets/spatialaxe/xenium_bundle.tar.gz', checkIfExists: true)]
+                """
+            }
+        }
+
+        run("SPATIALDATA_WRITE") {
+            script "modules/local/spatialdata/write/main.nf"
+            process {
+                """
+                input[0] = channel.of([
+                        [id: "test_run_spoqc"],
+                    ]).combine(UNTAR.out.untar.map { it[1] })
+                input[1] = "spatialdata_raw"
+                input[2] = []
+                input[3] = "all"
+                """
+            }
+        }
+
+        run("SPOQC_ANNOTATION") {
+            script "modules/local/spoQC/annotation/main.nf"
+            process {
+                """
+                input[0] = SPATIALDATA_WRITE.out.spatialdata
+                input[1] = []
+                input[2] = "annotation"
+                """
+            }
+        }
+
+        run("SPOQC_GENERAL") {
+            script "modules/local/spoQC/general/main.nf"
+            process {
+                """
+                input[0] = SPATIALDATA_WRITE.out.spatialdata
+                input[1] = SPOQC_ANNOTATION.out.annotation.map { it[1] }
+                input[2] = "generalqc"
+                """
+            }
+        }
+
+        run("SPOQC_BUBBLE") {
+            script "modules/local/spoQC/bubble/main.nf"
+            process {
+                """
+                input[0] = SPATIALDATA_WRITE.out.spatialdata
+                input[1] = "bubbleqc"
+                """
+            }
+        }
+
+        run("SPOQC_DOUBLET") {
+            script "modules/local/spoQC/doublet/main.nf"
+            process {
+                """
+                input[0] = SPATIALDATA_WRITE.out.spatialdata
+                input[1] = SPOQC_ANNOTATION.out.annotation.map { it[1] }
+                input[2] = "doubletqc"
+                """
+            }
+        }
+
+        run("SPOQC_VOID") {
+            script "modules/local/spoQC/void/main.nf"
+            process {
+                """
+                input[0] = SPATIALDATA_WRITE.out.spatialdata
+                input[1] = "voidqc"
+                """
+            }
+        }
+
+        run("SPOQC_CELL") {
+            script "modules/local/spoQC/cell/main.nf"
+            process {
+                """
+                input[0] = SPATIALDATA_WRITE.out.spatialdata
+                input[1] = "cellqc"
+                """
+            }
+        }
+    }
+
+    test("spoqc hqcr_ident") {
+
+        when {
+            process {
+                """
+                input[0] = SPATIALDATA_WRITE.out.spatialdata
+                input[1] = "hqcr_ident"
+                input[2] = SPOQC_GENERAL.out.tmp.map { it[1] }
+                input[3] = SPOQC_BUBBLE.out.tmp.map { it[1] }
+                input[4] = SPOQC_DOUBLET.out.tmp.map { it[1] }
+                input[5] = SPOQC_VOID.out.tmp.map { it[1] }
+                input[6] = SPOQC_CELL.out.tmp.map { it[1] }
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert process.success },
+                { assert file(process.out.report[0][1]).isDirectory() },
+                { assert file(process.out.mask[0][1]).exists() },
+                { assert file(process.out.mask_smoothed[0][1]).exists() },
+                { assert snapshot(process.out.versions_spoqc).match() }
+            )
+        }
+    }
+
+    test("spoqc hqcr_ident stub") {
+
+        options "-stub"
+
+        when {
+            process {
+                """
+                input[0] = SPATIALDATA_WRITE.out.spatialdata
+                input[1] = "hqcr_ident"
+                input[2] = SPOQC_GENERAL.out.tmp.map { it[1] }
+                input[3] = SPOQC_BUBBLE.out.tmp.map { it[1] }
+                input[4] = SPOQC_DOUBLET.out.tmp.map { it[1] }
+                input[5] = SPOQC_VOID.out.tmp.map { it[1] }
+                input[6] = SPOQC_CELL.out.tmp.map { it[1] }
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert process.success },
+                { assert file(process.out.report[0][1]).isDirectory() },
+                { assert file(process.out.mask[0][1]).exists() },
+                { assert file(process.out.mask_smoothed[0][1]).exists() },
+                { assert snapshot(process.out.versions_spoqc).match() }
+            )
+        }
+    }
+
+}

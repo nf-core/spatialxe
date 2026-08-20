@@ -1,0 +1,99 @@
+nextflow_pipeline {
+
+    name "Test pipeline - runs the default pipeline tests (coordinate mode)"
+    script "../main.nf"
+    tag "pipeline"
+    config "../conf/tests/test_spoqc.config"
+
+    test("-profile test") {
+
+        when {
+            params {
+                outdir = "$outputDir"
+            }
+        }
+
+        then {
+            // stable_name: All files + folders in ${params.outdir}/ with a stable name
+            // spoqc/** is excluded: spoQC generates thousands of non-deterministic
+            // plot/report files, so only folder existence is checked below instead
+            def stable_name = getAllFilesFromDir(params.outdir, relative: true, includeDir: true, ignore: [
+                'pipeline_info/*.{html,json,txt}',
+                'spoqc/**',
+                // the *_plots dir itself is optional (only emitted when MultiQC finds
+                // exportable plot data that run), so its bare existence isn't stable either
+                'qc/multiqc/*/MultiQC-*-Xeniumranger-import-segmentation-Run_multiqc_report_plots',
+                'qc/multiqc/*/MultiQC-*-Xeniumranger-import-segmentation-Run_multiqc_report_plots/**',
+            ])
+            // stable_path: All files in ${params.outdir}/ with stable content
+            def stable_path = getAllFilesFromDir(params.outdir, ignoreFile: 'tests/.nftignore')
+            // spoQC report subfolders: checked for existence only (see spoqc/** exclusion above)
+            def spoqc_report_dirs = [
+                "ambientqc", "analysis", "annotation", "bubbleqc", "cellcycleqc",
+                "cellqc", "combine_masks", "doubletqc", "generalqc", "hqcr",
+                "hqpr", "hqtr", "modelqc", "transcriptqc", "voidqc", "whole_slide_qc"
+            ]
+            assertAll(
+                { assert workflow.success},
+                { assert snapshot(
+                    // pipeline versions.yml file for multiqc from which Nextflow version is removed because we test pipelines on multiple Nextflow versions
+                    removeNextflowVersion("$outputDir/pipeline_info/nf_core_spatialaxe_software_mqc_versions.yml"),
+                    // All stable path name, with a relative path
+                    stable_name,
+                    // All files with stable contents
+                    stable_path
+                ).match() },
+                { assert new File("$outputDir/spoqc/test_run/report").isDirectory() },
+                { assert new File("$outputDir/spoqc/test_run/report/report.html").exists() },
+                { assert new File("$outputDir/spoqc/test_run/spoQC_tmp").isDirectory() },
+                *spoqc_report_dirs.collect { dir ->
+                    { -> assert new File("$outputDir/spoqc/test_run/report/$dir").isDirectory() }
+                }
+            )
+        }
+    }
+
+
+    test("-profile test stub") {
+
+        options "-stub"
+
+        when {
+            params {
+                outdir = "$outputDir"
+            }
+        }
+
+        then {
+            // stable_name: All files + folders in ${params.outdir}/ with a stable name
+            // spoqc/** is excluded: spoQC generates thousands of non-deterministic
+            // plot/report files, so only folder existence is checked below instead
+            def stable_name = getAllFilesFromDir(params.outdir, relative: true, includeDir: true, ignore: ['pipeline_info/*.{html,json,txt}', 'spoqc/**'])
+            // stable_path: All files in ${params.outdir}/ with stable content
+            def stable_path = getAllFilesFromDir(params.outdir, ignoreFile: 'tests/.nftignore')
+            // spoQC report subfolders: checked for existence only (see spoqc/** exclusion above)
+            def spoqc_report_dirs = [
+                "ambientqc", "analysis", "annotation", "bubbleqc", "cellcycleqc",
+                "cellqc", "combine_masks", "doubletqc", "generalqc", "hqcr",
+                "hqpr", "hqtr", "modelqc", "transcriptqc", "voidqc", "whole_slide_qc"
+            ]
+            assertAll(
+                { assert workflow.success},
+                { assert snapshot(
+                    // pipeline versions.yml file for multiqc from which Nextflow version is removed because we test pipelines on multiple Nextflow versions
+                    removeNextflowVersion("$outputDir/pipeline_info/nf_core_spatialaxe_software_mqc_versions.yml"),
+                    // All stable path name, with a relative path
+                    stable_name,
+                    // All files with stable contents
+                    stable_path
+                ).match() },
+                { assert new File("$outputDir/spoqc/test_run/report").isDirectory() },
+                { assert new File("$outputDir/spoqc/test_run/report/report.html").exists() },
+                { assert new File("$outputDir/spoqc/test_run/spoQC_tmp").isDirectory() },
+                *spoqc_report_dirs.collect { dir ->
+                    { -> assert new File("$outputDir/spoqc/test_run/report/$dir").isDirectory() }
+                }
+            )
+        }
+    }
+}

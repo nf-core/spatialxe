@@ -1,0 +1,675 @@
+{
+    "-profile test": {
+        "content": [
+            {
+                "SPATIALDATA_WRITE_RAW_BUNDLE": {
+                    "spatialdata": "0.7.2"
+                },
+                "SPOQC_AMBIENT": {
+                    "spoqc": "0.1.0"
+                },
+                "SPOQC_ANALYSIS_CATEGORY": {
+                    "spoqc": "0.1.0"
+                },
+                "SPOQC_ANALYSIS_CLUSTER": {
+                    "spoqc": "0.1.0"
+                },
+                "SPOQC_ANALYSIS_OVERVIEW": {
+                    "spoqc": "0.1.0"
+                },
+                "SPOQC_ANNOTATION": {
+                    "spoqc": "0.1.0"
+                },
+                "SPOQC_BUBBLE": {
+                    "spoqc": "0.1.0"
+                },
+                "SPOQC_CELL": {
+                    "spoqc": "0.1.0"
+                },
+                "SPOQC_CELLCYCLE": {
+                    "spoqc": "0.1.0"
+                },
+                "SPOQC_COMBINE_MASKS": {
+                    "spoqc": "0.1.0"
+                },
+                "SPOQC_DOUBLET": {
+                    "spoqc": "0.1.0"
+                },
+                "SPOQC_FINALREPORT": {
+                    "spoqc": "0.1.0"
+                },
+                "SPOQC_GENERAL": {
+                    "spoqc": "0.1.0"
+                },
+                "SPOQC_HQCR_CELLTYPE": {
+                    "spoqc": "0.1.0"
+                },
+                "SPOQC_HQCR_IDENT": {
+                    "spoqc": "0.1.0"
+                },
+                "SPOQC_HQPR_BOUNDING_BOX": {
+                    "spoqc": "0.1.0"
+                },
+                "SPOQC_HQPR_CELLTYPE": {
+                    "spoqc": "0.1.0"
+                },
+                "SPOQC_HQPR_CLUSTERING": {
+                    "spoqc": "0.1.0"
+                },
+                "SPOQC_HQPR_METRICES": {
+                    "spoqc": "0.1.0"
+                },
+                "SPOQC_HQPR_REFINEMENT": {
+                    "spoqc": "0.1.0"
+                },
+                "SPOQC_HQTR_AC": {
+                    "spoqc": "0.1.0"
+                },
+                "SPOQC_HQTR_BOUNDING_BOX": {
+                    "spoqc": "0.1.0"
+                },
+                "SPOQC_HQTR_CELLTYPE": {
+                    "spoqc": "0.1.0"
+                },
+                "SPOQC_HQTR_CLUSTERING": {
+                    "spoqc": "0.1.0"
+                },
+                "SPOQC_HQTR_METRICES": {
+                    "spoqc": "0.1.0"
+                },
+                "SPOQC_HQTR_QV": {
+                    "spoqc": "0.1.0"
+                },
+                "SPOQC_HQTR_REFINEMENT": {
+                    "spoqc": "0.1.0"
+                },
+                "SPOQC_MODEL": {
+                    "spoqc": "0.1.0"
+                },
+                "SPOQC_TRANSCRIPT": {
+                    "spoqc": "0.1.0"
+                },
+                "SPOQC_VOID": {
+                    "spoqc": "0.1.0"
+                },
+                "SPOQC_WHOLE_SLIDE": {
+                    "spoqc": "0.1.0"
+                },
+                "UNTAR": {
+                    "untar": 1.34
+                },
+                "Workflow": {
+                    "nf-core/spatialaxe": "v1.0.1dev"
+                }
+            },
+            [
+                "pipeline_info",
+                "pipeline_info/nf_core_spatialaxe_software_mqc_versions.yml",
+                "qc",
+                "qc/multiqc",
+                "qc/multiqc/raw_bundle",
+                "qc/multiqc/raw_bundle/MultiQC-Pre-Xeniumranger-import-segmentation-Run_multiqc_report.html",
+                "qc/multiqc/raw_bundle/MultiQC-Pre-Xeniumranger-import-segmentation-Run_multiqc_report_data",
+                "qc/multiqc/raw_bundle/MultiQC-Pre-Xeniumranger-import-segmentation-Run_multiqc_report_data/llms-full.txt",
+                "qc/multiqc/raw_bundle/MultiQC-Pre-Xeniumranger-import-segmentation-Run_multiqc_report_data/multiqc.log",
+                "qc/multiqc/raw_bundle/MultiQC-Pre-Xeniumranger-import-segmentation-Run_multiqc_report_data/multiqc.parquet",
+                "qc/multiqc/raw_bundle/MultiQC-Pre-Xeniumranger-import-segmentation-Run_multiqc_report_data/multiqc_citations.txt",
+                "qc/multiqc/raw_bundle/MultiQC-Pre-Xeniumranger-import-segmentation-Run_multiqc_report_data/multiqc_data.json",
+                "qc/multiqc/raw_bundle/MultiQC-Pre-Xeniumranger-import-segmentation-Run_multiqc_report_data/multiqc_general_stats.txt",
+                "qc/multiqc/raw_bundle/MultiQC-Pre-Xeniumranger-import-segmentation-Run_multiqc_report_data/multiqc_software_versions.txt",
+                "qc/multiqc/raw_bundle/MultiQC-Pre-Xeniumranger-import-segmentation-Run_multiqc_report_data/multiqc_sources.txt",
+                "qc/multiqc/raw_bundle/MultiQC-Pre-Xeniumranger-import-segmentation-Run_multiqc_report_data/multiqc_xenium.txt",
+                "qc/multiqc/raw_bundle/MultiQC-Pre-Xeniumranger-import-segmentation-Run_multiqc_report_data/xenium_fov_quality_ranges.txt",
+                "qc/multiqc/raw_bundle/MultiQC-Pre-Xeniumranger-import-segmentation-Run_multiqc_report_data/xenium_segmentation.txt",
+                "qc/multiqc/raw_bundle/MultiQC-Pre-Xeniumranger-import-segmentation-Run_multiqc_report_data/xenium_transcript_quality_per_sample_table.txt",
+                "qc/multiqc/raw_bundle/MultiQC-Pre-Xeniumranger-import-segmentation-Run_multiqc_report_data/xenium_transcripts_per_gene.txt",
+                "qc/multiqc/redefined_bundle",
+                "qc/multiqc/redefined_bundle/MultiQC-Post-Xeniumranger-import-segmentation-Run_multiqc_report.html",
+                "qc/multiqc/redefined_bundle/MultiQC-Post-Xeniumranger-import-segmentation-Run_multiqc_report_data",
+                "qc/multiqc/redefined_bundle/MultiQC-Post-Xeniumranger-import-segmentation-Run_multiqc_report_data/llms-full.txt",
+                "qc/multiqc/redefined_bundle/MultiQC-Post-Xeniumranger-import-segmentation-Run_multiqc_report_data/multiqc.log",
+                "qc/multiqc/redefined_bundle/MultiQC-Post-Xeniumranger-import-segmentation-Run_multiqc_report_data/multiqc.parquet",
+                "qc/multiqc/redefined_bundle/MultiQC-Post-Xeniumranger-import-segmentation-Run_multiqc_report_data/multiqc_citations.txt",
+                "qc/multiqc/redefined_bundle/MultiQC-Post-Xeniumranger-import-segmentation-Run_multiqc_report_data/multiqc_data.json",
+                "qc/multiqc/redefined_bundle/MultiQC-Post-Xeniumranger-import-segmentation-Run_multiqc_report_data/multiqc_general_stats.txt",
+                "qc/multiqc/redefined_bundle/MultiQC-Post-Xeniumranger-import-segmentation-Run_multiqc_report_data/multiqc_software_versions.txt",
+                "qc/multiqc/redefined_bundle/MultiQC-Post-Xeniumranger-import-segmentation-Run_multiqc_report_data/multiqc_sources.txt",
+                "qc/multiqc/redefined_bundle/MultiQC-Post-Xeniumranger-import-segmentation-Run_multiqc_report_data/multiqc_xenium.txt",
+                "qc/multiqc/redefined_bundle/MultiQC-Post-Xeniumranger-import-segmentation-Run_multiqc_report_data/xenium_fov_quality_ranges.txt",
+                "qc/multiqc/redefined_bundle/MultiQC-Post-Xeniumranger-import-segmentation-Run_multiqc_report_data/xenium_segmentation.txt",
+                "qc/multiqc/redefined_bundle/MultiQC-Post-Xeniumranger-import-segmentation-Run_multiqc_report_data/xenium_transcript_quality_per_sample_table.txt",
+                "qc/multiqc/redefined_bundle/MultiQC-Post-Xeniumranger-import-segmentation-Run_multiqc_report_data/xenium_transcripts_per_gene.txt",
+                "qc/spatialdata",
+                "qc/spatialdata/write",
+                "qc/spatialdata/write/spatialdata",
+                "qc/spatialdata/write/spatialdata/test_run",
+                "qc/spatialdata/write/spatialdata/test_run/raw_bundle",
+                "qc/spatialdata/write/spatialdata/test_run/raw_bundle/images",
+                "qc/spatialdata/write/spatialdata/test_run/raw_bundle/images/morphology_focus",
+                "qc/spatialdata/write/spatialdata/test_run/raw_bundle/images/morphology_focus/0",
+                "qc/spatialdata/write/spatialdata/test_run/raw_bundle/images/morphology_focus/0/c",
+                "qc/spatialdata/write/spatialdata/test_run/raw_bundle/images/morphology_focus/0/c/0",
+                "qc/spatialdata/write/spatialdata/test_run/raw_bundle/images/morphology_focus/0/c/0/0",
+                "qc/spatialdata/write/spatialdata/test_run/raw_bundle/images/morphology_focus/0/c/0/0/0",
+                "qc/spatialdata/write/spatialdata/test_run/raw_bundle/images/morphology_focus/0/c/0/0/1",
+                "qc/spatialdata/write/spatialdata/test_run/raw_bundle/images/morphology_focus/0/zarr.json",
+                "qc/spatialdata/write/spatialdata/test_run/raw_bundle/images/morphology_focus/1",
+                "qc/spatialdata/write/spatialdata/test_run/raw_bundle/images/morphology_focus/1/c",
+                "qc/spatialdata/write/spatialdata/test_run/raw_bundle/images/morphology_focus/1/c/0",
+                "qc/spatialdata/write/spatialdata/test_run/raw_bundle/images/morphology_focus/1/c/0/0",
+                "qc/spatialdata/write/spatialdata/test_run/raw_bundle/images/morphology_focus/1/c/0/0/0",
+                "qc/spatialdata/write/spatialdata/test_run/raw_bundle/images/morphology_focus/1/zarr.json",
+                "qc/spatialdata/write/spatialdata/test_run/raw_bundle/images/morphology_focus/2",
+                "qc/spatialdata/write/spatialdata/test_run/raw_bundle/images/morphology_focus/2/c",
+                "qc/spatialdata/write/spatialdata/test_run/raw_bundle/images/morphology_focus/2/c/0",
+                "qc/spatialdata/write/spatialdata/test_run/raw_bundle/images/morphology_focus/2/c/0/0",
+                "qc/spatialdata/write/spatialdata/test_run/raw_bundle/images/morphology_focus/2/c/0/0/0",
+                "qc/spatialdata/write/spatialdata/test_run/raw_bundle/images/morphology_focus/2/zarr.json",
+                "qc/spatialdata/write/spatialdata/test_run/raw_bundle/images/morphology_focus/3",
+                "qc/spatialdata/write/spatialdata/test_run/raw_bundle/images/morphology_focus/3/c",
+                "qc/spatialdata/write/spatialdata/test_run/raw_bundle/images/morphology_focus/3/c/0",
+                "qc/spatialdata/write/spatialdata/test_run/raw_bundle/images/morphology_focus/3/c/0/0",
+                "qc/spatialdata/write/spatialdata/test_run/raw_bundle/images/morphology_focus/3/c/0/0/0",
+                "qc/spatialdata/write/spatialdata/test_run/raw_bundle/images/morphology_focus/3/zarr.json",
+                "qc/spatialdata/write/spatialdata/test_run/raw_bundle/images/morphology_focus/4",
+                "qc/spatialdata/write/spatialdata/test_run/raw_bundle/images/morphology_focus/4/c",
+                "qc/spatialdata/write/spatialdata/test_run/raw_bundle/images/morphology_focus/4/c/0",
+                "qc/spatialdata/write/spatialdata/test_run/raw_bundle/images/morphology_focus/4/c/0/0",
+                "qc/spatialdata/write/spatialdata/test_run/raw_bundle/images/morphology_focus/4/c/0/0/0",
+                "qc/spatialdata/write/spatialdata/test_run/raw_bundle/images/morphology_focus/4/zarr.json",
+                "qc/spatialdata/write/spatialdata/test_run/raw_bundle/images/morphology_focus/zarr.json",
+                "qc/spatialdata/write/spatialdata/test_run/raw_bundle/images/zarr.json",
+                "qc/spatialdata/write/spatialdata/test_run/raw_bundle/labels",
+                "qc/spatialdata/write/spatialdata/test_run/raw_bundle/labels/cell_labels",
+                "qc/spatialdata/write/spatialdata/test_run/raw_bundle/labels/cell_labels/0",
+                "qc/spatialdata/write/spatialdata/test_run/raw_bundle/labels/cell_labels/0/c",
+                "qc/spatialdata/write/spatialdata/test_run/raw_bundle/labels/cell_labels/0/c/0",
+                "qc/spatialdata/write/spatialdata/test_run/raw_bundle/labels/cell_labels/0/c/0/0",
+                "qc/spatialdata/write/spatialdata/test_run/raw_bundle/labels/cell_labels/0/c/0/1",
+                "qc/spatialdata/write/spatialdata/test_run/raw_bundle/labels/cell_labels/0/zarr.json",
+                "qc/spatialdata/write/spatialdata/test_run/raw_bundle/labels/cell_labels/1",
+                "qc/spatialdata/write/spatialdata/test_run/raw_bundle/labels/cell_labels/1/c",
+                "qc/spatialdata/write/spatialdata/test_run/raw_bundle/labels/cell_labels/1/c/0",
+                "qc/spatialdata/write/spatialdata/test_run/raw_bundle/labels/cell_labels/1/c/0/0",
+                "qc/spatialdata/write/spatialdata/test_run/raw_bundle/labels/cell_labels/1/zarr.json",
+                "qc/spatialdata/write/spatialdata/test_run/raw_bundle/labels/cell_labels/2",
+                "qc/spatialdata/write/spatialdata/test_run/raw_bundle/labels/cell_labels/2/c",
+                "qc/spatialdata/write/spatialdata/test_run/raw_bundle/labels/cell_labels/2/c/0",
+                "qc/spatialdata/write/spatialdata/test_run/raw_bundle/labels/cell_labels/2/c/0/0",
+                "qc/spatialdata/write/spatialdata/test_run/raw_bundle/labels/cell_labels/2/zarr.json",
+                "qc/spatialdata/write/spatialdata/test_run/raw_bundle/labels/cell_labels/3",
+                "qc/spatialdata/write/spatialdata/test_run/raw_bundle/labels/cell_labels/3/c",
+                "qc/spatialdata/write/spatialdata/test_run/raw_bundle/labels/cell_labels/3/c/0",
+                "qc/spatialdata/write/spatialdata/test_run/raw_bundle/labels/cell_labels/3/c/0/0",
+                "qc/spatialdata/write/spatialdata/test_run/raw_bundle/labels/cell_labels/3/zarr.json",
+                "qc/spatialdata/write/spatialdata/test_run/raw_bundle/labels/cell_labels/4",
+                "qc/spatialdata/write/spatialdata/test_run/raw_bundle/labels/cell_labels/4/c",
+                "qc/spatialdata/write/spatialdata/test_run/raw_bundle/labels/cell_labels/4/c/0",
+                "qc/spatialdata/write/spatialdata/test_run/raw_bundle/labels/cell_labels/4/c/0/0",
+                "qc/spatialdata/write/spatialdata/test_run/raw_bundle/labels/cell_labels/4/zarr.json",
+                "qc/spatialdata/write/spatialdata/test_run/raw_bundle/labels/cell_labels/zarr.json",
+                "qc/spatialdata/write/spatialdata/test_run/raw_bundle/labels/nucleus_labels",
+                "qc/spatialdata/write/spatialdata/test_run/raw_bundle/labels/nucleus_labels/0",
+                "qc/spatialdata/write/spatialdata/test_run/raw_bundle/labels/nucleus_labels/0/c",
+                "qc/spatialdata/write/spatialdata/test_run/raw_bundle/labels/nucleus_labels/0/c/0",
+                "qc/spatialdata/write/spatialdata/test_run/raw_bundle/labels/nucleus_labels/0/c/0/0",
+                "qc/spatialdata/write/spatialdata/test_run/raw_bundle/labels/nucleus_labels/0/c/0/1",
+                "qc/spatialdata/write/spatialdata/test_run/raw_bundle/labels/nucleus_labels/0/zarr.json",
+                "qc/spatialdata/write/spatialdata/test_run/raw_bundle/labels/nucleus_labels/1",
+                "qc/spatialdata/write/spatialdata/test_run/raw_bundle/labels/nucleus_labels/1/c",
+                "qc/spatialdata/write/spatialdata/test_run/raw_bundle/labels/nucleus_labels/1/c/0",
+                "qc/spatialdata/write/spatialdata/test_run/raw_bundle/labels/nucleus_labels/1/c/0/0",
+                "qc/spatialdata/write/spatialdata/test_run/raw_bundle/labels/nucleus_labels/1/zarr.json",
+                "qc/spatialdata/write/spatialdata/test_run/raw_bundle/labels/nucleus_labels/2",
+                "qc/spatialdata/write/spatialdata/test_run/raw_bundle/labels/nucleus_labels/2/c",
+                "qc/spatialdata/write/spatialdata/test_run/raw_bundle/labels/nucleus_labels/2/c/0",
+                "qc/spatialdata/write/spatialdata/test_run/raw_bundle/labels/nucleus_labels/2/c/0/0",
+                "qc/spatialdata/write/spatialdata/test_run/raw_bundle/labels/nucleus_labels/2/zarr.json",
+                "qc/spatialdata/write/spatialdata/test_run/raw_bundle/labels/nucleus_labels/3",
+                "qc/spatialdata/write/spatialdata/test_run/raw_bundle/labels/nucleus_labels/3/c",
+                "qc/spatialdata/write/spatialdata/test_run/raw_bundle/labels/nucleus_labels/3/c/0",
+                "qc/spatialdata/write/spatialdata/test_run/raw_bundle/labels/nucleus_labels/3/c/0/0",
+                "qc/spatialdata/write/spatialdata/test_run/raw_bundle/labels/nucleus_labels/3/zarr.json",
+                "qc/spatialdata/write/spatialdata/test_run/raw_bundle/labels/nucleus_labels/4",
+                "qc/spatialdata/write/spatialdata/test_run/raw_bundle/labels/nucleus_labels/4/c",
+                "qc/spatialdata/write/spatialdata/test_run/raw_bundle/labels/nucleus_labels/4/c/0",
+                "qc/spatialdata/write/spatialdata/test_run/raw_bundle/labels/nucleus_labels/4/c/0/0",
+                "qc/spatialdata/write/spatialdata/test_run/raw_bundle/labels/nucleus_labels/4/zarr.json",
+                "qc/spatialdata/write/spatialdata/test_run/raw_bundle/labels/nucleus_labels/zarr.json",
+                "qc/spatialdata/write/spatialdata/test_run/raw_bundle/labels/zarr.json",
+                "qc/spatialdata/write/spatialdata/test_run/raw_bundle/points",
+                "qc/spatialdata/write/spatialdata/test_run/raw_bundle/points/transcripts",
+                "qc/spatialdata/write/spatialdata/test_run/raw_bundle/points/transcripts/points.parquet",
+                "qc/spatialdata/write/spatialdata/test_run/raw_bundle/points/transcripts/points.parquet/part.0.parquet",
+                "qc/spatialdata/write/spatialdata/test_run/raw_bundle/points/transcripts/zarr.json",
+                "qc/spatialdata/write/spatialdata/test_run/raw_bundle/points/zarr.json",
+                "qc/spatialdata/write/spatialdata/test_run/raw_bundle/shapes",
+                "qc/spatialdata/write/spatialdata/test_run/raw_bundle/shapes/cell_boundaries",
+                "qc/spatialdata/write/spatialdata/test_run/raw_bundle/shapes/cell_boundaries/shapes.parquet",
+                "qc/spatialdata/write/spatialdata/test_run/raw_bundle/shapes/cell_boundaries/zarr.json",
+                "qc/spatialdata/write/spatialdata/test_run/raw_bundle/shapes/cell_circles",
+                "qc/spatialdata/write/spatialdata/test_run/raw_bundle/shapes/cell_circles/shapes.parquet",
+                "qc/spatialdata/write/spatialdata/test_run/raw_bundle/shapes/cell_circles/zarr.json",
+                "qc/spatialdata/write/spatialdata/test_run/raw_bundle/shapes/nucleus_boundaries",
+                "qc/spatialdata/write/spatialdata/test_run/raw_bundle/shapes/nucleus_boundaries/shapes.parquet",
+                "qc/spatialdata/write/spatialdata/test_run/raw_bundle/shapes/nucleus_boundaries/zarr.json",
+                "qc/spatialdata/write/spatialdata/test_run/raw_bundle/shapes/zarr.json",
+                "qc/spatialdata/write/spatialdata/test_run/raw_bundle/tables",
+                "qc/spatialdata/write/spatialdata/test_run/raw_bundle/tables/table",
+                "qc/spatialdata/write/spatialdata/test_run/raw_bundle/tables/table/X",
+                "qc/spatialdata/write/spatialdata/test_run/raw_bundle/tables/table/X/data",
+                "qc/spatialdata/write/spatialdata/test_run/raw_bundle/tables/table/X/data/c",
+                "qc/spatialdata/write/spatialdata/test_run/raw_bundle/tables/table/X/data/c/0",
+                "qc/spatialdata/write/spatialdata/test_run/raw_bundle/tables/table/X/data/zarr.json",
+                "qc/spatialdata/write/spatialdata/test_run/raw_bundle/tables/table/X/indices",
+                "qc/spatialdata/write/spatialdata/test_run/raw_bundle/tables/table/X/indices/c",
+                "qc/spatialdata/write/spatialdata/test_run/raw_bundle/tables/table/X/indices/c/0",
+                "qc/spatialdata/write/spatialdata/test_run/raw_bundle/tables/table/X/indices/zarr.json",
+                "qc/spatialdata/write/spatialdata/test_run/raw_bundle/tables/table/X/indptr",
+                "qc/spatialdata/write/spatialdata/test_run/raw_bundle/tables/table/X/indptr/c",
+                "qc/spatialdata/write/spatialdata/test_run/raw_bundle/tables/table/X/indptr/c/0",
+                "qc/spatialdata/write/spatialdata/test_run/raw_bundle/tables/table/X/indptr/zarr.json",
+                "qc/spatialdata/write/spatialdata/test_run/raw_bundle/tables/table/X/zarr.json",
+                "qc/spatialdata/write/spatialdata/test_run/raw_bundle/tables/table/layers",
+                "qc/spatialdata/write/spatialdata/test_run/raw_bundle/tables/table/layers/zarr.json",
+                "qc/spatialdata/write/spatialdata/test_run/raw_bundle/tables/table/obs",
+                "qc/spatialdata/write/spatialdata/test_run/raw_bundle/tables/table/obs/_index",
+                "qc/spatialdata/write/spatialdata/test_run/raw_bundle/tables/table/obs/_index/c",
+                "qc/spatialdata/write/spatialdata/test_run/raw_bundle/tables/table/obs/_index/c/0",
+                "qc/spatialdata/write/spatialdata/test_run/raw_bundle/tables/table/obs/_index/zarr.json",
+                "qc/spatialdata/write/spatialdata/test_run/raw_bundle/tables/table/obs/cell_area",
+                "qc/spatialdata/write/spatialdata/test_run/raw_bundle/tables/table/obs/cell_area/c",
+                "qc/spatialdata/write/spatialdata/test_run/raw_bundle/tables/table/obs/cell_area/c/0",
+                "qc/spatialdata/write/spatialdata/test_run/raw_bundle/tables/table/obs/cell_area/zarr.json",
+                "qc/spatialdata/write/spatialdata/test_run/raw_bundle/tables/table/obs/cell_id",
+                "qc/spatialdata/write/spatialdata/test_run/raw_bundle/tables/table/obs/cell_id/c",
+                "qc/spatialdata/write/spatialdata/test_run/raw_bundle/tables/table/obs/cell_id/c/0",
+                "qc/spatialdata/write/spatialdata/test_run/raw_bundle/tables/table/obs/cell_id/zarr.json",
+                "qc/spatialdata/write/spatialdata/test_run/raw_bundle/tables/table/obs/cell_labels",
+                "qc/spatialdata/write/spatialdata/test_run/raw_bundle/tables/table/obs/cell_labels/c",
+                "qc/spatialdata/write/spatialdata/test_run/raw_bundle/tables/table/obs/cell_labels/c/0",
+                "qc/spatialdata/write/spatialdata/test_run/raw_bundle/tables/table/obs/cell_labels/zarr.json",
+                "qc/spatialdata/write/spatialdata/test_run/raw_bundle/tables/table/obs/control_codeword_counts",
+                "qc/spatialdata/write/spatialdata/test_run/raw_bundle/tables/table/obs/control_codeword_counts/zarr.json",
+                "qc/spatialdata/write/spatialdata/test_run/raw_bundle/tables/table/obs/control_probe_counts",
+                "qc/spatialdata/write/spatialdata/test_run/raw_bundle/tables/table/obs/control_probe_counts/zarr.json",
+                "qc/spatialdata/write/spatialdata/test_run/raw_bundle/tables/table/obs/deprecated_codeword_counts",
+                "qc/spatialdata/write/spatialdata/test_run/raw_bundle/tables/table/obs/deprecated_codeword_counts/zarr.json",
+                "qc/spatialdata/write/spatialdata/test_run/raw_bundle/tables/table/obs/genomic_control_counts",
+                "qc/spatialdata/write/spatialdata/test_run/raw_bundle/tables/table/obs/genomic_control_counts/zarr.json",
+                "qc/spatialdata/write/spatialdata/test_run/raw_bundle/tables/table/obs/nucleus_area",
+                "qc/spatialdata/write/spatialdata/test_run/raw_bundle/tables/table/obs/nucleus_area/c",
+                "qc/spatialdata/write/spatialdata/test_run/raw_bundle/tables/table/obs/nucleus_area/c/0",
+                "qc/spatialdata/write/spatialdata/test_run/raw_bundle/tables/table/obs/nucleus_area/zarr.json",
+                "qc/spatialdata/write/spatialdata/test_run/raw_bundle/tables/table/obs/nucleus_count",
+                "qc/spatialdata/write/spatialdata/test_run/raw_bundle/tables/table/obs/nucleus_count/c",
+                "qc/spatialdata/write/spatialdata/test_run/raw_bundle/tables/table/obs/nucleus_count/c/0",
+                "qc/spatialdata/write/spatialdata/test_run/raw_bundle/tables/table/obs/nucleus_count/zarr.json",
+                "qc/spatialdata/write/spatialdata/test_run/raw_bundle/tables/table/obs/region",
+                "qc/spatialdata/write/spatialdata/test_run/raw_bundle/tables/table/obs/region/categories",
+                "qc/spatialdata/write/spatialdata/test_run/raw_bundle/tables/table/obs/region/categories/c",
+                "qc/spatialdata/write/spatialdata/test_run/raw_bundle/tables/table/obs/region/categories/c/0",
+                "qc/spatialdata/write/spatialdata/test_run/raw_bundle/tables/table/obs/region/categories/zarr.json",
+                "qc/spatialdata/write/spatialdata/test_run/raw_bundle/tables/table/obs/region/codes",
+                "qc/spatialdata/write/spatialdata/test_run/raw_bundle/tables/table/obs/region/codes/zarr.json",
+                "qc/spatialdata/write/spatialdata/test_run/raw_bundle/tables/table/obs/region/zarr.json",
+                "qc/spatialdata/write/spatialdata/test_run/raw_bundle/tables/table/obs/segmentation_method",
+                "qc/spatialdata/write/spatialdata/test_run/raw_bundle/tables/table/obs/segmentation_method/c",
+                "qc/spatialdata/write/spatialdata/test_run/raw_bundle/tables/table/obs/segmentation_method/c/0",
+                "qc/spatialdata/write/spatialdata/test_run/raw_bundle/tables/table/obs/segmentation_method/zarr.json",
+                "qc/spatialdata/write/spatialdata/test_run/raw_bundle/tables/table/obs/total_counts",
+                "qc/spatialdata/write/spatialdata/test_run/raw_bundle/tables/table/obs/total_counts/c",
+                "qc/spatialdata/write/spatialdata/test_run/raw_bundle/tables/table/obs/total_counts/c/0",
+                "qc/spatialdata/write/spatialdata/test_run/raw_bundle/tables/table/obs/total_counts/zarr.json",
+                "qc/spatialdata/write/spatialdata/test_run/raw_bundle/tables/table/obs/transcript_counts",
+                "qc/spatialdata/write/spatialdata/test_run/raw_bundle/tables/table/obs/transcript_counts/c",
+                "qc/spatialdata/write/spatialdata/test_run/raw_bundle/tables/table/obs/transcript_counts/c/0",
+                "qc/spatialdata/write/spatialdata/test_run/raw_bundle/tables/table/obs/transcript_counts/zarr.json",
+                "qc/spatialdata/write/spatialdata/test_run/raw_bundle/tables/table/obs/unassigned_codeword_counts",
+                "qc/spatialdata/write/spatialdata/test_run/raw_bundle/tables/table/obs/unassigned_codeword_counts/c",
+                "qc/spatialdata/write/spatialdata/test_run/raw_bundle/tables/table/obs/unassigned_codeword_counts/c/0",
+                "qc/spatialdata/write/spatialdata/test_run/raw_bundle/tables/table/obs/unassigned_codeword_counts/zarr.json",
+                "qc/spatialdata/write/spatialdata/test_run/raw_bundle/tables/table/obs/z_level",
+                "qc/spatialdata/write/spatialdata/test_run/raw_bundle/tables/table/obs/z_level/c",
+                "qc/spatialdata/write/spatialdata/test_run/raw_bundle/tables/table/obs/z_level/c/0",
+                "qc/spatialdata/write/spatialdata/test_run/raw_bundle/tables/table/obs/z_level/zarr.json",
+                "qc/spatialdata/write/spatialdata/test_run/raw_bundle/tables/table/obs/zarr.json",
+                "qc/spatialdata/write/spatialdata/test_run/raw_bundle/tables/table/obsm",
+                "qc/spatialdata/write/spatialdata/test_run/raw_bundle/tables/table/obsm/spatial",
+                "qc/spatialdata/write/spatialdata/test_run/raw_bundle/tables/table/obsm/spatial/c",
+                "qc/spatialdata/write/spatialdata/test_run/raw_bundle/tables/table/obsm/spatial/c/0",
+                "qc/spatialdata/write/spatialdata/test_run/raw_bundle/tables/table/obsm/spatial/c/0/0",
+                "qc/spatialdata/write/spatialdata/test_run/raw_bundle/tables/table/obsm/spatial/zarr.json",
+                "qc/spatialdata/write/spatialdata/test_run/raw_bundle/tables/table/obsm/zarr.json",
+                "qc/spatialdata/write/spatialdata/test_run/raw_bundle/tables/table/obsp",
+                "qc/spatialdata/write/spatialdata/test_run/raw_bundle/tables/table/obsp/zarr.json",
+                "qc/spatialdata/write/spatialdata/test_run/raw_bundle/tables/table/raw",
+                "qc/spatialdata/write/spatialdata/test_run/raw_bundle/tables/table/raw/zarr.json",
+                "qc/spatialdata/write/spatialdata/test_run/raw_bundle/tables/table/uns",
+                "qc/spatialdata/write/spatialdata/test_run/raw_bundle/tables/table/uns/spatialdata_attrs",
+                "qc/spatialdata/write/spatialdata/test_run/raw_bundle/tables/table/uns/spatialdata_attrs/instance_key",
+                "qc/spatialdata/write/spatialdata/test_run/raw_bundle/tables/table/uns/spatialdata_attrs/instance_key/c",
+                "qc/spatialdata/write/spatialdata/test_run/raw_bundle/tables/table/uns/spatialdata_attrs/instance_key/zarr.json",
+                "qc/spatialdata/write/spatialdata/test_run/raw_bundle/tables/table/uns/spatialdata_attrs/region",
+                "qc/spatialdata/write/spatialdata/test_run/raw_bundle/tables/table/uns/spatialdata_attrs/region/c",
+                "qc/spatialdata/write/spatialdata/test_run/raw_bundle/tables/table/uns/spatialdata_attrs/region/zarr.json",
+                "qc/spatialdata/write/spatialdata/test_run/raw_bundle/tables/table/uns/spatialdata_attrs/region_key",
+                "qc/spatialdata/write/spatialdata/test_run/raw_bundle/tables/table/uns/spatialdata_attrs/region_key/c",
+                "qc/spatialdata/write/spatialdata/test_run/raw_bundle/tables/table/uns/spatialdata_attrs/region_key/zarr.json",
+                "qc/spatialdata/write/spatialdata/test_run/raw_bundle/tables/table/uns/spatialdata_attrs/zarr.json",
+                "qc/spatialdata/write/spatialdata/test_run/raw_bundle/tables/table/uns/zarr.json",
+                "qc/spatialdata/write/spatialdata/test_run/raw_bundle/tables/table/var",
+                "qc/spatialdata/write/spatialdata/test_run/raw_bundle/tables/table/var/_index",
+                "qc/spatialdata/write/spatialdata/test_run/raw_bundle/tables/table/var/_index/c",
+                "qc/spatialdata/write/spatialdata/test_run/raw_bundle/tables/table/var/_index/c/0",
+                "qc/spatialdata/write/spatialdata/test_run/raw_bundle/tables/table/var/_index/zarr.json",
+                "qc/spatialdata/write/spatialdata/test_run/raw_bundle/tables/table/var/feature_types",
+                "qc/spatialdata/write/spatialdata/test_run/raw_bundle/tables/table/var/feature_types/c",
+                "qc/spatialdata/write/spatialdata/test_run/raw_bundle/tables/table/var/feature_types/c/0",
+                "qc/spatialdata/write/spatialdata/test_run/raw_bundle/tables/table/var/feature_types/zarr.json",
+                "qc/spatialdata/write/spatialdata/test_run/raw_bundle/tables/table/var/gene_ids",
+                "qc/spatialdata/write/spatialdata/test_run/raw_bundle/tables/table/var/gene_ids/c",
+                "qc/spatialdata/write/spatialdata/test_run/raw_bundle/tables/table/var/gene_ids/c/0",
+                "qc/spatialdata/write/spatialdata/test_run/raw_bundle/tables/table/var/gene_ids/zarr.json",
+                "qc/spatialdata/write/spatialdata/test_run/raw_bundle/tables/table/var/genome",
+                "qc/spatialdata/write/spatialdata/test_run/raw_bundle/tables/table/var/genome/c",
+                "qc/spatialdata/write/spatialdata/test_run/raw_bundle/tables/table/var/genome/c/0",
+                "qc/spatialdata/write/spatialdata/test_run/raw_bundle/tables/table/var/genome/zarr.json",
+                "qc/spatialdata/write/spatialdata/test_run/raw_bundle/tables/table/var/zarr.json",
+                "qc/spatialdata/write/spatialdata/test_run/raw_bundle/tables/table/varm",
+                "qc/spatialdata/write/spatialdata/test_run/raw_bundle/tables/table/varm/zarr.json",
+                "qc/spatialdata/write/spatialdata/test_run/raw_bundle/tables/table/varp",
+                "qc/spatialdata/write/spatialdata/test_run/raw_bundle/tables/table/varp/zarr.json",
+                "qc/spatialdata/write/spatialdata/test_run/raw_bundle/tables/table/zarr.json",
+                "qc/spatialdata/write/spatialdata/test_run/raw_bundle/tables/zarr.json",
+                "qc/spatialdata/write/spatialdata/test_run/raw_bundle/zarr.json",
+                "qc/untar",
+                "qc/untar/test_bundle",
+                "qc/untar/test_bundle/.end-of-run",
+                "qc/untar/test_bundle/analysis.tar.gz",
+                "qc/untar/test_bundle/analysis.zarr.zip",
+                "qc/untar/test_bundle/analysis_summary.html",
+                "qc/untar/test_bundle/aux_outputs.tar.gz",
+                "qc/untar/test_bundle/cell_boundaries.csv.gz",
+                "qc/untar/test_bundle/cell_boundaries.parquet",
+                "qc/untar/test_bundle/cell_feature_matrix.h5",
+                "qc/untar/test_bundle/cell_feature_matrix.tar.gz",
+                "qc/untar/test_bundle/cell_feature_matrix.zarr.zip",
+                "qc/untar/test_bundle/cells.csv.gz",
+                "qc/untar/test_bundle/cells.parquet",
+                "qc/untar/test_bundle/cells.zarr.zip",
+                "qc/untar/test_bundle/experiment.xenium",
+                "qc/untar/test_bundle/gene_panel.json",
+                "qc/untar/test_bundle/metrics_summary.csv",
+                "qc/untar/test_bundle/morphology.ome.tif",
+                "qc/untar/test_bundle/morphology_focus",
+                "qc/untar/test_bundle/morphology_focus/morphology_focus_0000.ome.tif",
+                "qc/untar/test_bundle/nucleus_boundaries.csv.gz",
+                "qc/untar/test_bundle/nucleus_boundaries.parquet",
+                "qc/untar/test_bundle/transcripts.parquet",
+                "qc/untar/test_bundle/transcripts.zarr.zip",
+                "spoqc"
+            ],
+            [
+                "multiqc_citations.txt:md5,4c806e63a283ec1b7e78cdae3a923d4f",
+                "multiqc_software_versions.txt:md5,1774c1ba6c0b28109544da460f02aad4",
+                "multiqc_citations.txt:md5,4c806e63a283ec1b7e78cdae3a923d4f",
+                "multiqc_software_versions.txt:md5,1774c1ba6c0b28109544da460f02aad4",
+                "0:md5,397dc21e479c58fd2ffcbe6c3e627683",
+                "1:md5,f1a6b9238c3095bad7867b22f293e5e6",
+                "zarr.json:md5,893b4d8873fc997d364288c63ef0871f",
+                "0:md5,519d79fe18256d530a2070e31925fac6",
+                "zarr.json:md5,9e0748b559911795c141000a77ab7e59",
+                "0:md5,f349fb7934242be4cf4ac28e1a7e18f4",
+                "zarr.json:md5,32b707be767bd056085d0f349d3ab68c",
+                "0:md5,000e609e16f4975474a7d57eed232daa",
+                "zarr.json:md5,4690fb68f05cbca9148144c85bd9687f",
+                "0:md5,4890e52e8f0efc8f560bc51199d5071c",
+                "zarr.json:md5,1f4482a1e3b6e9ab30623b0ad12f5213",
+                "zarr.json:md5,b98263d3964a5236145ccf6c808f8919",
+                "0:md5,9fbd82d28a84dddd52df1b055c00d9b0",
+                "1:md5,3519dd1d29e589a2f0e87c2e0a20586b",
+                "zarr.json:md5,5ad6b55efbf7ea079dc73f60af2a12cb",
+                "0:md5,500e366b93160eaf9cf5ee5dcd8fdd18",
+                "zarr.json:md5,cf8da18bcd5b9661012f3b120d64d5d9",
+                "0:md5,264bcf6f0679d8cab53930b5182aa2ac",
+                "zarr.json:md5,a03571ade1e696e2e855ed06331acd09",
+                "0:md5,c416a29978b65ccec08ad8e0d3e1dcf8",
+                "zarr.json:md5,be459dc60bef9886df3f9e6895430f6b",
+                "0:md5,072da7c64c1dbe21a4d71c560431b96e",
+                "zarr.json:md5,73b113cb0e0dd3c688b7221003ce7062",
+                "zarr.json:md5,cb8cd70a8b5142c2bdcc65261f52013e",
+                "0:md5,adbe51c450a9a6c9086df9ebe220eefb",
+                "1:md5,7bb4eecf9fe3996a9b118082152a8750",
+                "zarr.json:md5,5ad6b55efbf7ea079dc73f60af2a12cb",
+                "0:md5,498463ef4033f523f8174237454f5dc7",
+                "zarr.json:md5,cf8da18bcd5b9661012f3b120d64d5d9",
+                "0:md5,a73b0d9b8919bb729c6eee8cf6632cd8",
+                "zarr.json:md5,a03571ade1e696e2e855ed06331acd09",
+                "0:md5,9efe1a6b6f8d3548f3ebdeab07e2e8b3",
+                "zarr.json:md5,be459dc60bef9886df3f9e6895430f6b",
+                "0:md5,4cd5ff674991828d1536bf85d47bcb0a",
+                "zarr.json:md5,73b113cb0e0dd3c688b7221003ce7062",
+                "zarr.json:md5,83ce0ad0ef9fc5f27b0c737f7bc2c88f",
+                ".end-of-run:md5,d41d8cd98f00b204e9800998ecf8427e",
+                "analysis.tar.gz:md5,06b7c89909ddf3149b0debcada5dc627",
+                "analysis.zarr.zip:md5,1ffb1b86586fe6c80ce1676b79137785",
+                "analysis_summary.html:md5,e91cdd23848a81b1a553b40e09d994de",
+                "aux_outputs.tar.gz:md5,aac93b35fbb052302042a044629eec56",
+                "cell_boundaries.csv.gz:md5,8b4f2aa455a6fb14b2669a42db32ea7e",
+                "cell_boundaries.parquet:md5,e55d6a7fbec336103994baad8c8e4a9a",
+                "cell_feature_matrix.h5:md5,96cb400f1b1dd6f8796daea0ad5c74e6",
+                "cell_feature_matrix.tar.gz:md5,16b63c6c11d6411738019314bcc8113c",
+                "cell_feature_matrix.zarr.zip:md5,36f45a290cf4ee1232f2d1cd0fdbd820",
+                "cells.csv.gz:md5,3cef2d7cc8cfba1d47bdb7c65c3d5d5f",
+                "cells.parquet:md5,e1450c7eca3d7ce0d4911c95042b1303",
+                "cells.zarr.zip:md5,556e47d5b14150239b10b2f801defa2b",
+                "experiment.xenium:md5,eb70039966ed3ed8eefc0f3fcf4c72f6",
+                "gene_panel.json:md5,8890dd5fd90706e751554ac3fdfdedde",
+                "metrics_summary.csv:md5,e0928a0c20e7b34162f02670ed712dde",
+                "morphology.ome.tif:md5,6b65fff28a38a001b8f25061737fbf9b",
+                "morphology_focus_0000.ome.tif:md5,90e796ad634d14e62cf2ebcadf2eaf98",
+                "nucleus_boundaries.csv.gz:md5,e417b6e293298870956d42c7106cbd0c",
+                "nucleus_boundaries.parquet:md5,bacbfc3c2e956d899e1d8ccba5dd7c5e",
+                "transcripts.parquet:md5,203cb05ee7689805cc505ebda9557551",
+                "transcripts.zarr.zip:md5,807e63a2ef8340e085cd899507f45395"
+            ]
+        ],
+        "timestamp": "2026-08-15T17:13:09.795328271",
+        "meta": {
+            "nf-test": "0.9.5",
+            "nextflow": "26.04.6"
+        }
+    },
+    "-profile test stub": {
+        "content": [
+            {
+                "SPATIALDATA_WRITE_RAW_BUNDLE": {
+                    "spatialdata": "0.7.2"
+                },
+                "SPOQC_AMBIENT": {
+                    "spoqc": "0.1.0"
+                },
+                "SPOQC_ANALYSIS_CATEGORY": {
+                    "spoqc": "0.1.0"
+                },
+                "SPOQC_ANALYSIS_CLUSTER": {
+                    "spoqc": "0.1.0"
+                },
+                "SPOQC_ANALYSIS_OVERVIEW": {
+                    "spoqc": "0.1.0"
+                },
+                "SPOQC_ANNOTATION": {
+                    "spoqc": "0.1.0"
+                },
+                "SPOQC_BUBBLE": {
+                    "spoqc": "0.1.0"
+                },
+                "SPOQC_CELL": {
+                    "spoqc": "0.1.0"
+                },
+                "SPOQC_CELLCYCLE": {
+                    "spoqc": "0.1.0"
+                },
+                "SPOQC_COMBINE_MASKS": {
+                    "spoqc": "0.1.0"
+                },
+                "SPOQC_DOUBLET": {
+                    "spoqc": "0.1.0"
+                },
+                "SPOQC_FINALREPORT": {
+                    "spoqc": "0.1.0"
+                },
+                "SPOQC_GENERAL": {
+                    "spoqc": "0.1.0"
+                },
+                "SPOQC_HQCR_CELLTYPE": {
+                    "spoqc": "0.1.0"
+                },
+                "SPOQC_HQCR_IDENT": {
+                    "spoqc": "0.1.0"
+                },
+                "SPOQC_HQPR_BOUNDING_BOX": {
+                    "spoqc": "0.1.0"
+                },
+                "SPOQC_HQPR_CELLTYPE": {
+                    "spoqc": "0.1.0"
+                },
+                "SPOQC_HQPR_CLUSTERING": {
+                    "spoqc": "0.1.0"
+                },
+                "SPOQC_HQPR_METRICES": {
+                    "spoqc": "0.1.0"
+                },
+                "SPOQC_HQPR_REFINEMENT": {
+                    "spoqc": "0.1.0"
+                },
+                "SPOQC_HQTR_AC": {
+                    "spoqc": "0.1.0"
+                },
+                "SPOQC_HQTR_BOUNDING_BOX": {
+                    "spoqc": "0.1.0"
+                },
+                "SPOQC_HQTR_CELLTYPE": {
+                    "spoqc": "0.1.0"
+                },
+                "SPOQC_HQTR_CLUSTERING": {
+                    "spoqc": "0.1.0"
+                },
+                "SPOQC_HQTR_METRICES": {
+                    "spoqc": "0.1.0"
+                },
+                "SPOQC_HQTR_QV": {
+                    "spoqc": "0.1.0"
+                },
+                "SPOQC_HQTR_REFINEMENT": {
+                    "spoqc": "0.1.0"
+                },
+                "SPOQC_MODEL": {
+                    "spoqc": "0.1.0"
+                },
+                "SPOQC_TRANSCRIPT": {
+                    "spoqc": "0.1.0"
+                },
+                "SPOQC_VOID": {
+                    "spoqc": "0.1.0"
+                },
+                "SPOQC_WHOLE_SLIDE": {
+                    "spoqc": "0.1.0"
+                },
+                "UNTAR": {
+                    "untar": 1.34
+                },
+                "Workflow": {
+                    "nf-core/spatialaxe": "v1.0.1dev"
+                }
+            },
+            [
+                "pipeline_info",
+                "pipeline_info/nf_core_spatialaxe_software_mqc_versions.yml",
+                "qc",
+                "qc/multiqc",
+                "qc/multiqc/raw_bundle",
+                "qc/multiqc/raw_bundle/multiqc_data",
+                "qc/multiqc/raw_bundle/multiqc_data/.stub",
+                "qc/multiqc/raw_bundle/multiqc_plots",
+                "qc/multiqc/raw_bundle/multiqc_plots/.stub",
+                "qc/multiqc/raw_bundle/multiqc_report.html",
+                "qc/multiqc/redefined_bundle",
+                "qc/multiqc/redefined_bundle/multiqc_data",
+                "qc/multiqc/redefined_bundle/multiqc_data/.stub",
+                "qc/multiqc/redefined_bundle/multiqc_plots",
+                "qc/multiqc/redefined_bundle/multiqc_plots/.stub",
+                "qc/multiqc/redefined_bundle/multiqc_report.html",
+                "qc/spatialdata",
+                "qc/spatialdata/write",
+                "qc/spatialdata/write/spatialdata",
+                "qc/spatialdata/write/spatialdata/test_run",
+                "qc/spatialdata/write/spatialdata/test_run/raw_bundle",
+                "qc/spatialdata/write/spatialdata/test_run/raw_bundle/fake_file.txt",
+                "qc/untar",
+                "qc/untar/test_bundle",
+                "qc/untar/test_bundle/.end-of-run",
+                "qc/untar/test_bundle/analysis.tar.gz",
+                "qc/untar/test_bundle/analysis.zarr.zip",
+                "qc/untar/test_bundle/analysis_summary.html",
+                "qc/untar/test_bundle/aux_outputs.tar.gz",
+                "qc/untar/test_bundle/cell_boundaries.csv.gz",
+                "qc/untar/test_bundle/cell_boundaries.parquet",
+                "qc/untar/test_bundle/cell_feature_matrix.h5",
+                "qc/untar/test_bundle/cell_feature_matrix.tar.gz",
+                "qc/untar/test_bundle/cell_feature_matrix.zarr.zip",
+                "qc/untar/test_bundle/cells.csv.gz",
+                "qc/untar/test_bundle/cells.parquet",
+                "qc/untar/test_bundle/cells.zarr.zip",
+                "qc/untar/test_bundle/experiment.xenium",
+                "qc/untar/test_bundle/gene_panel.json",
+                "qc/untar/test_bundle/metrics_summary.csv",
+                "qc/untar/test_bundle/morphology.ome.tif",
+                "qc/untar/test_bundle/morphology_focus",
+                "qc/untar/test_bundle/morphology_focus/morphology_focus_0000.ome.tif",
+                "qc/untar/test_bundle/nucleus_boundaries.csv.gz",
+                "qc/untar/test_bundle/nucleus_boundaries.parquet",
+                "qc/untar/test_bundle/transcripts.parquet",
+                "qc/untar/test_bundle/transcripts.zarr.zip",
+                "spoqc"
+            ],
+            [
+                ".stub:md5,d41d8cd98f00b204e9800998ecf8427e",
+                ".stub:md5,d41d8cd98f00b204e9800998ecf8427e",
+                "multiqc_report.html:md5,d41d8cd98f00b204e9800998ecf8427e",
+                ".stub:md5,d41d8cd98f00b204e9800998ecf8427e",
+                ".stub:md5,d41d8cd98f00b204e9800998ecf8427e",
+                "multiqc_report.html:md5,d41d8cd98f00b204e9800998ecf8427e",
+                "fake_file.txt:md5,d41d8cd98f00b204e9800998ecf8427e",
+                ".end-of-run:md5,d41d8cd98f00b204e9800998ecf8427e",
+                "analysis.tar.gz:md5,d41d8cd98f00b204e9800998ecf8427e",
+                "analysis.zarr.zip:md5,d41d8cd98f00b204e9800998ecf8427e",
+                "analysis_summary.html:md5,d41d8cd98f00b204e9800998ecf8427e",
+                "aux_outputs.tar.gz:md5,d41d8cd98f00b204e9800998ecf8427e",
+                "cell_boundaries.csv.gz:md5,d41d8cd98f00b204e9800998ecf8427e",
+                "cell_boundaries.parquet:md5,d41d8cd98f00b204e9800998ecf8427e",
+                "cell_feature_matrix.h5:md5,d41d8cd98f00b204e9800998ecf8427e",
+                "cell_feature_matrix.tar.gz:md5,d41d8cd98f00b204e9800998ecf8427e",
+                "cell_feature_matrix.zarr.zip:md5,d41d8cd98f00b204e9800998ecf8427e",
+                "cells.csv.gz:md5,d41d8cd98f00b204e9800998ecf8427e",
+                "cells.parquet:md5,d41d8cd98f00b204e9800998ecf8427e",
+                "cells.zarr.zip:md5,d41d8cd98f00b204e9800998ecf8427e",
+                "experiment.xenium:md5,d41d8cd98f00b204e9800998ecf8427e",
+                "gene_panel.json:md5,d41d8cd98f00b204e9800998ecf8427e",
+                "metrics_summary.csv:md5,d41d8cd98f00b204e9800998ecf8427e",
+                "morphology.ome.tif:md5,d41d8cd98f00b204e9800998ecf8427e",
+                "morphology_focus_0000.ome.tif:md5,d41d8cd98f00b204e9800998ecf8427e",
+                "nucleus_boundaries.csv.gz:md5,d41d8cd98f00b204e9800998ecf8427e",
+                "nucleus_boundaries.parquet:md5,d41d8cd98f00b204e9800998ecf8427e",
+                "transcripts.parquet:md5,d41d8cd98f00b204e9800998ecf8427e",
+                "transcripts.zarr.zip:md5,d41d8cd98f00b204e9800998ecf8427e"
+            ]
+        ],
+        "timestamp": "2026-08-15T17:20:09.102748685",
+        "meta": {
+            "nf-test": "0.9.5",
+            "nextflow": "26.04.6"
+        }
+    }
+}

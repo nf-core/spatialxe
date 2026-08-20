@@ -1,2 +1,2 @@
-sample,bundle,image
-test_run,https://raw.githubusercontent.com/nf-core/test-datasets/spatialaxe/xenium_bundle.tar.gz,
+sample,bundle,image,annotation,stainings
+test_run,https://raw.githubusercontent.com/nf-core/test-datasets/spatialaxe/xenium_bundle.tar.gz,,,0;

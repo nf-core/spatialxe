@@ -3,7 +3,7 @@ nextflow_pipeline {
     name "Test pipeline for the `preview` mode, test run the basyor-preview subworkflow"
     script "../main.nf"
     tag "pipeline"
-    config "../conf/test_preview_mode.config"
+    config "../conf/tests/test_preview_mode.config"
 
     test("-profile test stub") {
 

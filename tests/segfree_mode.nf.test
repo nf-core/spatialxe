@@ -3,7 +3,7 @@ nextflow_pipeline {
     name "Test pipeline"
     script "../main.nf"
     tag "pipeline"
-    config "../conf/test_segfree_mode.config"
+    config "../conf/tests/test_segfree_mode.config"
 
     test("-profile test stub") {
 

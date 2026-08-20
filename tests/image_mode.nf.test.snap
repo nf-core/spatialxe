@@ -30,18 +30,13 @@
                     "untar": 1.34
                 },
                 "Workflow": {
-                    "nf-core/spatialaxe": "v1.1.0dev"
+                    "nf-core/spatialaxe": "v1.0.1dev"
                 },
-                "XENIUMRANGER_IMPORT_SEGMENTATION": {
+                "XENIUMRANGER_IMPORTSEGMENTATION": {
                     "xeniumranger": "4.0.1.1"
                 }
             },
             [
-                "coordinate",
-                "coordinate/xeniumranger",
-                "coordinate/xeniumranger/import_segmentation",
-                "coordinate/xeniumranger/import_segmentation/test_run",
-                "coordinate/xeniumranger/import_segmentation/test_run/experiment.xenium",
                 "image",
                 "image/baysor",
                 "image/baysor/preprocess",
@@ -114,10 +109,12 @@
                 "image/utility/resize_tif/test_run",
                 "image/utility/resize_tif/test_run/resized_morphology_focus_0000.ome_cp_masks.tif.tif",
                 "pipeline_info",
-                "pipeline_info/nf_core_spatialaxe_software_mqc_versions.yml"
+                "pipeline_info/nf_core_spatialaxe_software_mqc_versions.yml",
+                "xeniumranger",
+                "xeniumranger/test_run",
+                "xeniumranger/test_run/experiment.xenium"
             ],
             [
-                "experiment.xenium:md5,d41d8cd98f00b204e9800998ecf8427e",
                 "filtered_transcripts.csv:md5,d41d8cd98f00b204e9800998ecf8427e",
                 "test_run_segmentation.csv:md5,d41d8cd98f00b204e9800998ecf8427e",
                 "test_run_segmentation_polygons_2d.json:md5,d41d8cd98f00b204e9800998ecf8427e",
@@ -157,10 +154,10 @@
                 "resized_morphology_focus_0000.ome_cp_masks.tif.tif:md5,d41d8cd98f00b204e9800998ecf8427e"
             ]
         ],
-        "timestamp": "2026-06-27T17:42:50.445458354",
+        "timestamp": "2026-08-14T11:37:37.301529638",
         "meta": {
             "nf-test": "0.9.5",
-            "nextflow": "26.04.4"
+            "nextflow": "26.04.6"
         }
     }
 }

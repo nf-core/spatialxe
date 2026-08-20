@@ -1,0 +1,147 @@
+name: spoqc_analysis_category
+description: |
+  Generate a downstream per-category QC analysis report, combining all upstream spoQC outputs.
+keywords:
+  - spatial transcriptomics
+  - quality control
+  - spoqc
+  - xenium
+  - downstream analysis
+tools:
+  - "spoqc":
+      description: |
+        spoQC is a modular framework for multimodal quality control (QC) of imaging-based spatially resolved transcriptomics (SRT).
+      homepage: https://github.com/heylf/spoQC
+      documentation: https://github.com/heylf/spoQC
+      licence: ["MIT license"]
+input:
+  - - meta:
+        type: map
+        description: |
+          Groovy Map containing sample information
+          e.g. [ id:'sample' ]
+    - spatialdata:
+        type: directory
+        description: Path to the SpatialData zarr store to run QC on
+        ontologies: []
+  - annotation:
+      type: file
+      description: |
+        Optional cell-type annotation file. When empty/absent, spoqc is run without the `-a` flag.
+      pattern: "*.tsv"
+      ontologies: []
+  - step:
+      type: string
+      description: Name of the spoQC step to run, passed to `spoqc -s`
+  - tmp_general:
+      type: file
+      description: General QC parquet output from SPOQC_GENERAL
+      pattern: "generalqc_output_hqcr.parquet"
+      ontologies: []
+  - tmp_bubble:
+      type: file
+      description: Bubble QC parquet output from SPOQC_BUBBLE
+      pattern: "bubbleqc_output_hqcr.parquet"
+      ontologies: []
+  - tmp_doublet:
+      type: file
+      description: Doublet QC parquet output from SPOQC_DOUBLET
+      pattern: "doubletqc_output_hqcr.parquet"
+      ontologies: []
+  - tmp_void:
+      type: file
+      description: Void QC parquet output from SPOQC_VOID
+      pattern: "voidqc_output_hqcr.parquet"
+      ontologies: []
+  - tmp_cell:
+      type: file
+      description: Cell QC parquet output from SPOQC_CELL
+      pattern: "cellqc_output_hqcr.parquet"
+      ontologies: []
+  - mask_hqcr:
+      type: file
+      description: HQCR raw mask from SPOQC_HQCR_IDENT
+      pattern: "hqcr_output_mask_raw.parquet"
+      ontologies: []
+  - mask_smoothed_hqcr:
+      type: file
+      description: Smoothed HQCR mask from SPOQC_HQCR_IDENT
+      pattern: "hqcr_output_mask_smoothed_raw.parquet"
+      ontologies: []
+  - qv:
+      type: directory
+      description: HQTR quality-value probability output from SPOQC_HQTR_QV
+      pattern: "hqtr_output_qv_prob"
+      ontologies: []
+  - ac:
+      type: directory
+      description: HQTR ambient-contamination probability output from SPOQC_HQTR_AC
+      pattern: "hqtr_output_ac_prob"
+      ontologies: []
+  - metrices_hqtr:
+      type: directory
+      description: HQTR metrics directory from SPOQC_HQTR_METRICES
+      pattern: "spoQC_tmp/metrices/hqtr"
+      ontologies: []
+  - mask_smoothed_hqtr:
+      type: directory
+      description: Smoothed HQTR mask from SPOQC_HQTR_REFINEMENT
+      pattern: "hqtr_output_mask_smoothed_raw"
+      ontologies: []
+  - mask_hqtr:
+      type: directory
+      description: HQTR raw mask from SPOQC_HQTR_CLUSTERING
+      pattern: "hqtr_output_mask_raw"
+      ontologies: []
+  - metrices_hqpr:
+      type: directory
+      description: Collected per-staining HQPR metrics directories from SPOQC_HQPR_METRICES
+      pattern: "spoQC_tmp/metrices/hqpr/*"
+      ontologies: []
+  - mask_smoothed_hqpr:
+      type: directory
+      description: Collected per-staining smoothed HQPR masks from SPOQC_HQPR_REFINEMENT
+      pattern: "spoQC_tmp/*"
+      ontologies: []
+  - mask_hqpr:
+      type: directory
+      description: Collected per-staining raw HQPR masks from SPOQC_HQPR_CLUSTERING
+      pattern: "spoQC_tmp/*"
+      ontologies: []
+output:
+  report:
+    - - meta:
+          type: map
+          description: |
+            Groovy Map containing sample information
+            e.g. [ id:'sample' ]
+      - "report/analysis/category":
+          type: directory
+          description: HTML/plot per-category analysis report directory
+          pattern: "report/analysis/category"
+          ontologies: []
+  versions_spoqc:
+    - - "${task.process}":
+          type: string
+          description: The process the versions were collected from
+      - spoqc:
+          type: string
+          description: The tool name
+      - "spoqc --version 2>&1 | grep -oP '\\d+\\.\\d+\\.\\d+' || echo unknown":
+          type: eval
+          description: The expression to obtain the version of the tool
+topics:
+  versions:
+    - - "${task.process}":
+          type: string
+          description: The process the versions were collected from
+      - spoqc:
+          type: string
+          description: The tool name
+      - "spoqc --version 2>&1 | grep -oP '\\d+\\.\\d+\\.\\d+' || echo unknown":
+          type: eval
+          description: The expression to obtain the version of the tool
+authors:
+  - "@heylf"
+maintainers:
+  - "@heylf"

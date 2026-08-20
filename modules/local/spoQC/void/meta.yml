@@ -1,0 +1,77 @@
+name: spoqc_void
+description: |
+  Run void/empty-region QC checks on a SpatialData object.
+keywords:
+  - spatial transcriptomics
+  - quality control
+  - spoqc
+  - xenium
+  - void detection
+tools:
+  - "spoqc":
+      description: |
+        spoQC is a modular framework for multimodal quality control (QC) of imaging-based spatially resolved transcriptomics (SRT).
+      homepage: https://github.com/heylf/spoQC
+      documentation: https://github.com/heylf/spoQC
+      licence: ["MIT license"]
+input:
+  - - meta:
+        type: map
+        description: |
+          Groovy Map containing sample information
+          e.g. [ id:'sample' ]
+    - spatialdata:
+        type: directory
+        description: Path to the SpatialData zarr store to run QC on
+        ontologies: []
+  - step:
+      type: string
+      description: Name of the spoQC step to run, passed to `spoqc -s`
+output:
+  report:
+    - - meta:
+          type: map
+          description: |
+            Groovy Map containing sample information
+            e.g. [ id:'sample' ]
+      - "report":
+          type: directory
+          description: HTML/plot QC report directory produced for this step
+          ontologies: []
+  tmp:
+    - - meta:
+          type: map
+          description: |
+            Groovy Map containing sample information
+            e.g. [ id:'sample' ]
+      - "voidqc_output_hqcr.parquet":
+          type: file
+          description: |
+            Per-cell void QC parquet output, consumed by the HQCR identification/cell-type and downstream analysis steps.
+          pattern: "voidqc_output_hqcr.parquet"
+          ontologies: []
+  versions_spoqc:
+    - - "${task.process}":
+          type: string
+          description: The process the versions were collected from
+      - spoqc:
+          type: string
+          description: The tool name
+      - "spoqc --version 2>&1 | grep -oP '\\d+\\.\\d+\\.\\d+' || echo unknown":
+          type: eval
+          description: The expression to obtain the version of the tool
+topics:
+  versions:
+    - - "${task.process}":
+          type: string
+          description: The process the versions were collected from
+      - spoqc:
+          type: string
+          description: The tool name
+      - "spoqc --version 2>&1 | grep -oP '\\d+\\.\\d+\\.\\d+' || echo unknown":
+          type: eval
+          description: The expression to obtain the version of the tool
+authors:
+  - "@heylf"
+maintainers:
+  - "@heylf"

@@ -1,0 +1,72 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/nf-core/modules/master/subworkflows/yaml-schema.json
+name: "spoqc"
+description: |
+  Builds a raw SpatialData object from a 10x Xenium bundle and runs the full spoQC quality-control
+  toolkit against it: general/bubble/doublet/void/cell/ambient QC, high-quality cell region (HQCR),
+  high-quality pixel region (HQPR) and high-quality transcript region (HQTR) mask
+  identification/clustering/refinement, mask combination, transcript/cell-cycle/model QC, and the
+  downstream overview/category/cluster analysis reports.
+keywords:
+  - spatialdata
+  - xenium
+  - quality control
+  - spoqc
+  - hqcr
+  - hqpr
+  - hqtr
+components:
+  - spatialdata/write
+  - spoQC/annotation
+  - spoQC/general
+  - spoQC/whole_slide
+  - spoQC/bubble
+  - spoQC/doublet
+  - spoQC/void
+  - spoQC/cell
+  - spoQC/ambient
+  - spoQC/hqcr_ident
+  - spoQC/hqcr_celltype
+  - spoQC/hqpr_metrices
+  - spoQC/hqpr_clustering
+  - spoQC/hqpr_refinement
+  - spoQC/hqpr_bounding_box
+  - spoQC/hqpr_celltype
+  - spoQC/hqtr_metrices
+  - spoQC/hqtr_ac
+  - spoQC/hqtr_qv
+  - spoQC/hqtr_clustering
+  - spoQC/hqtr_refinement
+  - spoQC/hqtr_bounding_box
+  - spoQC/hqtr_celltype
+  - spoQC/combine_masks
+  - spoQC/transcript
+  - spoQC/cellcycle
+  - spoQC/model
+  - spoQC/analysis_overview
+  - spoQC/analysis_category
+  - spoQC/analysis_cluster
+  - spoQC/finalreport
+  # Not currently wired into this subworkflow (calls are commented out in main.nf):
+  # spoQC/marker
+input:
+  - ch_bundle_path:
+      description: |
+        Directory containing the raw Xenium bundle
+        Structure: [ val(meta), path("path-to-xenium-bundle") ]
+  - ch_annotation_src:
+      description: |
+        Optional pre-existing cell-type annotation file. When empty/absent, SPOQC_ANNOTATION
+        generates one instead and it is mixed back into the downstream annotation channel.
+        Structure: [ path("path-to-annotation-file") ] or [ [] ]
+  - ch_stainings:
+      description: |
+        List of staining indices to iterate the HQPR steps over
+        Structure: [ [ 1, 2, ... ] ]
+output:
+  - report:
+      description: |
+        Final combined spoQC HTML report
+authors:
+  - "@heylf"
+maintainers:
+  - "@heylf"

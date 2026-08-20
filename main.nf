@@ -80,7 +80,8 @@ workflow NFCORE_SPATIALAXE {
         params.sharpen_tiff,
         params.stardist_nuclei_model,
         params.tiling,
-        params.xeniumranger_only
+        params.xeniumranger_only,
+        params.spoqc,
     )
     emit:
 
@@ -138,7 +139,6 @@ workflow {
         params.plaintext_email,
         params.outdir,
         params.monochrome_logs,
-        params.hook_url,
         NFCORE_SPATIALAXE.out.multiqc_report
     )
 }

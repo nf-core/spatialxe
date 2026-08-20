@@ -40,9 +40,9 @@ nextflow_function {
         }
     }
 
-    test("Test Function checkCondachannels") {
+    test("Test Function checkCondaChannels") {
 
-        function "checkCondachannels"
+        function "checkCondaChannels"
 
         then {
             assertAll(

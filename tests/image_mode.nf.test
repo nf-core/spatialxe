@@ -3,7 +3,7 @@ nextflow_pipeline {
     name "Test pipeline for the `image` mode, test run the cellpose->baysor subworkflow"
     script "../main.nf"
     tag "pipeline"
-    config "../conf/test_image_mode.config"
+    config "../conf/tests/test_image_mode.config"
 
     test("-profile test stub") {
 

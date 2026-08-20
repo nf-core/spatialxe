@@ -3,12 +3,13 @@
 //
 
 include { XENIUMRANGER_RESEGMENT           } from '../../../modules/nf-core/xeniumranger/resegment/main'
-include { XENIUMRANGER_IMPORT_SEGMENTATION } from '../../../modules/nf-core/xeniumranger/import-segmentation/main'
+include { XENIUMRANGER_IMPORTSEGMENTATION  } from '../../../modules/nf-core/xeniumranger/importsegmentation/main'
 
 workflow XENIUMRANGER_RESEGMENT_MORPHOLOGY_OME_TIF {
     take:
     ch_bundle_path             // channel: [ val(meta), ["path-to-xenium-bundle"] ]
     nucleus_segmentation_only  // value: bool
+    expansion_distance         // value: nuclear expansion distance
 
     main:
 
@@ -41,14 +42,15 @@ workflow XENIUMRANGER_RESEGMENT_MORPHOLOGY_OME_TIF {
                     cells_zarr,
                     [],
                     "pixels",
+                    expansion_distance,
                 )
             }
 
-        XENIUMRANGER_IMPORT_SEGMENTATION(
+        XENIUMRANGER_IMPORTSEGMENTATION(
             ch_imp_seg_inputs
         )
 
-        ch_redefined_bundle = XENIUMRANGER_IMPORT_SEGMENTATION.out.outs
+        ch_redefined_bundle = XENIUMRANGER_IMPORTSEGMENTATION.out.outs
     }
     else {
 

@@ -8,23 +8,20 @@ include { XENIUMRANGER_IMPORT_SEGMENTATION } from '../../../modules/nf-core/xeni
 include { XENIUM_PATCH_DIVIDE              } from '../../../modules/local/xenium_patch/divide/main'
 include { BAYSOR_PREPROCESS_TRANSCRIPTS    } from '../../../modules/local/utility/preprocess/main'
 include { XENIUM_PATCH_STITCH              } from '../../../modules/local/xenium_patch/stitch/main'
-include { BAYSOR_ESTIMATE_SCALE_FACTOR     } from '../../../modules/local/utility/estimatescalefactor/main'
+include { XENIUMRANGER_IMPORTSEGMENTATION  } from '../../../modules/nf-core/xeniumranger/importsegmentation/main'
 
 workflow BAYSOR_RUN_TRANSCRIPTS_PARQUET_TILED {
 
     take:
-    ch_bundle_path           // channel: [ val(meta), ["xenium-bundle"] ]
-    ch_transcripts_parquet   // channel: [ val(meta), ["transcripts.parquet"] ]
-    ch_config                // channel: ["path-to-xenium.toml"]
-    max_x                    // value: spatial filter upper x bound
-    max_y                    // value: spatial filter upper y bound
-    min_qv                   // value: minimum transcript QV
-    min_x                    // value: spatial filter lower x bound
-    min_y                    // value: spatial filter lower y bound
-    ch_prior_column          // channel: [val("cell_id")]
-    ch_x_column              // channel: [val("x_location")]
-    ch_y_column              // channel: [val("y_location")]
-    ch_transcripts_per_cell  // channel: [val(min_transcripts_per_cell)]
+    ch_bundle_path         // channel: [ val(meta), ["xenium-bundle"] ]
+    ch_transcripts_file // channel: [ val(meta), ["transcripts.parquet"] ]
+    ch_config              // channel: ["path-to-xenium.toml"]
+    max_x                  // value: spatial filter upper x bound
+    max_y                  // value: spatial filter upper y bound
+    min_qv                 // value: minimum transcript QV
+    min_x                  // value: spatial filter lower x bound
+    min_y                  // value: spatial filter lower y bound
+    expansion_distance     // value: nuclear expansion distance
 
     main:
 
@@ -111,13 +108,13 @@ workflow BAYSOR_RUN_TRANSCRIPTS_PARQUET_TILED {
         .combine(XENIUM_PATCH_STITCH.out.xr_polygons_transcript, by: 0)
         .combine(ch_coordinate_space)
         .map { meta, bundle, geojson, csv, coord_space ->
-            tuple(meta, bundle, csv, geojson, [], [], [], coord_space)
+            tuple(meta, bundle, csv, geojson, [], [], [], coord_space, expansion_distance)
         }
 
-    XENIUMRANGER_IMPORT_SEGMENTATION ( ch_xr )
+    XENIUMRANGER_IMPORTSEGMENTATION ( ch_xr )
 
     emit:
 
     coordinate_space = ch_coordinate_space                          // channel: [ "microns" ]
-    redefined_bundle = XENIUMRANGER_IMPORT_SEGMENTATION.out.outs    // channel: [ val(meta), ["redefined-xenium-bundle"] ]
+    redefined_bundle = XENIUMRANGER_IMPORTSEGMENTATION.out.outs    // channel: [ val(meta), ["redefined-xenium-bundle"] ]
 }
