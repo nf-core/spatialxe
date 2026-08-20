@@ -1,0 +1,163 @@
+{
+    "xenium transcripts - csv - stub": {
+        "content": [
+            {
+                "0": [
+                    [
+                        {
+                            "id": "test_estimatescalefactor"
+                        },
+                        "test_estimatescalefactor_scale_factor.txt:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "1": [
+                    [
+                        "BAYSOR_ESTIMATE_SCALE_FACTOR",
+                        "numpy",
+                        "2.5.1"
+                    ]
+                ],
+                "2": [
+                    [
+                        "BAYSOR_ESTIMATE_SCALE_FACTOR",
+                        "pandas",
+                        "3.0.3"
+                    ]
+                ],
+                "3": [
+                    [
+                        "BAYSOR_ESTIMATE_SCALE_FACTOR",
+                        "python3",
+                        "3.14.6"
+                    ]
+                ],
+                "scale_factor": [
+                    [
+                        {
+                            "id": "test_estimatescalefactor"
+                        },
+                        "test_estimatescalefactor_scale_factor.txt:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "versions_numpy": [
+                    [
+                        "BAYSOR_ESTIMATE_SCALE_FACTOR",
+                        "numpy",
+                        "2.5.1"
+                    ]
+                ],
+                "versions_pandas": [
+                    [
+                        "BAYSOR_ESTIMATE_SCALE_FACTOR",
+                        "pandas",
+                        "3.0.3"
+                    ]
+                ],
+                "versions_python": [
+                    [
+                        "BAYSOR_ESTIMATE_SCALE_FACTOR",
+                        "python3",
+                        "3.14.6"
+                    ]
+                ]
+            }
+        ],
+        "timestamp": "2026-07-12T21:45:33.034603681",
+        "meta": {
+            "nf-test": "0.9.5",
+            "nextflow": "26.04.3"
+        }
+    },
+    "xenium transcripts - csv": {
+        "content": [
+            {
+                "0": [
+                    [
+                        {
+                            "id": "test_estimatescalefactor"
+                        },
+                        "test_estimatescalefactor_scale_factor.txt:md5,90df35911f2ec38d497a010ef60a5247"
+                    ]
+                ],
+                "1": [
+                    [
+                        "BAYSOR_ESTIMATE_SCALE_FACTOR",
+                        "numpy",
+                        "2.5.1"
+                    ]
+                ],
+                "2": [
+                    [
+                        "BAYSOR_ESTIMATE_SCALE_FACTOR",
+                        "pandas",
+                        "3.0.3"
+                    ]
+                ],
+                "3": [
+                    [
+                        "BAYSOR_ESTIMATE_SCALE_FACTOR",
+                        "python3",
+                        "3.14.6"
+                    ]
+                ],
+                "scale_factor": [
+                    [
+                        {
+                            "id": "test_estimatescalefactor"
+                        },
+                        "test_estimatescalefactor_scale_factor.txt:md5,90df35911f2ec38d497a010ef60a5247"
+                    ]
+                ],
+                "versions_numpy": [
+                    [
+                        "BAYSOR_ESTIMATE_SCALE_FACTOR",
+                        "numpy",
+                        "2.5.1"
+                    ]
+                ],
+                "versions_pandas": [
+                    [
+                        "BAYSOR_ESTIMATE_SCALE_FACTOR",
+                        "pandas",
+                        "3.0.3"
+                    ]
+                ],
+                "versions_python": [
+                    [
+                        "BAYSOR_ESTIMATE_SCALE_FACTOR",
+                        "python3",
+                        "3.14.6"
+                    ]
+                ]
+            },
+            {
+                "versions_numpy": [
+                    [
+                        "BAYSOR_ESTIMATE_SCALE_FACTOR",
+                        "numpy",
+                        "2.5.1"
+                    ]
+                ],
+                "versions_pandas": [
+                    [
+                        "BAYSOR_ESTIMATE_SCALE_FACTOR",
+                        "pandas",
+                        "3.0.3"
+                    ]
+                ],
+                "versions_python": [
+                    [
+                        "BAYSOR_ESTIMATE_SCALE_FACTOR",
+                        "python3",
+                        "3.14.6"
+                    ]
+                ]
+            }
+        ],
+        "timestamp": "2026-07-12T21:46:31.820728258",
+        "meta": {
+            "nf-test": "0.9.5",
+            "nextflow": "26.04.3"
+        }
+    }
+}

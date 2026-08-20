@@ -3,10 +3,10 @@
         "content": [
             {
                 "PROSEG2BAYSOR": {
-                    "proseg": "3.1.0"
+                    "proseg": "3.1.1"
                 },
                 "PROSEG": {
-                    "proseg": "3.1.0"
+                    "proseg": "3.1.1"
                 },
                 "SPATIALDATA_MERGE_RAW_REDEFINED": {
                     "spatialdata": "0.7.2"
@@ -46,15 +46,17 @@
                 "coordinate/multiqc/redefined_bundle/multiqc_plots/.stub",
                 "coordinate/multiqc/redefined_bundle/multiqc_report.html",
                 "coordinate/proseg",
-                "coordinate/proseg/preset",
-                "coordinate/proseg/preset/test_run",
-                "coordinate/proseg/preset/test_run/cell-polygons.geojson.gz",
-                "coordinate/proseg/preset/test_run/proseg-output.zarr",
-                "coordinate/proseg/preset/test_run/transcript-metadata.csv.gz",
+                "coordinate/proseg/proseg",
+                "coordinate/proseg/proseg/test_run.zarr",
+                "coordinate/proseg/proseg/test_run_cell-metadata.csv.gz",
+                "coordinate/proseg/proseg/test_run_cell-polygons-layers.geojson.gz",
+                "coordinate/proseg/proseg/test_run_cell-polygons-union.geojson.gz",
+                "coordinate/proseg/proseg/test_run_cell-polygons.geojson.gz",
+                "coordinate/proseg/proseg/test_run_expected-counts.csv.gz",
+                "coordinate/proseg/proseg/test_run_transcript-metadata.csv.gz",
                 "coordinate/proseg/proseg2baysor",
-                "coordinate/proseg/proseg2baysor/test_run",
-                "coordinate/proseg/proseg2baysor/test_run/cell-polygons.geojson",
-                "coordinate/proseg/proseg2baysor/test_run/transcript-metadata.csv",
+                "coordinate/proseg/proseg2baysor/test_run_cell-polygons.geojson",
+                "coordinate/proseg/proseg2baysor/test_run_transcript-metadata.csv",
                 "coordinate/spatialdata",
                 "coordinate/spatialdata/merge",
                 "coordinate/spatialdata/merge/spatialdata",

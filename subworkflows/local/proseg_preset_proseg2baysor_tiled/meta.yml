@@ -1,0 +1,39 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/nf-core/modules/master/subworkflows/yaml-schema.json
+name: "proseg_preset_proseg2baysor_tiled"
+description: to run proseg with the transcripts.parquet file as a coordinate-based segmentation run in a tiled manner
+  where the input transcripts.parquet file is divided into smaller tiles and processed in parallel
+keywords:
+  - proseg
+  - segmentation
+  - xeniumranger import-segmentation
+  - coordinate-based segmentation
+  - polygons
+  - metadata
+components:
+  - proseg
+  - proseg2baysor
+  - xenium/patch/divide
+  - xenium/patch/stitch
+  - xeniumranger/import/segmentation
+input:
+  - ch_bundle_path:
+      description: |
+        path to the xenium bundle
+        Structure: [ val(meta), path("path-to-xenium-bundle") ]
+  - ch_transcripts_parquet:
+      description: |
+        input parquet file from the xenium bundle
+        Structure: [ val(meta), path("path-to-transcripts.parquet") ]
+output:
+  - coordinate_space:
+      description: |
+        the coordinate space in which xeniumranger import-segmentation was run
+        Structure: [ val("microns") ]
+  - redefined_bundle:
+      description: |
+        the redefined xenium bundle generated with the segmentation results from baysor
+        Structure: [ val(meta), ["redefined-xenium-bundle"] ]
+authors:
+  - "@khersameesh24"
+maintainers:
+  - "@khersameesh24"

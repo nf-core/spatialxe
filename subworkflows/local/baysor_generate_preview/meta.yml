@@ -12,7 +12,7 @@ keywords:
 components:
   - baysor/preview
   - baysor/create/dataset
-  - parquet/to/csv
+  - parquet2csv
   - extract/preview/data
 input:
   - ch_transcripts_parquet:

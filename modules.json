@@ -5,6 +5,21 @@
         "https://github.com/nf-core/modules.git": {
             "modules": {
                 "nf-core": {
+                    "baysor/preview": {
+                        "branch": "master",
+                        "git_sha": "e20c391087fc926b5b7d7b59bbb7b7744d744049",
+                        "installed_by": ["modules"]
+                    },
+                    "baysor/run": {
+                        "branch": "master",
+                        "git_sha": "e20c391087fc926b5b7d7b59bbb7b7744d744049",
+                        "installed_by": ["modules"]
+                    },
+                    "baysor/segfree": {
+                        "branch": "master",
+                        "git_sha": "e20c391087fc926b5b7d7b59bbb7b7744d744049",
+                        "installed_by": ["modules"]
+                    },
                     "cellpose": {
                         "branch": "master",
                         "git_sha": "0780b963d3ab087e861a4b74e9d0e404115e5352",
@@ -19,21 +34,28 @@
                     },
                     "opt/flip": {
                         "branch": "master",
-                        "git_sha": "7d3e5c9d3d44",
-                        "installed_by": ["modules"],
-                        "patch": "modules/nf-core/opt/flip/opt-flip.diff"
+                        "git_sha": "f0ce9f694b4d372a663199a810de933651465987",
+                        "installed_by": ["modules", "opt_flip_track_stat"]
                     },
                     "opt/stat": {
                         "branch": "master",
-                        "git_sha": "7d3e5c9d3d44",
-                        "installed_by": ["modules"],
-                        "patch": "modules/nf-core/opt/stat/opt-stat.diff"
+                        "git_sha": "f0ce9f694b4d372a663199a810de933651465987",
+                        "installed_by": ["modules", "opt_flip_track_stat"]
                     },
                     "opt/track": {
                         "branch": "master",
-                        "git_sha": "7d3e5c9d3d44",
-                        "installed_by": ["modules"],
-                        "patch": "modules/nf-core/opt/track/opt-track.diff"
+                        "git_sha": "f0ce9f694b4d372a663199a810de933651465987",
+                        "installed_by": ["modules", "opt_flip_track_stat"]
+                    },
+                    "proseg/proseg": {
+                        "branch": "master",
+                        "git_sha": "d8c5b9b8d5de1b7d468199f09421e4e18c9b176c",
+                        "installed_by": ["modules"]
+                    },
+                    "proseg/proseg2baysor": {
+                        "branch": "master",
+                        "git_sha": "d8c5b9b8d5de1b7d468199f09421e4e18c9b176c",
+                        "installed_by": ["modules"]
                     },
                     "stardist": {
                         "branch": "master",
@@ -72,6 +94,11 @@
             },
             "subworkflows": {
                 "nf-core": {
+                    "opt_flip_track_stat": {
+                        "branch": "master",
+                        "git_sha": "f0ce9f694b4d372a663199a810de933651465987",
+                        "installed_by": ["subworkflows"]
+                    },
                     "utils_nextflow_pipeline": {
                         "branch": "master",
                         "git_sha": "1a545fcbd762911c21a64ced3dbef99b2b51ac75",

@@ -19,9 +19,13 @@ components:
   - resize/tif
   - get/transcripts/coordinates
   - baysor/preprocess/transcripts
+  - baysor/estimate/scale/factor
   - baysor/run
   - xeniumranger/import/segmentation
   - split/transcripts
+  - convert/mask/uint32
+  - extract/dapi
+  - stardist
 input:
   - ch_morphology_image:
       description: |

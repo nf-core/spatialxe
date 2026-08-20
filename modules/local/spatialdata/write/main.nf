@@ -35,6 +35,7 @@ process SPATIALDATA_WRITE {
         --output-folder ${outputfolder} \\
         --segmented-object ${segmented_object} \\
         --coordinate-space ${coordinate_space} \\
+        --format xenium \\
         ${args}
     """
 

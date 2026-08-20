@@ -11,9 +11,14 @@ keywords:
   - polygons
 components:
   - baysor/preprocess/transcripts
+  - baysor/estimate/scale/factor
   - baysor/run
   - xeniumranger/import/segmentation
   - split/transcripts
+  - parquet2csv
+  - reconstruct/patches
+  - xenium/patch/divide
+  - xenium/patch/stitch
 input:
   - ch_bundle_path:
       description: |
@@ -23,10 +28,54 @@ input:
       description: |
         input parquet file from the xenium bundle
         Structure: [ val(meta), path("path-to-transcripts.parquet") ]
+  - ch_morphology_image:
+      description: |
+        the morphology_focus.ome.tif file from the xenium bundle
+        Structure: [ val(meta), path("morphology_focus.ome.tif") ]
   - ch_config:
       description: |
         config file for the xenium baysor run (stored in assets/config/xenium.toml)
         Structure: [ path("path-to-xenium.toml") ]
+  - ch_prior_mask:
+      description: |
+        the resized_mask.tif file from the xenium bundle (or empty for cellpose)
+        Structure: [ val(meta), path("resized_mask.tif") ] or empty
+  - baysor_scale:
+      description: |
+        the --scale parameter for the baysor run command (for non-tiled runs)
+        Structure: [ val("integer") ]
+  - baysor_tiling:
+      description: |
+        whether to enable tiling for the baysor run command
+        Structure: [ val("boolean") ]
+  - baysor_tiling_scale:
+      description: |
+        the --scale parameter for the baysor run command (for tiled runs)
+        Structure: [ val("integer") ]
+  - max_x:
+      description: |
+        maximum x coordinate for spatial filtering of transcripts
+        Structure: [ val("integer") ]
+  - max_y:
+      description: |
+        maximum y coordinate for spatial filtering of transcripts
+        Structure: [ val("integer") ]
+  - min_qv:
+      description: |
+        minimum QV for spatial filtering of transcripts
+        Structure: [ val("integer") ]
+  - min_x:
+      description: |
+        minimum x coordinate for spatial filtering of transcripts
+        Structure: [ val("integer") ]
+  - min_y:
+      description: |
+        minimum y coordinate for spatial filtering of transcripts
+        Structure: [ val("integer") ]
+  - ch_polygon_format:
+      description: |
+        the polygon format for the baysor run command
+        Structure: [ val("GeometryCollectionLegacy") ]
 output:
   - segmentation:
       description: |

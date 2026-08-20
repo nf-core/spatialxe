@@ -1,5 +1,5 @@
 //
-// Run segger create_dataset, train and predict modules & parquet_to_csv
+// Run segger create_dataset, train and predict modules
 //
 
 include { SEGGER2XR                        } from '../../../modules/local/utility/segger2xr/main'

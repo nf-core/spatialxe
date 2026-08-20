@@ -11,7 +11,7 @@
                 "EXTRACT_PREVIEW_DATA": {
                     "python": "3.14.4"
                 },
-                "PARQUET_TO_CSV": {
+                "PARQUET2CSV": {
                     "pyarrow": "24.0.0"
                 },
                 "UNTAR": {
@@ -30,8 +30,7 @@
                 "preview/baysor/create_dataset/test_run",
                 "preview/baysor/create_dataset/test_run/sampled_transcripts.csv",
                 "preview/baysor/preview",
-                "preview/baysor/preview/test_run",
-                "preview/baysor/preview/test_run/preview.html",
+                "preview/baysor/preview/test_run_preview.html",
                 "preview/multiqc",
                 "preview/multiqc/raw_bundle",
                 "preview/multiqc/raw_bundle/multiqc_data",
@@ -71,9 +70,9 @@
                 "preview/untar/test_run/transcripts.parquet",
                 "preview/untar/test_run/transcripts.zarr.zip",
                 "preview/utility",
-                "preview/utility/parquet_to_csv",
-                "preview/utility/parquet_to_csv/test_run",
-                "preview/utility/parquet_to_csv/test_run/transcripts.parquet.csv",
+                "preview/utility/parquet2csv",
+                "preview/utility/parquet2csv/test_run",
+                "preview/utility/parquet2csv/test_run/transcripts.parquet.csv",
                 "preview/utility/preview_data",
                 "preview/utility/preview_data/test_run",
                 "preview/utility/preview_data/test_run/gene_structure_mqc.tsv",
@@ -84,7 +83,7 @@
             ],
             [
                 "sampled_transcripts.csv:md5,d41d8cd98f00b204e9800998ecf8427e",
-                "preview.html:md5,d41d8cd98f00b204e9800998ecf8427e",
+                "test_run_preview.html:md5,d41d8cd98f00b204e9800998ecf8427e",
                 ".stub:md5,d41d8cd98f00b204e9800998ecf8427e",
                 ".stub:md5,d41d8cd98f00b204e9800998ecf8427e",
                 "multiqc_report.html:md5,d41d8cd98f00b204e9800998ecf8427e",

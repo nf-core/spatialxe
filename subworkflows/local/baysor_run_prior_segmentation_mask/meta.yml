@@ -14,6 +14,7 @@ components:
   - baysor/preprocess/transcripts
   - baysor/run
   - xeniumranger/import/segmentation
+  - baysor/estimate/scale/factor
 input:
   - ch_bundle_path:
       description: |
@@ -31,6 +32,38 @@ input:
       description: |
         config file for the xenium baysor run (stored in assets/config/xenium.toml)
         Structure: [ path("path-to-xenium.toml") ]
+  - max_x:
+      description: |
+        maximum x coordinate for spatial filtering of transcripts
+        Structure: [ val("max_x") ]
+  - max_y:
+      description: |
+        maximum y coordinate for spatial filtering of transcripts
+        Structure: [ val("max_y") ]
+  - min_qv:
+      description: |
+        minimum quality value for filtering transcripts
+        Structure: [ val("min_qv") ]
+  - min_x:
+      description: |
+        minimum x coordinate for spatial filtering of transcripts
+        Structure: [ val("min_x") ]
+  - min_y:
+      description: |
+        minimum y coordinate for spatial filtering of transcripts
+        Structure: [ val("min_y") ]
+  - ch_prior_column:
+      description: |
+        the column name in the prior segmentation mask to use as a prior for Baysor segmentation
+        Structure: [ val("prior_column") ]
+  - ch_prior_confidence:
+      description: |
+        the confidence value for the prior segmentation mask to use as a prior for segmentation
+        Structure: [ val("prior_confidence") ]
+  - ch_polygon_format:
+      description: |
+        the polygon format to use for Baysor segmentation output
+        Structure: [ val("GeometryCollectionLegacy") ]
 output:
   - segmentation:
       description: |

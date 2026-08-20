@@ -24,8 +24,7 @@
                 "segfree/baysor/preprocess/test_run",
                 "segfree/baysor/preprocess/test_run/filtered_transcripts.csv",
                 "segfree/baysor/segfree",
-                "segfree/baysor/segfree/test_run",
-                "segfree/baysor/segfree/test_run/ncvs.loom",
+                "segfree/baysor/segfree/test_run_ncvs.loom",
                 "segfree/multiqc",
                 "segfree/multiqc/raw_bundle",
                 "segfree/multiqc/raw_bundle/multiqc_data",
@@ -67,7 +66,7 @@
             ],
             [
                 "filtered_transcripts.csv:md5,d41d8cd98f00b204e9800998ecf8427e",
-                "ncvs.loom:md5,d41d8cd98f00b204e9800998ecf8427e",
+                "test_run_ncvs.loom:md5,d41d8cd98f00b204e9800998ecf8427e",
                 ".stub:md5,d41d8cd98f00b204e9800998ecf8427e",
                 ".stub:md5,d41d8cd98f00b204e9800998ecf8427e",
                 "multiqc_report.html:md5,d41d8cd98f00b204e9800998ecf8427e",

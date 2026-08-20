@@ -6,8 +6,11 @@ include { BAYSOR_PREPROCESS_TRANSCRIPTS    } from '../../../modules/local/baysor
 include { BAYSOR_RUN                       } from '../../../modules/local/baysor/run/main'
 include { XENIUMRANGER_IMPORTSEGMENTATION  } from '../../../modules/nf-core/xeniumranger/importsegmentation/main'
 
+include { BAYSOR_PREPROCESS_TRANSCRIPTS    } from '../../../modules/local/utility/preprocess/main'
+include { BAYSOR_ESTIMATE_SCALE_FACTOR     } from '../../../modules/local/utility/estimatescalefactor/main'
 
 workflow BAYSOR_RUN_PRIOR_SEGMENTATION_MASK {
+
     take:
     ch_bundle_path         // channel: [ val(meta), ["path-to-xenium-bundle"] ]
     ch_transcripts_file // channel: [ val(meta), ["path-to-transcripts.parquet"] ]
@@ -22,39 +25,53 @@ workflow BAYSOR_RUN_PRIOR_SEGMENTATION_MASK {
 
     main:
 
-    ch_transcripts = channel.empty()
-
+    ch_transcripts      = channel.empty()
     ch_redefined_bundle = channel.empty()
     ch_coordinate_space = channel.value("pixels")
+    ch_x_column         = channel.value("x_location")
+    ch_y_column         = channel.value("y_location")
+    ch_polygon_format   = channel.value("GeometryCollectionLegacy")
 
     // Always preprocess transcripts.parquet to CSV for Baysor 0.7.1 compatibility.
     // Baysor's Julia Parquet.jl cannot read zstd-compressed parquet files from Xenium bundles.
     // Also applies optional spatial/QV filtering when filter_transcripts is true.
     BAYSOR_PREPROCESS_TRANSCRIPTS(
-        ch_transcripts_file,
+        ch_transcripts_parquet,
         min_qv,
         max_x,
         min_x,
         max_y,
         min_y,
     )
-    ch_transcripts = BAYSOR_PREPROCESS_TRANSCRIPTS.out.transcripts_file
+    ch_transcripts = BAYSOR_PREPROCESS_TRANSCRIPTS.out.transcripts_csv
 
 
-    // run baysor with prior segmentation mask
-    ch_baysor_input = ch_transcripts
+    // estimated scale factor cell radius
+    BAYSOR_ESTIMATE_SCALE_FACTOR (
+        ch_transcripts_parquet,
+        ch_prior_column,
+        ch_x_column,
+        ch_y_column,
+        ch_transcripts_per_cell
+    )
+    ch_scale_factor = BAYSOR_ESTIMATE_SCALE_FACTOR.out.scale_factor
+
+
+    // run baysor with prior segmentation mask with the estimated scale factor
+    ch_baysor_input = BAYSOR_PREPROCESS_TRANSCRIPTS.out.transcripts_csv
         .combine(ch_segmentation_mask)
         .combine(ch_config)
-        .map { meta, transcripts, mask, config ->
+        .combine(ch_scale_factor)
+        .map { meta, transcripts, mask, config, scale_factor ->
             tuple(
                 meta,
                 transcripts,
                 mask,
                 config,
-                30,
+                scale_factor,
             )
         }
-    BAYSOR_RUN(ch_baysor_input)
+    BAYSOR_RUN(ch_baysor_input, ch_prior_column, ch_prior_confidence, ch_polygon_format)
 
 
     // run import-segmentation with baysor outs
@@ -80,6 +97,7 @@ workflow BAYSOR_RUN_PRIOR_SEGMENTATION_MASK {
     ch_redefined_bundle = XENIUMRANGER_IMPORTSEGMENTATION.out.outs
 
     emit:
+
     coordinate_space = ch_coordinate_space // channel: [ "pixels" ]
     redefined_bundle = ch_redefined_bundle // channel: [ val(meta), ["redefined-xenium-bundle"] ]
 }

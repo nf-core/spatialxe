@@ -1,0 +1,45 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/nf-core/modules/master/subworkflows/yaml-schema.json
+name: "stardist_resolift_morphology_ome_tif"
+description: |
+  image-based segmentation approach with stardist to run import-segmentation in pixel coordinate space
+keywords:
+  - stardist
+  - segmentation
+  - xeniumranger import-segmentation
+  - image-based segmentation
+components:
+  - stardist
+  - resolift
+  - xeniumranger/import/segmentation
+  - convert/mask/uint32
+  - extract/dapi
+input:
+  - ch_morphology_image:
+      description: |
+        path to the morphology.ome.tif file
+        Structure: [ val(meta), path("path-to-morphology.ome.tif") ]
+  - ch_bundle_path:
+      description: |
+        path to the xenium bundle
+        Structure: [ val(meta), path("path-to-xenium-bundle") ]
+  - sharpen_tiff:
+      description: |
+        sharpen the input morphology.ome.tif file before running stardist
+        Structure: [ val("true") ]
+  - stardist_nuclei_model:
+      description: |
+        the stardist model to use for segmentation
+        Structure: [ val("2D_versatile_fluo") ]
+output:
+  - coordinate_space:
+      description: |
+        the coordinate space in which xeniumranger import-segmentation was run
+        Structure: [ val("pixels") ]
+  - redefined_bundle:
+      description: |
+        the redefined xenium bundle generated with the segmentation results from stardist
+        Structure: [ val(meta), ["redefined-xenium-bundle"] ]
+authors:
+  - "@khersameesh24"
+maintainers:
+  - "@khersameesh24"

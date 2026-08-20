@@ -46,11 +46,9 @@ class BaysorPreview():
             reader = csv.reader(infile)
             writer = csv.writer(outfile)
 
-            # get the header line
             header = next(reader)
             writer.writerow(header)
 
-            # randomize csv rows to write
             for row in reader:
                 if random.random() < float(sample_fraction):
                     writer.writerow(row)
@@ -59,9 +57,7 @@ class BaysorPreview():
 
 
 def main() -> None:
-    """
-    Run create dataset as nf module
-    """
+
     parser = argparse.ArgumentParser(
         description="Create sampled dataset for Baysor preview"
     )
@@ -79,11 +75,11 @@ def main() -> None:
     )
     args = parser.parse_args()
 
-    sampled_transcripts = "sampled_transcripts.csv"
+    sampled_transcripts = Path("sampled_transcripts.csv")
 
     # generate dataset
     BaysorPreview.generate_dataset(
-        transcripts=args.transcripts,
+        transcripts=Path(args.transcripts),
         sampled_transcripts=sampled_transcripts,
         sample_fraction=args.sample_fraction,
         prefix=args.prefix

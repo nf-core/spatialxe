@@ -9,11 +9,13 @@
 //   Image-based (cellpose): non-tiled only (mask passed to Baysor)
 //
 
+include { BAYSOR_RUN                       } from '../../../modules/nf-core/baysor/run/main'
+include { XENIUMRANGER_IMPORT_SEGMENTATION } from '../../../modules/nf-core/xeniumranger/import-segmentation/main'
+
 include { XENIUM_PATCH_DIVIDE              } from '../../../modules/local/xenium_patch/divide/main'
-include { PARQUET_TO_CSV                   } from '../../../modules/local/parquet_to_csv/main'
-include { BAYSOR_RUN                       } from '../../../modules/local/baysor/run/main'
-include { BAYSOR_PREPROCESS_TRANSCRIPTS    } from '../../../modules/local/baysor/preprocess/main'
 include { XENIUM_PATCH_STITCH              } from '../../../modules/local/xenium_patch/stitch/main'
+include { PARQUET2CSV                      } from '../../../modules/local/utility/parquet2csv/main'
+include { BAYSOR_PREPROCESS_TRANSCRIPTS    } from '../../../modules/local/utility/preprocess/main'
 include { RECONSTRUCT_PATCHES              } from '../../../modules/local/utility/reconstruct_patches/main'
 include { XENIUMRANGER_IMPORTSEGMENTATION  } from '../../../modules/nf-core/xeniumranger/importsegmentation/main'
 
@@ -39,14 +41,32 @@ workflow BAYSOR_RUN_TRANSCRIPTS_PARQUET {
 
     main:
 
+    ch_x_column = channel.value("x_location")
+    ch_y_column = channel.value("y_location")
     ch_coordinate_space = channel.value("microns")
+    ch_polygon_format   = channel.value("GeometryCollectionLegacy")
 
+    // Estimate scale factor which specified the cell radius for each patch
+    BAYSOR_ESTIMATE_SCALE_FACTOR (
+        ch_transcripts_parquet,
+        ch_prior_column,
+        ch_x_column,
+        ch_y_column,
+        ch_transcripts_per_cell
+    )
+
+    // keep meta-keyed for non-tiled join
+    ch_scale_factor_by_meta = BAYSOR_ESTIMATE_SCALE_FACTOR.out.scale_factor
+
+    // keyed by sample_id (String) for the tiled/patch path
+    ch_scale_factor_by_sample = ch_scale_factor_by_meta
+        .map { meta, scale_factor -> tuple(meta.id, scale_factor) }
+
+    // ── TILED PATH ───────────────────────
     if ( baysor_tiling ) {
 
-        // ── TILED PATH ──────────────────────────────────────────────────
-
         // Step 1: Divide transcripts into overlapping patches
-        ch_divide_input = ch_transcripts_file
+        ch_divide_input = ch_transcripts_parquet
             .join(ch_morphology_image, by: 0)
 
         XENIUM_PATCH_DIVIDE ( ch_divide_input )
@@ -64,16 +84,19 @@ workflow BAYSOR_RUN_TRANSCRIPTS_PARQUET {
             }
 
         // Step 2b: Convert parquet to CSV (Baysor Julia Parquet.jl incompatibility)
-        PARQUET_TO_CSV ( ch_patches )
+        PARQUET2CSV ( ch_patches )
 
         // Step 3: Run Baysor on each patch independently
         // Use baysor_tiling_scale (larger than baysor_scale) to compensate for EM
         // convergence producing smaller cells on tile-sized datasets.
-        BAYSOR_RUN (
-            PARQUET_TO_CSV.out.csv.map { meta, transcripts ->
-                tuple(meta, transcripts, [], baysor_config ? file(baysor_config) : [], baysor_tiling_scale)
+        ch_baysor_input = PARQUET2CSV.out.transcripts_csv
+            .map { meta, csv -> tuple(meta.sample_id, meta, csv) }
+            .combine(ch_config)
+            .combine(ch_scale_factor_by_sample, by: 0)
+            .map { _sample_id, meta, transcripts, config, scale_factor ->
+                tuple(meta, transcripts, [], config ? file(config) : [], scale_factor)
             }
-        )
+        BAYSOR_RUN (ch_baysor_input, [], [], ch_polygon_format)
 
         // Step 4: Gather patch results per sample and reconstruct patches directory
         ch_baysor_results = BAYSOR_RUN.out.segmentation
@@ -126,7 +149,7 @@ workflow BAYSOR_RUN_TRANSCRIPTS_PARQUET {
 
         // Preprocess: parquet → CSV with optional spatial/QV filtering
         BAYSOR_PREPROCESS_TRANSCRIPTS(
-            ch_transcripts_file,
+            ch_transcripts_parquet,
             min_qv,
             max_x,
             min_x,
@@ -135,17 +158,18 @@ workflow BAYSOR_RUN_TRANSCRIPTS_PARQUET {
         )
 
         // Run Baysor on full transcripts (with optional image-based prior mask)
-        ch_csv_with_mask = BAYSOR_PREPROCESS_TRANSCRIPTS.out.transcripts_file
+        ch_csv_with_mask = BAYSOR_PREPROCESS_TRANSCRIPTS.out.transcripts_csv
             .join(ch_prior_mask, by: 0, remainder: true)
             .map { meta, transcripts, mask ->
                 tuple(meta, transcripts, mask ?: [])
             }
         ch_baysor_input = ch_csv_with_mask
             .combine(ch_config)
-            .map { meta, transcripts, mask, config ->
-                tuple(meta, transcripts, mask, config, baysor_scale)
+            .combine(ch_scale_factor_by_meta, by: 0)
+            .map { meta, transcripts, mask, config, scale_factor ->
+                tuple(meta, transcripts, mask, config, scale_factor)
             }
-        BAYSOR_RUN(ch_baysor_input)
+        BAYSOR_RUN(ch_baysor_input, [], [], ch_polygon_format)
 
         // xeniumranger import-segmentation (non-tiled)
         // spatialaxe signature: meta, bundle, transcript_assignment, viz_polygons, nuclei, cells, coordinate_transform, units

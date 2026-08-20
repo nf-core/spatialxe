@@ -8,6 +8,7 @@ keywords:
   - loom
 components:
   - baysor/segfree
+  - baysor/preprocess/transcripts
 input:
   - ch_transcripts_parquet:
       description: |

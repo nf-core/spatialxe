@@ -9,7 +9,7 @@ keywords:
 components:
   - ficture/preprocess
   - ficture
-  - parquet/to/csv
+  - parquet2csv
 input:
   - ch_transcripts_parquet:
       description: |

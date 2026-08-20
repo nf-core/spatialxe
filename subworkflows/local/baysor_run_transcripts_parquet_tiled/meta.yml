@@ -1,0 +1,81 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/nf-core/modules/master/subworkflows/yaml-schema.json
+name: "baysor_run_transcripts_parquet_tiled"
+description:
+  to run the `baysor run` command with the transcripts.parquet file as a coordinate-based segmentation run in a tiled manner,
+  where the input transcripts.parquet file is divided into smaller tiles and processed in parallel
+keywords:
+  - baysor
+  - baysor run
+  - segmentation
+  - xeniumranger import-segmentation
+  - coordinate-based segmentation
+  - transcript filtering
+  - polygons
+components:
+  - baysor/preprocess/transcripts
+  - baysor/run
+  - xeniumranger/import/segmentation
+  - split/transcripts
+  - parquet2csv
+  - reconstruct/patches
+  - xenium/patch/divide
+  - xenium/patch/stitch
+  - baysor/estimate/scale/factor
+input:
+  - ch_bundle_path:
+      description: |
+        path to the xenium bundle
+        Structure: [ val(meta), path("path-to-xenium-bundle") ]
+  - ch_transcripts_parquet:
+      description: |
+        input parquet file from the xenium bundle
+        Structure: [ val(meta), path("path-to-transcripts.parquet") ]
+  - ch_config:
+      description: |
+        config file for the xenium baysor run (stored in assets/config/xenium.toml)
+        Structure: [ path("path-to-xenium.toml") ]
+  - max_x:
+      description: |
+        maximum x coordinate for spatial filtering of transcripts
+        Structure: [ val("max-x-coordinate") ]
+  - max_y:
+      description: |
+        maximum y coordinate for spatial filtering of transcripts
+        Structure: [ val("max-y-coordinate") ]
+  - min_x:
+      description: |
+        minimum x coordinate for spatial filtering of transcripts
+        Structure: [ val("min-x-coordinate") ]
+  - min_y:
+      description: |
+        minimum y coordinate for spatial filtering of transcripts
+        Structure: [ val("min-y-coordinate") ]
+  - ch_prior_column:
+      description: |
+        the column name in the prior segmentation mask to use as a prior for Baysor segmentation
+        Structure: [ val("prior-column") ]
+  - ch_x_column:
+      description: |
+        the column name in the transcripts.parquet file that contains the x coordinates of the transcripts
+        Structure: [ val("x_location") ]
+  - ch_y_column:
+      description: |
+        the column name in the transcripts.parquet file that contains the y coordinates of the transcripts
+        Structure: [ val("y_location") ]
+  - ch_transcripts_per_cell:
+      description: |
+        min number of transcripts per cell for filtering transcripts
+        Structure: [ val("min-transcripts-per-cell") ]
+output:
+  - coordinate_space:
+      description: |
+        the coordinate space in which xeniumranger import-segmentation was run
+        Structure: [ val("microns") ]
+  - redefined_bundle:
+      description: |
+        the redefined xenium bundle generated with the segmentation results from baysor
+        Structure: [ val(meta), ["redefined-xenium-bundle"] ]
+authors:
+  - "@khersameesh24"
+maintainers:
+  - "@khersameesh24"

@@ -1,0 +1,71 @@
+nextflow_process {
+
+    name "Test Process BAYSOR_ESTIMATE_SCALE_FACTOR"
+    script "../main.nf"
+    process "BAYSOR_ESTIMATE_SCALE_FACTOR"
+
+    tag "modules"
+    tag "modules_local"
+    tag "utility"
+    tag "utility/estimatescalefactor"
+
+
+    test("xenium transcripts - csv") {
+
+        when {
+            process {
+                """
+                input[0] = [
+                    [id: "test_estimatescalefactor"],
+                    file(params.modules_testdata_base_path + "spatial_omics/xenium/homo_sapiens/spatial_gene_expression.csv", checkIfExists: true)
+                ]
+                input[1] = "cell_id"
+                input[2] = "x_location"
+                input[3] = "y_location"
+                input[4] = "10"
+                """
+            }
+        }
+
+        then {
+            assert process.success
+            assertAll(
+                { assert snapshot(
+                    process.out,
+                    process.out.findAll { key, val -> key.startsWith('versions') }
+                ).match() }
+            )
+        }
+
+    }
+
+
+    test("xenium transcripts - csv - stub") {
+
+        options "-stub"
+
+        when {
+            process {
+                """
+                input[0] = [
+                    [id: "test_estimatescalefactor"],
+                    file(params.modules_testdata_base_path + "spatial_omics/xenium/homo_sapiens/spatial_gene_expression.csv", checkIfExists: true)
+                ]
+                input[1] = "cell_id"
+                input[2] = "x_location"
+                input[3] = "y_location"
+                input[4] = "10"
+                """
+            }
+        }
+
+        then {
+            assert process.success
+            assertAll(
+                { assert snapshot(process.out).match() }
+            )
+        }
+
+    }
+
+}

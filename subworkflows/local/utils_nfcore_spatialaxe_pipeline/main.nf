@@ -278,14 +278,14 @@ def validateInputParameters(
     // check if segmentation mask is provided in image mode and baysor method
     if (mode == 'image' && method == 'baysor') {
         if (!segmentation_mask) {
-            log.warn("⚠️  Missing segmentation mask with `--segmentation_mask` when pipeline is run in ${mode} and with the ${method}. Running in coordinate mode.")
+            error("❌ Error: Missing segmentation mask with `--segmentation_mask` option, when pipeline is run in ${mode} mode and with the ${method} method a prior segmentation mask should be provided.")
         }
     }
 
     // check if required arguments are provided for off-target probe tracking
     if (!mode && offtarget_probe_tracking) {
         if(!probes_fasta || !reference_annotations || !gene_synonyms) {
-            error("❌ Error: Missing required param(s) for off-target-proebe detection.")
+            error("❌ Error: Missing required param(s) for off-target-proebe detection. Please provide --probes_fasta, --reference_annotations, and --gene_synonyms.")
         }
         error("❌ Error: Use --mode qc and --offtraget_probe_tracking to run off-target probe tracking.")
     }

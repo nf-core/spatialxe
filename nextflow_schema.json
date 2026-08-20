@@ -306,6 +306,11 @@
                     "enum": ["cells", "cellpose"],
                     "description": "Prior segmentation type for Baysor. 'cells' uses Xenium bundle cell_id column; 'cellpose' uses Cellpose mask as image prior."
                 },
+                "min_transcripts_per_cell": {
+                    "type": "integer",
+                    "default": 10,
+                    "description": "Minimum number of transcripts per cell for filtering."
+                },
                 "baysor_prior_confidence": {
                     "type": "number",
                     "default": 0.2,
@@ -318,6 +323,7 @@
                 },
                 "min_x": {
                     "type": "number",
+                    "default": 0.0,
                     "description": "only keep transcripts whose x-coordinate is greater than specified limit, if no limit is specified, the default minimum value will be 0.0"
                 },
                 "max_x": {
@@ -327,6 +333,7 @@
                 },
                 "min_y": {
                     "type": "number",
+                    "default": 0.0,
                     "description": "only keep transcripts whose y-coordinate is greater than specified limit, if no limit is specified, the default minimum value will be 0.0"
                 },
                 "max_y": {

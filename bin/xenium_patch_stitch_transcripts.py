@@ -640,6 +640,7 @@ def stitch_transcript_assignments(
     csv_filename: str = "segmentation.csv",
     geojson_filename: str = "segmentation_polygons.json",
     max_workers: int | None = None,
+    min_transcripts_per_cell: int = 0,
 ) -> None:
     """Stitch per-patch transcript assignments and polygons into unified output.
 
@@ -657,6 +658,9 @@ def stitch_transcript_assignments(
         csv_filename: CSV filename within each patch directory.
         geojson_filename: GeoJSON filename within each patch directory.
         max_workers: Maximum number of threads for parallel I/O.
+        min_transcripts_per_cell: Drop cells with fewer transcripts after
+            stitching; their transcripts are reassigned to noise and their
+            polygons removed (0 = no filter).
     """
     patches_dir = Path(patches_dir)
     output_dir = Path(output_dir)
@@ -716,6 +720,51 @@ def stitch_transcript_assignments(
             _, first_indices = np.unique(tid_np, return_index=True)
             first_indices.sort()
             merged = merged.take(first_indices)
+
+        # Post-stitch cell filter: drop cells below min_transcripts_per_cell
+        if min_transcripts_per_cell > 0 and "cell" in merged.column_names:
+            cell_col = merged.column("cell")
+            cell_counts: dict[str, int] = {}
+            for c in cell_col.to_pylist():
+                if c:
+                    cell_counts[c] = cell_counts.get(c, 0) + 1
+            small_cells = {
+                cid
+                for cid, cnt in cell_counts.items()
+                if cnt < min_transcripts_per_cell
+            }
+            if small_cells:
+                # Reassign transcripts from small cells to noise
+                new_cell = ["" if c in small_cells else c for c in cell_col.to_pylist()]
+                new_noise = [
+                    "true" if c in small_cells else n
+                    for c, n in zip(
+                        cell_col.to_pylist(),
+                        merged.column("is_noise").to_pylist()
+                        if "is_noise" in merged.column_names
+                        else ["false"] * merged.num_rows,
+                    )
+                ]
+                cidx = merged.column_names.index("cell")
+                merged = merged.set_column(
+                    cidx, "cell", pa.array(new_cell, type=pa.string())
+                )
+                if "is_noise" in merged.column_names:
+                    nidx = merged.column_names.index("is_noise")
+                    merged = merged.set_column(
+                        nidx, "is_noise", pa.array(new_noise, type=pa.string())
+                    )
+                # Remove filtered cells from GeoJSON
+                all_geojson_features[:] = [
+                    f
+                    for f in all_geojson_features
+                    if str(f.get("id", f.get("properties", {}).get("cell_id", "")))
+                    not in small_cells
+                ]
+                print(
+                    f"[stitch] Filtered {len(small_cells)} cells with "
+                    f"<{min_transcripts_per_cell} transcripts"
+                )
 
         # Log assignment stats
         if "cell" in merged.column_names:
@@ -794,6 +843,12 @@ def main() -> None:
         default="segmentation_polygons.json",
         help="GeoJSON filename within each patch (default: segmentation_polygons.json)",
     )
+    parser.add_argument(
+        "--min-transcripts-per-cell",
+        type=int,
+        default=0,
+        help="Drop cells with fewer transcripts (0 = no filter, default: 0)",
+    )
     args = parser.parse_args()
 
     stitch_transcript_assignments(
@@ -801,6 +856,7 @@ def main() -> None:
         output_dir=args.output,
         csv_filename=args.csv_filename,
         geojson_filename=args.geojson_filename,
+        min_transcripts_per_cell=args.min_transcripts_per_cell,
     )
 
 

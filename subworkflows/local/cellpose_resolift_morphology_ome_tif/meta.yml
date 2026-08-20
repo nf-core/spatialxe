@@ -11,6 +11,11 @@ components:
   - cellpose
   - resolift
   - xeniumranger/import/segmentation
+  - convert/mask/uint32
+  - downscale/morphology
+  - extract/dapi
+  - stardist
+  - upscale/mask
 input:
   - ch_morphology_image:
       description: |

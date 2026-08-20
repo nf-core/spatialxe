@@ -60,9 +60,11 @@ workflow SPATIALAXE {
     alignment_csv
     baysor_config
     baysor_prior
-    baysor_scale
+    // baysor_scale
     baysor_tiling
-    baysor_tiling_scale
+    // baysor_tiling_scale
+    baysor_prior_confidence
+    min_transcripts_per_cell
     buffer_samples
     buffer_size
     cell_segmentation_only
@@ -108,26 +110,26 @@ workflow SPATIALAXE {
 
     ch_versions = channel.empty()
 
-    ch_input = channel.empty()
-    ch_config = channel.empty()
-    ch_features = channel.value([])
-    ch_raw_bundle = channel.empty()
-    ch_gene_panel = channel.empty()
-    ch_qc_reports = channel.empty()
-    ch_bundle_path = channel.empty()
-    ch_preview_html = channel.empty()
-    ch_exp_metadata = channel.empty()
-    ch_gene_synonyms = channel.empty()
-    ch_multiqc_files = channel.empty()
-    ch_multiqc_report = channel.empty()
-    ch_qupath_polygons = channel.empty()
-    ch_morphology_image = channel.empty()
-    ch_redefined_bundle = channel.empty()
-    ch_coordinate_space = channel.empty()
-    ch_panel_probes_fasta = channel.empty()
-    ch_transcripts_file = channel.empty()
-    ch_reference_annotations = channel.empty()
-    ch_multiqc_pre_xr_report = channel.empty()
+    ch_input                  = channel.empty()
+    ch_features               = channel.value([])
+    ch_raw_bundle             = channel.empty()
+    ch_gene_panel             = channel.empty()
+    ch_qc_reports             = channel.empty()
+    ch_bundle_path            = channel.empty()
+    ch_preview_html           = channel.empty()
+    ch_exp_metadata           = channel.empty()
+    ch_gene_synonyms          = channel.empty()
+    ch_baysor_config          = channel.empty()
+    ch_multiqc_files          = channel.empty()
+    ch_multiqc_report         = channel.empty()
+    ch_qupath_polygons        = channel.empty()
+    ch_morphology_image       = channel.empty()
+    ch_redefined_bundle       = channel.empty()
+    ch_coordinate_space       = channel.empty()
+    ch_panel_probes_fasta     = channel.empty()
+    ch_transcripts_parquet    = channel.empty()
+    ch_reference_annotations  = channel.empty()
+    ch_multiqc_pre_xr_report  = channel.empty()
     ch_multiqc_post_xr_report = channel.empty()
 
 
@@ -292,11 +294,20 @@ workflow SPATIALAXE {
     }
 
     // get baysor xenium config
-    ch_config = channel.fromPath(
-            "${projectDir}/assets/config/xenium.toml",
-            checkIfExists: true
-        )
-        .flatten()
+    if (baysor_config) {
+        ch_baysor_config = channel.fromPath(
+                baysor_config,
+                checkIfExists: true
+            )
+            .flatten()
+    }
+    else {
+        ch_baysor_config = channel.fromPath(
+                "${projectDir}/assets/config/xenium.toml",
+                checkIfExists: true
+            )
+            .flatten()
+    }
 
     // get segmentation mask if provided with --segmentation_mask for the baysor method
     if (segmentation_mask) {
@@ -419,8 +430,8 @@ workflow SPATIALAXE {
     if (mode == 'preview') {
 
         BAYSOR_GENERATE_PREVIEW(
-            ch_transcripts_file,
-            ch_config,
+            ch_transcripts_parquet,
+            ch_baysor_config,
         )
         ch_preview_html = BAYSOR_GENERATE_PREVIEW.out.preview_html
     }
@@ -455,12 +466,13 @@ workflow SPATIALAXE {
         // trigger the default image-based workflow if no method is specified
         if (!method) {
 
+            prior_column = baysor_prior == 'cells' ? 'cell_id' : null
             CELLPOSE_BAYSOR_IMPORT_SEGMENTATION(
                 ch_morphology_image,
                 ch_bundle_path,
-                ch_transcripts_file,
+                ch_transcripts_parquet,
                 ch_exp_metadata,
-                ch_config,
+                ch_baysor_config,
                 cell_segmentation_only,
                 cellpose_model,
                 max_x,
@@ -468,6 +480,8 @@ workflow SPATIALAXE {
                 min_qv,
                 min_x,
                 min_y,
+                prior_column,
+                min_transcripts_per_cell,
                 nucleus_segmentation_only,
                 sharpen_tiff,
                 stardist_nuclei_model,
@@ -493,11 +507,14 @@ workflow SPATIALAXE {
         if (method == 'baysor') {
 
             if (segmentation_mask) {
+
+                prior_column     = baysor_prior == 'cells' ? 'cell_id' : null
+                prior_confidence = baysor_prior != null ? baysor_prior_confidence : null
                 BAYSOR_RUN_PRIOR_SEGMENTATION_MASK(
                     ch_bundle_path,
-                    ch_transcripts_file,
+                    ch_transcripts_parquet,
                     ch_segmentation_mask,
-                    ch_config,
+                    ch_baysor_config,
                     max_x,
                     max_y,
                     min_qv,
@@ -505,9 +522,9 @@ workflow SPATIALAXE {
                     min_y,
                     expansion_distance,
                 )
+                ch_redefined_bundle = BAYSOR_RUN_PRIOR_SEGMENTATION_MASK.out.redefined_bundle
+                ch_coordinate_space = BAYSOR_RUN_PRIOR_SEGMENTATION_MASK.out.coordinate_space
             }
-            ch_redefined_bundle = BAYSOR_RUN_PRIOR_SEGMENTATION_MASK.out.redefined_bundle
-            ch_coordinate_space = BAYSOR_RUN_PRIOR_SEGMENTATION_MASK.out.coordinate_space
         }
 
         // run cellpose on the morphology_ome.tif
@@ -576,7 +593,7 @@ workflow SPATIALAXE {
 
             SEGGER_CREATE_TRAIN_PREDICT(
                 ch_bundle_path,
-                ch_transcripts_file,
+                ch_transcripts_parquet,
                 segger_model,
                 expansion_distance,
             )
@@ -597,14 +614,11 @@ workflow SPATIALAXE {
 
             BAYSOR_RUN_TRANSCRIPTS_PARQUET(
                 ch_bundle_path,
-                ch_transcripts_file,
+                ch_transcripts_parquet,
                 ch_morphology_image,
-                ch_config,
+                ch_baysor_config,
                 ch_prior_mask,
-                baysor_config,
-                baysor_scale,
                 baysor_tiling,
-                baysor_tiling_scale,
                 max_x,
                 max_y,
                 min_qv,
@@ -681,13 +695,13 @@ workflow SPATIALAXE {
         if (!method || method == 'baysor') {
 
             BAYSOR_GENERATE_SEGFREE(
-                ch_transcripts_file,
-                ch_config,
+                ch_transcripts_parquet,
+                ch_baysor_config,
                 max_x,
                 max_y,
                 min_qv,
                 min_x,
-                min_y,
+                min_y
             )
         }
 
@@ -695,7 +709,7 @@ workflow SPATIALAXE {
         if (method == 'ficture') {
 
             FICTURE_PREPROCESS_MODEL(
-                ch_transcripts_file,
+                ch_transcripts_parquet,
                 ch_features,
                 features,
             )

@@ -2,6 +2,7 @@
 
 import importlib.util
 import json
+import subprocess
 import sys
 from pathlib import Path
 
@@ -14,16 +15,15 @@ from shapely.geometry import Polygon, mapping
 # Import the standalone script from module resources
 # ---------------------------------------------------------------------------
 
-_SCRIPT = (
-    Path(__file__).resolve().parents[2]
-    / "modules/local/xenium_patch/stitch/resources/usr/bin/stitch_transcripts.py"
+_SCRIPT = Path(__file__).resolve().parents[2] / "bin/xenium_patch_stitch_transcripts.py"
+_spec = importlib.util.spec_from_file_location(
+    "xenium_patch_stitch_transcripts", _SCRIPT
 )
-_spec = importlib.util.spec_from_file_location("stitch_transcripts", _SCRIPT)
 _mod = importlib.util.module_from_spec(_spec)
-sys.modules["stitch_transcripts"] = _mod
+sys.modules["xenium_patch_stitch_transcripts"] = _mod
 _spec.loader.exec_module(_mod)
 
-from stitch_transcripts import (  # noqa: E402
+from xenium_patch_stitch_transcripts import (  # noqa: E402
     Bounds,
     PatchGridMetadata,
     PatchInfo,
@@ -863,3 +863,141 @@ class TestBaysorNativeFormat:
         with open(geo_out) as f:
             geo = json.load(f)
         assert len(geo["features"]) == 2
+
+
+# ---------------------------------------------------------------------------
+# min-transcripts-per-cell filter — regression for the dropped CLI argument
+# (XENIUM_PATCH_STITCH failed with "unrecognized arguments:
+#  --min-transcripts-per-cell 50" after the script was split; see
+#  docs/failures/2026-06-27_xenium-patch-stitch-min-transcripts-arg.md)
+# ---------------------------------------------------------------------------
+
+
+def _write_one_patch_two_cells(tmp_path: Path) -> Path:
+    """One full-extent patch: cell_big (3 transcripts) + cell_small (1)."""
+    p0 = _make_patch_info(
+        "patch_0",
+        0,
+        0,
+        global_x=(0.0, 1000.0),
+        global_y=(0.0, 1000.0),
+        core_x=(0.0, 1000.0),
+        core_y=(0.0, 1000.0),
+    )
+    metadata = _make_metadata([p0])
+    patches_dir = tmp_path / "patches"
+    _write_grid_json(metadata, patches_dir / "patch_grid.json")
+    _write_patch_csv(
+        patches_dir / "patch_0",
+        [
+            {
+                "transcript_id": "tx_1",
+                "x": "100.0",
+                "y": "100.0",
+                "gene": "A",
+                "cell": "cell_big",
+                "is_noise": "0",
+            },
+            {
+                "transcript_id": "tx_2",
+                "x": "110.0",
+                "y": "110.0",
+                "gene": "B",
+                "cell": "cell_big",
+                "is_noise": "0",
+            },
+            {
+                "transcript_id": "tx_3",
+                "x": "120.0",
+                "y": "120.0",
+                "gene": "C",
+                "cell": "cell_big",
+                "is_noise": "0",
+            },
+            {
+                "transcript_id": "tx_small",
+                "x": "800.0",
+                "y": "800.0",
+                "gene": "D",
+                "cell": "cell_small",
+                "is_noise": "0",
+            },
+        ],
+    )
+    _write_patch_geojson(
+        patches_dir / "patch_0",
+        {
+            "cell_big": Polygon([(50, 50), (200, 50), (200, 200), (50, 200)]),
+            "cell_small": Polygon([(750, 750), (850, 750), (850, 850), (750, 850)]),
+        },
+    )
+    return patches_dir
+
+
+class TestMinTranscriptsFilter:
+    def test_filter_drops_small_cells(self, tmp_path: Path):
+        """min_transcripts_per_cell=2 reassigns the 1-transcript cell to noise
+        and removes its polygon, keeping the 3-transcript cell."""
+        patches_dir = _write_one_patch_two_cells(tmp_path)
+        output_dir = tmp_path / "output"
+        stitch_transcript_assignments(
+            patches_dir=patches_dir,
+            output_dir=output_dir,
+            max_workers=1,
+            min_transcripts_per_cell=2,
+        )
+
+        merged = pa_csv.read_csv(output_dir / "xr-transcript-metadata.csv")
+        tid = merged.column("transcript_id").to_pylist()
+        cell = merged.column("cell").to_pylist()
+
+        # The lone transcript of the small cell is demoted to noise (empty cell)
+        assert cell[tid.index("tx_small")] == "", (
+            "small cell's transcript should be reassigned to noise"
+        )
+        # The 3-transcript cell survives
+        assert cell[tid.index("tx_1")] != "", "big cell should be retained"
+
+        # Its polygon is dropped — only the surviving cell remains
+        with open(output_dir / "xr-cell-polygons.geojson") as f:
+            geo = json.load(f)
+        assert len(geo["features"]) == 1
+
+    def test_no_filter_keeps_all_cells(self, tmp_path: Path):
+        """min_transcripts_per_cell=0 (default) keeps both cells — control."""
+        patches_dir = _write_one_patch_two_cells(tmp_path)
+        output_dir = tmp_path / "output"
+        stitch_transcript_assignments(
+            patches_dir=patches_dir,
+            output_dir=output_dir,
+            max_workers=1,
+            min_transcripts_per_cell=0,
+        )
+        with open(output_dir / "xr-cell-polygons.geojson") as f:
+            geo = json.load(f)
+        assert len(geo["features"]) == 2
+
+    def test_cli_accepts_min_transcripts_per_cell(self, tmp_path: Path):
+        """Reproduces the production failure: invoke the script exactly as the
+        module does, including --min-transcripts-per-cell, via the real CLI.
+        The argparse contract must accept the flag (no 'unrecognized arguments')."""
+        patches_dir = _write_one_patch_two_cells(tmp_path)
+        output_dir = tmp_path / "output"
+        result = subprocess.run(
+            [
+                sys.executable,
+                str(_SCRIPT),
+                "--patches",
+                str(patches_dir),
+                "--output",
+                str(output_dir),
+                "--min-transcripts-per-cell",
+                "50",
+            ],
+            capture_output=True,
+            text=True,
+        )
+        assert "unrecognized arguments" not in result.stderr, result.stderr
+        assert result.returncode == 0, (
+            f"script exited {result.returncode}\nstderr:\n{result.stderr}"
+        )
