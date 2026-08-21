@@ -1,0 +1,101 @@
+name: "image_qc_analysis"
+description: Image-level quality control for a Xenium output bundle - focus/blur maps, per-channel intensity metrics, signal-to-noise ratio metrics and QC figures.
+keywords:
+  - quality control
+  - spatialomics
+  - imaging
+  - xenium
+  - signal to noise
+tools:
+  - "image_qc":
+      description: "Combined image QC for Xenium bundles: GPU-accelerated tile/pixel focus maps, cell-based QC figures and mapping of tile results to cells."
+      homepage: "https://github.com/nf-core/spatialaxe"
+      documentation: "https://nf-co.re/spatialaxe"
+      tool_dev_url: "https://github.com/nf-core/spatialaxe"
+      doi: ""
+      licence: ["MIT"]
+
+input:
+  - - meta:
+        type: map
+        description: |
+          Groovy Map containing sample information
+          e.g. `[ id:'sample_id' ]`
+    - parameters:
+        type: list
+        description: |
+          Flat list of alternating key/value entries with per-sample overrides,
+          collated in pairs by the module. Recognised keys are `STAIN_NAMES`,
+          `ROI_SIZE`, `PIPELINE_SEGMENTATION` and `IS_RESEGMENTED`. Empty or
+          null values are ignored.
+    - input_files:
+        type: directory
+        description: |
+          Staged input paths for the sample. The first element is used as the
+          Xenium output bundle directory.
+  - - roi_thresholds_yaml:
+        type: file
+        description: |
+          YAML file of per-channel ROI QC thresholds. Pass a file literally
+          named `NO_FILE` to run without threshold overrides.
+        pattern: "*.{yml,yaml}"
+
+output:
+  outdir:
+    - - meta:
+          type: map
+          description: |
+            Groovy Map containing sample information
+            e.g. `[ id:'sample_id' ]`
+      - "${prefix}":
+          type: directory
+          description: |
+            Image QC output directory containing `image_qc_metrics.json`,
+            `image_qc_metrics.csv`, `image_qc_status.json`, per-ROI parquet
+            tables and a `figures/` subdirectory.
+  versions_python:
+    - - ${task.process}:
+          type: string
+          description: The process the versions were collected from
+      - python:
+          type: string
+          description: The tool name
+      - "python3 --version | sed 's/Python //'":
+          type: eval
+          description: The expression to obtain the version of the tool
+  versions_numpy:
+    - - ${task.process}:
+          type: string
+          description: The process the versions were collected from
+      - numpy:
+          type: string
+          description: The tool name
+      - "python3 -c 'import numpy; print(numpy.__version__)'":
+          type: eval
+          description: The expression to obtain the version of the tool
+  versions_skimage:
+    - - ${task.process}:
+          type: string
+          description: The process the versions were collected from
+      - scikit-image:
+          type: string
+          description: The tool name
+      - "python3 -c 'import skimage; print(skimage.__version__)'":
+          type: eval
+          description: The expression to obtain the version of the tool
+topics:
+  versions:
+    - - ${task.process}:
+          type: string
+          description: The process the versions were collected from
+      - python:
+          type: string
+          description: The tool name
+      - "python3 --version | sed 's/Python //'":
+          type: eval
+          description: The expression to obtain the version of the tool
+
+authors:
+  - "@an-altosian"
+maintainers:
+  - "@an-altosian"

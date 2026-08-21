@@ -1,0 +1,299 @@
+# Transcript QC thresholds — drives PASS/WARN/FAIL verdicts in the transcript QC
+# report (notebooks/transcript_qc.qmd) §1 at-a-glance scorecard, §2.2 codeword
+# table, §3.1 FoV summary, §5.3 segmentation quality.
+#
+# Calibrated 2026-05-22 against 12 calibration samples (skin × 2, lung × 3,
+# pancreas × 2, liver × 2, brain × 2, control × 1). See
+# plans/2026-05-22_CALIBRATION_v0_thresholds.py for the per-metric analysis.
+#
+# Provenance tags:
+#   calibrated: empirical p5/p25 quantile cutoff from the 2026-05-22 cohort
+#   prose: cutoff appeared in the v1 (pre-2026-05) report prose at the line
+#          cited; the analysis team has used these values in practice and
+#          the cohort confirms.
+
+transcript_qc:
+  # =========================================================================
+  # Codeword category thresholds — drives §2.2 codeword table + §1 row 3.
+  # Category names are the canonical snake_case strings Xenium's decoder
+  # emits in transcripts.parquet `codeword_category`. "decoded_gene_combined"
+  # is a synthetic computed at render-time as custom_gene + predesigned_gene.
+  # =========================================================================
+  codeword_categories:
+    decoded_gene_combined:
+      display_label: "Decoded gene (custom + predesigned)"
+      contributors: ["custom_gene", "predesigned_gene"]
+      pass_min: 95.0 # %: PASS if combined decoded gene fraction >= 95% (loosened per "lenient — spot very bad samples only" guidance)
+      warn_min: 90.0 # %: WARN if 90% <= fraction < 95%
+      # FAIL if combined fraction < 90%  (no cohort sample triggers this)
+
+    unassigned_codeword:
+      display_label: "Unassigned codeword"
+      pass_max: 5.0 # %: PASS if unassigned fraction < 5%  (prose; cohort max 1.97% — well below)
+      warn_max: 10.0 # %: WARN if 5% <= unassigned fraction < 10%  (prose extension; nothing in cohort triggers)
+      # FAIL if unassigned fraction >= 10%
+
+    negative_control_probe:
+      display_label: "Negative control probe"
+      pass_max: 2.0 # %: PASS if neg-ctrl-probe fraction < 2%  (prose; cohort max 0.078% — well below)
+      warn_max: 5.0 # %: WARN if 2% <= fraction < 5%  (prose extension; nothing in cohort triggers)
+      # FAIL if neg-ctrl-probe fraction >= 5%
+
+  # Informational categories — shown in §2.2 table but no PASS/WARN/FAIL.
+  codeword_informational:
+    - custom_gene
+    - predesigned_gene
+    - genomic_control_probe
+    - negative_control_codeword
+    - deprecated_codeword
+
+  # Pretty-print labels for display (snake_case → human-readable).
+  category_display_labels:
+    custom_gene: "Custom gene"
+    predesigned_gene: "Predesigned gene"
+    genomic_control_probe: "Genomic control probe"
+    negative_control_probe: "Negative control probe"
+    negative_control_codeword: "Negative control codeword"
+    unassigned_codeword: "Unassigned codeword"
+    deprecated_codeword: "Deprecated codeword"
+
+  # =========================================================================
+  # % of panel genes that survive the negative-control noise filter.
+  # Computed as filtered_genes_count / total_genes_count × 100. A healthy
+  # sample retains most of its panel genes above the noise floor; a sample
+  # where the majority of genes drop below noise indicates a broken
+  # decoder, weak signal, or wildly off-target panel.
+  # Drives the §2 sample-summary "% genes filtered out (noise)" row.
+  # Lenient — only spots clearly broken samples.
+  # =========================================================================
+  noise_filter:
+    pct_filtered_pass_max: 50.0 # PASS if < 50% of panel genes filtered out
+    pct_filtered_warn_max: 80.0 # WARN if 50% ≤ pct < 80%
+    # FAIL if ≥ 80% of panel genes filter out (catastrophic signal loss)
+
+  # =========================================================================
+  # Transcript yield — drives §1 row 1.
+  # Sample-level total transcript count. Cohort range 300k–1.1B (skin_bad
+  # at 300k correctly fires WARN under current thresholds).
+  # =========================================================================
+  yield:
+    total_transcripts_pass_min: 1_000_000 # PASS if total_transcripts >= 1M  (validated by cohort)
+    total_transcripts_warn_min: 100_000 # WARN if 100k <= total < 1M  (validated by cohort)
+    # FAIL if total_transcripts < 100k
+
+  # =========================================================================
+  # Per-cell median yield floors — drive the §2.1 "Per-cell aggregates"
+  # status pills. ADVISORY (PASS/WARN only, no FAIL): median transcripts and
+  # genes per cell are strongly panel-size- and tissue-driven, so these are
+  # advisory floors that flag a sample whose typical cell carries very little
+  # signal, not hard gates. A small or tissue-mismatched panel can sit below
+  # these for biological reasons. warn_min is null so sub-floor medians get
+  # WARN, never FAIL (_status_higher_better).
+  # =========================================================================
+  per_cell_median:
+    median_transcripts_pass_min: 100 # PASS if median transcripts/cell >= 100; WARN below (advisory, no FAIL)
+    median_genes_pass_min: 50 # PASS if median genes/cell >= 50; WARN below (advisory, no FAIL)
+
+  # =========================================================================
+  # Sample-wide QV summary — drives §1 row 2 (Transcript quality).
+  # ADVISORY tier (PASS/WARN only, no FAIL) — calibration showed this metric
+  # is heavily tissue-dependent: brain 74-76%, liver ~80%, pancreas 90-94%.
+  # A FAIL tier on absolute thresholds would mark normal brain as failing.
+  # Move to tissue-stratified thresholds in a future calibration with more
+  # samples per tissue.
+  # =========================================================================
+  qv:
+    pct_above_qv20_pass_min: 75.0 # %: PASS if >= 75%  (2026-06-29: raised from 70 = pooled p05 of the 164-sample deduped cohort; brain ~74% now WARNs, advisory only)
+    pct_above_qv20_warn_min: 60.0 # %: WARN if 60% <= pct < 75%
+    # FAIL if pct_above_qv20 < 60%  (catastrophic decoder failure; no cohort
+    # sample triggers — added per user request to give pct_above_qv20 a FAIL tier).
+
+  # =========================================================================
+  # Transcripts not assigned to a cell — drives §2 sample-summary row.
+  # cell_id == "UNASSIGNED": transcripts decoding placed but segmentation did
+  # not assign to any cell (~tens of % in healthy Xenium). Distinct from the
+  # "unassigned_codeword" decoding metric above. SegTraQ-derived (Phase A).
+  # ADVISORY (PASS/WARN, no FAIL).
+  #
+  # 2026-06-23: made INFORMATIONAL — that read used the 260-sample NON-deduped
+  # cohort (p95 ≈ 59%, replicate-inflated) and judged any numeric warn would fire
+  # on most samples; 10x treats it as informational too.
+  #
+  # 2026-06-29: re-gated as ADVISORY WARN-only. Deduping to 164 physical samples
+  # (one row per slide) drops pooled p95 to 39 / p99 to 47 — tighter than the 59%
+  # above implied. pass_max = 30 sits just above the pancreas median (29): PASS
+  # below 30, WARN at/above 30, never FAIL (warn_max null). Strongly tissue-driven
+  # (pancreas highest) so expect occasional pancreas WARNs by design; per-tissue
+  # cuts are a future refinement.
+  # =========================================================================
+  transcript_assignment:
+    pct_unassigned_pass_max: 30.0 # %: PASS if < 30%; WARN at/above (advisory, never FAIL)
+    pct_unassigned_warn_max: null # advisory: >= pass_max → WARN, never FAIL
+
+  # =========================================================================
+  # FoV consistency — drives §1 row 4 and §3.1 per-FoV table.
+  # Spike-validated design (plans/2026-05-22_SPIKE_fov_zscore_denominator.py):
+  # within-sample z-score on per-FoV pct_above_qv20, one-sided, n-gate.
+  # =========================================================================
+  fov_consistency:
+    # Per-FoV thresholds — empirically calibrated against 1,129 FoVs.
+    # z=-3 sits at p1.24 (close to 1% target for FAIL); z=-2 sits at p3.45
+    # (close to 5% target for WARN). Keep as is.
+    n_gate: 100 # FoVs with fewer transcripts → status = N/A
+    z_warn: 2.0 # WARN if dev_z < -2.0  (calibrated: empirical p3.45)
+    z_fail: 3.0 # FAIL if dev_z < -3.0  (calibrated: empirical p1.24)
+    # Sample-level rollup — calibrated tighter than v0:
+    # cohort max fov_pct_fail was 3.85% (lung_low_signal), max fov_pct_warn 5.13%.
+    # Original v0 (5%/10%) never fired. Tightened so lung_low_signal,
+    # skin_bad, pancreas_0060257 fire WARN appropriately.
+    sample_pct_fail_warn: 2.0 # %: §1 WARN if fov_pct_fail > 2%  (calibrated)
+    sample_pct_fail_fail: 5.0 # %: §1 FAIL if fov_pct_fail > 5%  (calibrated)
+    sample_pct_warn_warn: 5.0 # %: §1 WARN if fov_pct_warn > 5%  (calibrated: cohort max 5.13%)
+
+  # =========================================================================
+  # Per-FoV transcript-density dropout — drives §3 FoV table + a §3 rollup row.
+  # Same one-sided within-sample z-score machinery as fov_consistency, on
+  # per-FoV transcript counts instead of QV. Flags in-tissue FoVs carrying far
+  # fewer transcripts than their neighbours (regional sectioning damage, folds).
+  # SegTraQ-derived (Phase A). ADVISORY (PASS/WARN, no FAIL). PROVISIONAL —
+  # not yet cohort-calibrated; calibrate in the Phase B triage spike.
+  # =========================================================================
+  fov_density:
+    z_warn: 2.0 # per-FoV WARN if transcript dev_z < -2.0
+    z_fail: 3.0 # per-FoV FAIL if transcript dev_z < -3.0
+    sample_pct_dropout_pass_max: 10.0 # PROVISIONAL: PASS if < 10% of FoVs flagged
+    sample_pct_dropout_warn_max: null # advisory: >= pass_max → WARN, never FAIL
+
+  # =========================================================================
+  # Per-cell aggregates — RESERVED (not yet wired to any §1 verdict).
+  #
+  # §1 row 5 (Cell yield) is informational only: PASS if total_cells > 0
+  # else N/A. Calibration shows median/min ratios range from 0.20 (skin_bad
+  # — sample-median below noise floor) to 58.7 (pancreas). The "5x" v0
+  # placeholder bears no relation to real data; thresholds below are
+  # placeholders pending a row-7 design.
+  # =========================================================================
+  cells:
+    median_transcripts_pass_x: 5.0 # UNUSED (no row 7 yet)
+    median_transcripts_warn_x: 2.0 # UNUSED
+    median_genes_pass_x: 5.0 # UNUSED
+    median_genes_warn_x: 2.0 # UNUSED
+
+  # =========================================================================
+  # Cell-level section summary thresholds — drive the §5 section summary
+  # table (advisory PASS/WARN only; no FAIL). Designed lenient: the goal
+  # is to draw attention to clearly-bad samples, not to gatekeep marginal
+  # ones. All values are wide-band placeholders pending cohort calibration.
+  # =========================================================================
+
+  # Cell yield — total segmented cells (advisory PASS/WARN, no FAIL).
+  # A standard Xenium section yields ~100k–700k cells depending on tissue
+  # area and cell density. Flag implausibly low counts, but keep it advisory:
+  # a small biopsy or TMA core can legitimately fall below the floor.
+  cell_yield:
+    warn_below: 50000 # WARN if fewer than 50k cells; PASS at or above
+
+  # §5.1 Cell size distribution — median pixels².
+  cell_size:
+    median_pass_min: 30.0 # too small → segmentation under-detects
+    median_pass_max: 500.0 # too large → merged-cell artefacts; lenient
+    # Outside this band → WARN. No FAIL tier.
+
+  # §5.2 Nucleus RNA fraction — median, plus % cells with fraction > 0.6.
+  # §5.2 Nucleus RNA fraction — median per-cell fraction of assigned transcripts
+  # overlapping the nucleus, plus % cells above 0.6. PROVISIONAL / not
+  # cohort-calibrated: the old band was set against a broken metric
+  # (nucleus_count/total_counts ≈ 1/total_counts); the metric is now correctly
+  # derived from transcripts.parquet overlaps_nucleus, so these are lenient
+  # advisory placeholders (one calibration sample showed median ~0.51). Advisory
+  # PASS/WARN only, no FAIL. Recalibrate from a cohort spike.
+  nucleus_transcript_fraction:
+    median_pass_min: 0.05 # PROVISIONAL
+    median_pass_max: 0.70 # PROVISIONAL (widened from 0.60 — corrected metric centres ~0.5)
+    pct_above_60_pass_max: 50.0 # PROVISIONAL: < 50% of cells above 0.6 → PASS
+
+  # §5.4 / §5.5 per-cell median multipliers — NOT WIRED.
+  # Dropped 2026-05-22 per user feedback: ratio of median transcripts/genes
+  # per cell to the noise-floor min is a real quality signal (skin_bad
+  # median=2 vs min=10 → 0.2× catches it) but the formulation is
+  # confusing for a scientific reader. Same diagnostic is captured more
+  # legibly by §5.3 nucleus-to-cell ratio + §5.2 nucleus RNA fraction.
+  # Median transcripts/cell and median genes/cell still appear in §5
+  # summary as INFORMATIONAL rows (no status pill, alongside the
+  # min reference value); they just don't drive PASS/WARN today.
+  # Kept here as YAML config for a possible future revisit.
+  cells_transcripts:
+    median_pass_x_min: 2.0 # NOT WIRED — kept for potential future use
+  cells_genes:
+    median_pass_x_min: 2.0 # NOT WIRED
+
+  # =========================================================================
+  # Segmentation quality — drives §1 row 6 (advisory PASS/WARN, no FAIL).
+  # Calibrated: cohort median nucleus_to_cell ratio range 0.32 (liver) to
+  # 0.57 (brain). Brain/skin sit at ~0.54 — biologically real, not artefact.
+  # Widened PASS band from v0 [0.10, 0.40] → [0.10, 0.60] so normal brain/
+  # skin PASS; only pathological segmentation flags. pct_above_80pct PASS
+  # widened from 5% → 10% so only skin_bad (18.3%) fires WARN.
+  # =========================================================================
+  segmentation:
+    nucleus_to_cell_median_pass_min: 0.10 # calibrated: cohort min 0.32, no sample below 0.10
+    nucleus_to_cell_median_pass_max: 0.60 # calibrated: cohort max 0.565 (brain); was 0.40 in v0
+    nucleus_to_cell_pct_above_80_pass_max: 10.0 # calibrated: only skin_bad (18.3%) above; was 5.0 in v0
+    nucleus_to_cell_median_warn_min: 0.05 # outside this — catastrophic over-segmentation
+    nucleus_to_cell_median_warn_max: 0.70 # outside this — catastrophic under-segmentation; was 0.50 in v0
+    nucleus_to_cell_pct_above_80_warn_max: 20.0 # was 15.0 in v0
+    # No FAIL tier — advisory only (matches image QC §4 convention).
+
+  # =========================================================================
+  # Cells with no in-plane nucleus — drives a §5 cell-level row.
+  # nucleus_count == 0: cells the segmentation found but with no nucleus in
+  # this z-plane (inherent to thin 2D sections — the nucleus sits in an
+  # adjacent plane). Denominator is cells with total_counts > 0. SegTraQ-
+  # derived (Phase A).
+  #
+  # 2026-06-23: warn 10 / fail 15, matching the qc_threshold_refinement report's
+  # deduped cut (one row per physical sample, replicate-inflation removed: p95/
+  # p99 = 10% / 15%). No-nucleus is segmentation-method-dependent and is recorded
+  # only for onboard segmentation in this cohort, so it is calibrated on onboard
+  # and applied as one method-agnostic cut (revisit per-method later;
+  # cells.parquet carries segmentation_method). This ADDS a FAIL tier where the
+  # row was previously advisory — the one §5 cell-level row that can FAIL, so it
+  # can turn the §1 "Cell-level" scorecard line to FAIL (see transcript_qc.qmd).
+  # =========================================================================
+  nucleus_coverage:
+    pct_cells_no_nucleus_pass_max: 10.0 # PASS if < 10% of cells lack a nucleus (buffer above deduped p95 = 7%)
+    pct_cells_no_nucleus_warn_max: 15.0 # WARN 10-15%, FAIL >= 15% (deduped p99 = 9%)
+
+  # =========================================================================
+  # 10x-defined bundle metrics — read from the Xenium bundle's
+  # metrics_summary.csv (bin/transcript_qc_processing.py: read_bundle_metrics).
+  # All N/A when the CSV is absent, the column is blank, or the bundle was
+  # resegmented (the CSV then reflects onboard, not the new segmentation).
+  # Added 2026-06-22 per the qc_threshold_refinement report.
+  # =========================================================================
+
+  # Nuclear transcripts per 100 um² — capture density in nuclei. Catastrophic
+  # floor only (higher is better). Report: warn 10 / fail 1; cohort min ~12.
+  nuclear_density:
+    per_100um2_pass_min: 10.0 # PASS if >= 10
+    per_100um2_warn_min: 1.0 # WARN 1-10, FAIL < 1 (no usable data)
+
+  # % cells with zero gene transcripts — derived IN-HOUSE from cells.parquet
+  # (transcript_counts == 0 over all cells; verified to reproduce 10x's
+  # fraction_empty_cells exactly on the example bundles). warn 5 / fail 10:
+  # _status_lower_better(pct, pass_max=5, warn_max=10) → PASS < 5, WARN 5-10,
+  # FAIL >= 10 (10x's >10% error floor, plus a WARN tier per user). Works on
+  # resegmented bundles (uses this run's cells.parquet, not the onboard CSV).
+  empty_cells:
+    pct_pass_max: 5.0 # PASS if < 5% zero-transcript cells
+    pct_warn_max: 10.0 # WARN 5-10%, FAIL >= 10% (10x error floor)
+
+  # Fraction of cells segmented using a stain (vs nucleus expansion). ADVISORY
+  # (WARN only, no FAIL). Gated ONLY when stain segmentation was actually used
+  # (stain_definition present); a nucleus-expansion run reports stain_frac = 0
+  # by design and is shown as informational, NOT WARN. stain_frac is available
+  # in both XOA 3.x and 4.0 — the 0-vs-version pattern is a segmentation-config
+  # confound, not drift. Report value: warn 70% (fail tier dropped per advisory).
+  segmentation_stain:
+    stain_frac_pass_min: 70.0 # PASS if >= 70% (×100 of the 0-1 fraction)
+    stain_frac_warn_min: null # advisory: below pass_min → WARN, never FAIL

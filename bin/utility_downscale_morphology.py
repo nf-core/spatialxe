@@ -42,6 +42,7 @@ def downscale_image(
     print(f"Original: {img.shape}, dtype={img.dtype}, ndim={img.ndim}")
 
     # Handle multichannel OME-TIFFs: shape can be (H, W), (C, H, W), or (Z, C, H, W)
+    output_shape: tuple[int, ...]
     if img.ndim == 2:
         orig_h, orig_w = img.shape
         new_h = max(int(orig_h * scale), MIN_DIM)
@@ -87,8 +88,12 @@ def parse_args() -> argparse.Namespace:
         description="Pre-downscale a morphology image for Cellpose."
     )
     parser.add_argument("--image", required=True, help="Morphology TIFF input")
-    parser.add_argument("--diameter", type=float, required=True, help="Target object diameter")
-    parser.add_argument("--diam-mean", type=float, required=True, help="Cellpose model diam_mean")
+    parser.add_argument(
+        "--diameter", type=float, required=True, help="Target object diameter"
+    )
+    parser.add_argument(
+        "--diam-mean", type=float, required=True, help="Cellpose model diam_mean"
+    )
     parser.add_argument("--prefix", required=True, help="Output directory")
     return parser.parse_args()
 

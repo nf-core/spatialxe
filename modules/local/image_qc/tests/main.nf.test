@@ -1,0 +1,50 @@
+nextflow_process {
+
+    name "Test Process IMAGE_QC_ANALYSIS"
+    script "../main.nf"
+    process "IMAGE_QC_ANALYSIS"
+    config "./nextflow.config"
+
+    tag "modules"
+    tag "modules_local"
+    tag "image_qc"
+    tag "qc"
+
+    test("image qc analysis - stub") {
+
+        options "-stub"
+
+        when {
+            process {
+                """
+                // Fixtures are built here at test time instead of being committed
+                // to the repository (reviewer request). The stub block never runs
+                // image_qc.py, so an empty bundle skeleton is sufficient.
+                def fixtureRoot = new File("${outputDir}/image_qc_fixtures")
+                def bundleDir = new File(fixtureRoot, "bundle")
+                bundleDir.mkdirs()
+                new File(bundleDir, "experiment.xenium").text = '{"analysis_sw_version": "xenium-4.0.1.0"}'
+                def roiYaml = new File(fixtureRoot, "roi_thresholds.yaml")
+                roiYaml.text = 'channels: {}'
+
+                input[0] = [
+                    [ id:'test' ],
+                    [],
+                    [ file(bundleDir.toString(), checkIfExists: true) ]
+                ]
+                input[1] = file(roiYaml.toString(), checkIfExists: true)
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert process.success },
+                { assert file(process.out.outdir[0][1]).isDirectory() },
+                { assert file(process.out.outdir[0][1] + "/image_qc_metrics.json").exists() },
+                { assert file(process.out.outdir[0][1] + "/image_qc_metrics.csv").exists() },
+                { assert file(process.out.outdir[0][1] + "/figures").isDirectory() }
+            )
+        }
+    }
+}

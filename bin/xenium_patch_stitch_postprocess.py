@@ -68,6 +68,11 @@ def reassign_dropped(csv_path: str, dropped_cells: set) -> None:
         fieldnames = reader.fieldnames
         rows = list(reader)
 
+    if fieldnames is None:
+        raise ValueError(
+            f"No header row in {csv_path}; cannot rewrite transcript assignments"
+        )
+
     reassigned = 0
     for row in rows:
         if row["cell"] in dropped_cells:
@@ -87,8 +92,12 @@ def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(
         description="Clean stitched GeoJSON polygons and reconcile transcript CSV."
     )
-    parser.add_argument("--geojson", required=True, help="Path to xr-cell-polygons.geojson")
-    parser.add_argument("--csv", required=True, help="Path to xr-transcript-metadata.csv")
+    parser.add_argument(
+        "--geojson", required=True, help="Path to xr-cell-polygons.geojson"
+    )
+    parser.add_argument(
+        "--csv", required=True, help="Path to xr-transcript-metadata.csv"
+    )
     return parser.parse_args()
 
 

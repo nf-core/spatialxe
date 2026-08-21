@@ -47,6 +47,7 @@ include { SPATIALDATA_WRITE_META_MERGE                     } from '../subworkflo
 // qc layer subworkflows
 include { OPT_FLIP_TRACK_STAT                              } from '../subworkflows/local/opt_flip_track_stat/main'
 include { SPOQC                                            } from '../subworkflows/local/spoqc/main'
+include { QC                                               } from '../subworkflows/local/qc/main'
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -97,6 +98,8 @@ workflow SPATIALAXE {
     tiling
     xeniumranger_only
     spoqc
+    roi_image_qc_thresholds_yaml
+    transcript_qc_thresholds_yaml
 
     main:
 
@@ -667,6 +670,28 @@ workflow SPATIALAXE {
             )
         }
 
+        // Image QC and transcript QC on the validated Xenium bundle. The
+        // threshold configs and notebooks are resolved inside this block so
+        // their `checkIfExists` never runs when the QC layer is skipped.
+        ch_image_qc_thresholds = channel.fromPath(
+            roi_image_qc_thresholds_yaml ?: "${projectDir}/bin/roi_image_qc_thresholds.yaml",
+            checkIfExists: true,
+        )
+        ch_transcript_qc_thresholds = channel.fromPath(
+            transcript_qc_thresholds_yaml ?: "${projectDir}/bin/transcript_qc_thresholds.yaml",
+            checkIfExists: true,
+        )
+
+        QC(
+            ch_bundle_path,
+            ch_image_qc_thresholds,
+            ch_transcript_qc_thresholds,
+            file("${projectDir}/bin/xenium_image_qc_report.qmd", checkIfExists: true),
+            file("${projectDir}/bin/transcript_qc.qmd", checkIfExists: true),
+            "${outdir}/${mode}/qc/image_qc",
+            "${outdir}/${mode}/qc/transcript_qc",
+        )
+
     }
 
 
@@ -709,8 +734,12 @@ workflow SPATIALAXE {
         SPATIALAXE - COLLATE & SAVE SOFTWARE VERSIONS
     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     */
-    // Collect versions published via topic channels (local modules)
+    // Collect versions published via topic channels (local modules).
+    // Some nf-core modules also publish a `versions.yml` *path* into this same
+    // topic alongside their (process, tool, version) tuples, which would break
+    // the destructuring below, so keep only the tuples.
     ch_topic_versions = channel.topic('versions')
+        .filter { it instanceof List && it.size() == 3 }
         .map { process, tool, version ->
             "\"${process}\":\n    ${tool}: ${version}"
         }

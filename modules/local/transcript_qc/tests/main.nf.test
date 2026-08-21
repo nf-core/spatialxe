@@ -1,0 +1,87 @@
+nextflow_process {
+
+    name "Test Process TRANSCRIPT_QC_PROCESSING"
+    script "../main.nf"
+    process "TRANSCRIPT_QC_PROCESSING"
+    config "./nextflow.config"
+
+    tag "modules"
+    tag "modules_local"
+    tag "transcript_qc"
+    tag "qc"
+
+    test("transcript qc processing - stub") {
+
+        options "-stub"
+
+        when {
+            process {
+                """
+                // Fixtures are built here at test time instead of being committed
+                // to the repository (reviewer request). The stub block never runs
+                // transcript_qc_processing.py, so an empty bundle skeleton is
+                // sufficient.
+                def fixtureRoot = new File("${outputDir}/transcript_qc_fixtures")
+                def bundleDir = new File(fixtureRoot, "bundle")
+                bundleDir.mkdirs()
+                new File(bundleDir, "experiment.xenium").text = '{"analysis_sw_version": "xenium-4.0.1.0"}'
+
+                input[0] = [
+                    [ id:'test' ],
+                    [],
+                    [ file(bundleDir.toString(), checkIfExists: true) ]
+                ]
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert process.success },
+                { assert file(process.out.outdir[0][1]).isDirectory() },
+                { assert file(process.out.outdir[0][1] + "/transcript_qc_metrics.json").exists() },
+                { assert file(process.out.outdir[0][1] + "/figures").isDirectory() }
+            )
+        }
+    }
+
+    test("transcript qc processing - stub - per-sample parameters override") {
+
+        options "-stub"
+
+        when {
+            process {
+                """
+                def fixtureRoot = new File("${outputDir}/transcript_qc_fixtures_params")
+                def bundleDir = new File(fixtureRoot, "bundle")
+                bundleDir.mkdirs()
+                new File(bundleDir, "experiment.xenium").text = '{"analysis_sw_version": "xenium-4.0.1.0"}'
+                def segVersions = new File(fixtureRoot, "seg_versions.yml")
+                segVersions.text = 'CELLPOSE:\\n    cellpose: 3.0.6\\n'
+
+                input[0] = [
+                    [ id:'test_reseg' ],
+                    [
+                        'NON_GENE_PREFIX', 'NegControlProbe;NegControlCodeword',
+                        'NUM_ROW_GROUPS', 4,
+                        'PIPELINE_SEGMENTATION', 'cellpose',
+                        'IS_RESEGMENTED', 'true',
+                    ],
+                    [
+                        file(bundleDir.toString(), checkIfExists: true),
+                        file(segVersions.toString(), checkIfExists: true),
+                    ]
+                ]
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert process.success },
+                { assert file(process.out.outdir[0][1]).isDirectory() },
+                { assert file(process.out.outdir[0][1] + "/transcript_qc_metrics.json").exists() }
+            )
+        }
+    }
+}

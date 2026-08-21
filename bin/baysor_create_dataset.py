@@ -13,18 +13,19 @@ import random
 from pathlib import Path
 
 
-class BaysorPreview():
+class BaysorPreview:
     """
     Utility class to generate baysor preview dataset
     """
+
     @staticmethod
     def generate_dataset(
-            transcripts: Path,
-            sampled_transcripts: Path,
-            sample_fraction: float = 0.3,
-            random_state: int = 42,
-            prefix: str = ""
-        ) -> None:
+        transcripts: Path,
+        sampled_transcripts: Path,
+        sample_fraction: float = 0.3,
+        random_state: int = 42,
+        prefix: str = "",
+    ) -> None:
         """
         Reads a csv file & randomly samples a fraction of rows,
         and writes the result to a .csv file.
@@ -40,9 +41,10 @@ class BaysorPreview():
         random.seed(random_state)
         output_path = f"{prefix}/{sampled_transcripts}"
         os.makedirs(os.path.dirname(output_path), exist_ok=True)
-        with open(transcripts, mode='rt', newline='') as infile, \
-            open(output_path, mode='wt', newline='') as outfile:
-
+        with (
+            open(transcripts, mode="rt", newline="") as infile,
+            open(output_path, mode="wt", newline="") as outfile,
+        ):
             reader = csv.reader(infile)
             writer = csv.writer(outfile)
 
@@ -66,27 +68,25 @@ def main() -> None:
         description="Create sampled dataset for Baysor preview"
     )
     parser.add_argument(
-        "--transcripts", required=True,
-        help="Path to transcripts CSV file"
+        "--transcripts", required=True, help="Path to transcripts CSV file"
     )
     parser.add_argument(
-        "--sample-fraction", required=True, type=float,
-        help="Fraction of rows to sample"
+        "--sample-fraction",
+        required=True,
+        type=float,
+        help="Fraction of rows to sample",
     )
-    parser.add_argument(
-        "--prefix", required=True,
-        help="Output directory prefix"
-    )
+    parser.add_argument("--prefix", required=True, help="Output directory prefix")
     args = parser.parse_args()
 
-    sampled_transcripts = "sampled_transcripts.csv"
+    sampled_transcripts = Path("sampled_transcripts.csv")
 
     # generate dataset
     BaysorPreview.generate_dataset(
-        transcripts=args.transcripts,
+        transcripts=Path(args.transcripts),
         sampled_transcripts=sampled_transcripts,
         sample_fraction=args.sample_fraction,
-        prefix=args.prefix
+        prefix=args.prefix,
     )
 
     return None
