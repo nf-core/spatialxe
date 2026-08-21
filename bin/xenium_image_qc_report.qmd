@@ -3224,3 +3224,19 @@ display(HTML(
     '</div>'
 ))
 ```
+```{python versions}
+#| echo: false
+
+# The nf-core quarto/notebook module requires the notebook to export the
+# versions of the packages it uses to versions.csv (package,version — no
+# header), which the module folds into the pipeline's versions topic. Read at
+# runtime rather than hardcoded, per the pipeline's version-reporting rules.
+from importlib.metadata import PackageNotFoundError, version as _pkg_version
+
+with open("versions.csv", "w", encoding="utf-8") as _fh:
+    for _pkg in ("numpy", "pandas", "ipython"):
+        try:
+            _fh.write(f"{_pkg},{_pkg_version(_pkg)}\n")
+        except PackageNotFoundError:
+            continue
+```

@@ -734,17 +734,27 @@ workflow SPATIALAXE {
         SPATIALAXE - COLLATE & SAVE SOFTWARE VERSIONS
     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     */
-    // Collect versions published via topic channels (local modules).
-    // Some nf-core modules also publish a `versions.yml` *path* into this same
-    // topic alongside their (process, tool, version) tuples, which would break
-    // the destructuring below, so keep only the tuples.
-    ch_topic_versions = channel.topic('versions')
-        .filter { it instanceof List && it.size() == 3 }
+    // Collect versions published via topic channels. Two shapes arrive here:
+    // local modules emit (process, tool, version) tuples, while some nf-core
+    // modules emit a `versions.yml` path (quarto/notebook builds one from the
+    // versions.csv its notebook exports). Handle both — destructuring a path
+    // would fail, and dropping it would discard real version information.
+    ch_topic_raw = channel.topic('versions')
+
+    ch_topic_versions = ch_topic_raw
+        .filter { entry -> entry instanceof List && entry.size() == 3 }
         .map { process, tool, version ->
             "\"${process}\":\n    ${tool}: ${version}"
         }
 
-    softwareVersionsToYAML(ch_versions.mix(ch_topic_versions))
+    // softwareVersionsToYAML parses YAML *content*, so read the file in.
+    ch_topic_version_files = ch_topic_raw
+        .filter { entry -> !(entry instanceof List) }
+        .map { versions_file -> file(versions_file).text.trim() }
+
+    softwareVersionsToYAML(
+        ch_versions.mix(ch_topic_versions).mix(ch_topic_version_files)
+    )
         .collectFile(
             storeDir: "${outdir}/pipeline_info",
             name: 'nf_core_' + 'spatialaxe_software_' + 'mqc_' + 'versions.yml',
