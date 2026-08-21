@@ -262,6 +262,30 @@ MIN_GENE_COUNT_FOR_UNASSIGNED = 10
 _FOV_FIG_MAX_HEIGHT_IN = 40
 
 
+def _min_count_threshold(counts) -> int | None:
+    """Call-site guard for the vendored ``estimate_min_mols_per_cell``.
+
+    That function is inside the vendored block and must stay byte-identical to
+    upstream, so the degenerate-input check lives here instead. It does
+    ``np.quantile(x[x > mode], 0.99)`` where ``mode`` is the left edge of the
+    modal histogram bin; for a constant (or empty) input the modal bin's left
+    edge equals the only value, the upper-tail slice is empty and numpy raises.
+    Since the bin edges are strictly increasing, ``max > mode`` always holds for
+    any non-constant input — so ``size == 0 or min == max`` is the exact
+    degenerate condition, not a heuristic.
+
+    Reachable with zero cells, one cell, or zero retained genes (all counts 0).
+    Returns None in that case, meaning "threshold not computable": callers skip
+    the plot cutoff line and emit JSON ``null``, which the report already
+    renders as absent. Deliberately not a numeric fallback — any number here
+    would read as a real noise floor that empty data had passed.
+    """
+    arr = np.asarray(counts, dtype=float).ravel()
+    if arr.size == 0 or arr.min() == arr.max():
+        return None
+    return estimate_min_mols_per_cell(arr)
+
+
 def _csv_float(value):
     """Parse a metrics_summary.csv cell to float, or None when blank/unparseable.
     Keeps "absent / blank" (None) distinct from a real 0.0 value. pandas reads a
@@ -464,7 +488,9 @@ def read_random_parquet_row_groups(
 
 
 def scaled_noise_threshold(
-    nongene_feature_names, n_nongene_total: int
+    nongene_feature_names,
+    n_nongene_total: int,
+    non_gene_prefixes: tuple[str, ...] = ("NegControl",),
 ) -> tuple[float, float, int, int]:
     """Noise threshold on the FULL-table scale, from a sampled non-gene column.
 
@@ -490,8 +516,12 @@ def scaled_noise_threshold(
     n_sampled = int(len(sampled))
     n_total = int(max(0, n_nongene_total))
     scale = (n_total / n_sampled) if n_sampled and n_total else 1.0
+    # Only negative-control features feed the noise model — the report states this
+    # explicitly. The prefix set is a parameter rather than a literal so
+    # --non-gene-prefix actually takes effect; its default reproduces the
+    # previously hard-coded "NegControl".
     _, threshold = calculate_noise_bound(
-        sampled[sampled.str.startswith("NegControl")].value_counts()
+        sampled[sampled.str.startswith(non_gene_prefixes)].value_counts()
     )
     return float(threshold) * scale, scale, n_sampled, n_total
 
@@ -502,13 +532,23 @@ def main():
         "--xenium-bundle-dir", required=True, help="Path to Xenium bundle directory"
     )
     parser.add_argument("--outdir", required=True, help="Output directory")
+    # nargs="+" on both: modules/local/transcript_qc/main.nf splits the ";"-
+    # separated config value (documented in nextflow_schema.json) into separate
+    # bare tokens, e.g. `--non-gene-prefix 'A' 'B'`. Without nargs that form
+    # makes argparse exit 2. Neither value is read anywhere in this script, so
+    # the str-default/list-from-argv asymmetry is harmless.
     parser.add_argument(
         "--non-gene-prefix",
-        default="NegControlProbe",
-        help="Prefix for non-gene features",
+        nargs="+",
+        # "NegControl" (not "NegControlProbe") so the default reproduces the
+        # previously hard-coded selection and matches the pipeline default.
+        default=["NegControl"],
+        help="Prefix(es) identifying non-gene features for the noise model",
     )
     parser.add_argument(
-        "--stain-names", help="Stain names (unused but kept for compatibility)"
+        "--stain-names",
+        nargs="+",
+        help="Stain names (unused but kept for compatibility)",
     )
     parser.add_argument(
         "--task-process", default="TRANSCRIPT_QC", help="Task process name"
@@ -541,6 +581,14 @@ def main():
     )
 
     args = parser.parse_args()
+
+    # argparse yields a list with nargs="+", so normalise to the tuple
+    # pandas' str.startswith expects for a multi-prefix test.
+    non_gene_prefixes = tuple(
+        args.non_gene_prefix
+        if isinstance(args.non_gene_prefix, (list, tuple))
+        else [args.non_gene_prefix]
+    )
 
     # Validate parameters
     if args.xenium_bundle_dir is None or not os.path.exists(args.xenium_bundle_dir):
@@ -858,6 +906,7 @@ def main():
         scaled_noise_threshold(
             df_spatial_nongene["feature_name"],
             n_nongene_total=max(0, _tx.n_rows - _tx.n_gene_rows),
+            non_gene_prefixes=non_gene_prefixes,
         )
     )
     print(
@@ -1176,13 +1225,14 @@ def main():
 
     # EXACT CODE FROM ORIGINAL NOTEBOOK - Figure 8: Distribution of transcripts per cell
     n_mols_per_cell = ad.X.sum(axis=1).A1
-    n_mols_threshold_cell = estimate_min_mols_per_cell(n_mols_per_cell)
+    n_mols_threshold_cell = _min_count_threshold(n_mols_per_cell)
 
     fig = plt.figure(figsize=(8, 4))
     sns.histplot(n_mols_per_cell, log_scale=True, bins=50, ax=plt.gca())
     plt.xlabel("Num. transcripts")
     plt.ylabel("Num. cells")
-    plt.axvline(x=n_mols_threshold_cell, color="grey", linestyle="--")
+    if n_mols_threshold_cell is not None:
+        plt.axvline(x=n_mols_threshold_cell, color="grey", linestyle="--")
     plt.title("Distribution of transcripts per Cell", fontsize=14, pad=20)
     plt.tight_layout()
     plt.savefig(
@@ -1216,13 +1266,14 @@ def main():
 
     # EXACT CODE FROM ORIGINAL NOTEBOOK - Figure 9: Distribution of genes per cell
     n_genes_per_cell = (ad.X != 0).sum(axis=1).A1
-    n_genes_threshold = estimate_min_mols_per_cell(n_genes_per_cell)
+    n_genes_threshold = _min_count_threshold(n_genes_per_cell)
 
     fig = plt.figure(figsize=(8, 4))
     sns.histplot(n_genes_per_cell, log_scale=True, bins=50, ax=plt.gca())
     plt.xlabel("Num. genes")
     plt.ylabel("Num. cells")
-    plt.axvline(x=n_genes_threshold, color="grey", linestyle="--")
+    if n_genes_threshold is not None:
+        plt.axvline(x=n_genes_threshold, color="grey", linestyle="--")
     plt.title("Distribution of number of detected genes per Cell", fontsize=14, pad=20)
     plt.tight_layout()
     # Filenames match actual content — genes per cell; renamed from
@@ -1479,8 +1530,14 @@ def main():
             str(k): int(v) for k, v in codeword_category_counts.items()
         },
         "neg_control_quantile": int(n_mols_threshold),
-        "min_transcripts_per_cell": int(n_mols_threshold_cell),
-        "min_genes_per_cell": int(n_genes_threshold),
+        # None ⇒ not computable on degenerate counts (see _min_count_threshold);
+        # emitted as JSON null, which the report already treats as absent.
+        "min_transcripts_per_cell": (
+            int(n_mols_threshold_cell) if n_mols_threshold_cell is not None else None
+        ),
+        "min_genes_per_cell": (
+            int(n_genes_threshold) if n_genes_threshold is not None else None
+        ),
         "retained_genes_count": len(retained_genes),
         "total_cells": int(ad.shape[0]),
         "analyzed_genes": int(ad.shape[1]),

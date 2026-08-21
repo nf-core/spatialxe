@@ -1,0 +1,45 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/nf-core/modules/master/modules/environment-schema.json
+# Environment for running the QC Python test suite (bin/tests/).
+#
+# This is a self-contained env rather than a merge of the two QC module
+# environments: those two cannot be co-installed (image QC pins zarr 2.x while
+# scanpy pulls zarr 3.x, and image QC also carries a pip section), so CI needs
+# one coherent set.
+#
+# It must cover everything bin/image_qc.py and bin/transcript_qc_processing.py
+# import at module scope, because both are imported during collection. The
+# napari plugins and snr_metrics are stubbed by the test modules themselves and
+# are deliberately absent here.
+#
+# Only python and numpy are pinned to the exact module-environment versions;
+# the rest float so the solver can find a coherent set. The tests assert pure
+# Python logic (chunked accumulation, threshold scaling, metric parsing), so
+# they are not sensitive to patch versions of the scientific stack.
+name: qc-tests
+channels:
+  - conda-forge
+  - bioconda
+dependencies:
+  - conda-forge::python=3.11.0
+  - conda-forge::numpy=2.3.3
+  # image_qc.py module-scope imports
+  - conda-forge::pandas
+  - conda-forge::scipy
+  - conda-forge::matplotlib
+  - conda-forge::seaborn
+  - conda-forge::scikit-image
+  - conda-forge::scikit-learn
+  - conda-forge::tifffile
+  - conda-forge::zarr
+  - conda-forge::numba
+  - conda-forge::click
+  - conda-forge::pyyaml
+  # transcript_qc_processing.py / transcript_stream.py module-scope imports
+  - conda-forge::pyarrow
+  - conda-forge::scanpy
+  - conda-forge::anndata
+  - conda-forge::h5py
+  # test runner
+  - conda-forge::pytest
+  - conda-forge::pytest-xdist

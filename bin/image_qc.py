@@ -71,7 +71,11 @@ try:
         return cupy_laplace(_gf(image, sigma=sigma))
 
     HAS_CUPY = True
-except ImportError:
+# Broad guard is deliberate: cupy-cuda12x is installed in the container, so a
+# host with no NVIDIA driver fails at import with RuntimeError /
+# CUDARuntimeError, not ImportError — catching ImportError alone would abort
+# the script instead of taking the intended CPU-only fallback.
+except Exception:
     HAS_CUPY = False
 
 # ---------------------------------------------------------------------------
@@ -237,6 +241,32 @@ _INTENSITY_CRITICAL_DEFAULTS = {"dapi": 500, "boundary": 100, "intrna": 300}
 # extend="max" triangle and dim tissues (low-signal lung) genuinely render
 # dim — cross-sample comparability over per-sample auto-scaling.
 _INTENSITY_DISPLAY_CAP = {"dapi": 4000, "boundary": 4000, "intrna": 2000}
+
+
+def _yaml_channel_cfg(channels_cfg: dict | None, channel: str) -> dict:
+    """Resolve one channel's section of the thresholds YAML, case-insensitively.
+
+    The YAML spells the same three channels two ways — ``DAPI``/``boundary``/
+    ``intRNA`` under ``channels:`` but ``dapi``/``boundary``/``intrna`` under
+    ``snr:`` — so callers used to bridge the casings with a hand-written map.
+    Matching on the lower-cased key removes that map: casing can no longer
+    drift out of sync and silently resolve to a default while the YAML says
+    otherwise.
+
+    An absent/empty ``channels:`` section is the legitimate "no YAML supplied"
+    path and yields ``{}`` so the callers' documented defaults apply. A
+    populated section that is missing this channel is real config/code drift
+    and raises instead of falling back silently.
+    """
+    if not channels_cfg:
+        return {}
+    lowered = {str(k).lower(): v for k, v in channels_cfg.items()}
+    if channel.lower() not in lowered:
+        raise KeyError(
+            f"channel {channel!r} is missing from the 'channels:' section of "
+            f"roi_image_qc_thresholds.yaml (present: {sorted(channels_cfg)})"
+        )
+    return lowered[channel.lower()] or {}
 
 
 def _load_qc_thresholds(yaml_path: str | None) -> dict:
@@ -7429,9 +7459,6 @@ def assess_raw_intensity_quality(
         "uses_tissue_coverage_filter": "tissue_coverage" in df_roi_intensities.columns,
     }
 
-    # YAML key → function-local name mapping
-    _yaml_keys = {"dapi": "DAPI", "boundary": "boundary", "intrna": "intRNA"}
-
     for channel, critical_threshold in [
         ("dapi", dapi_threshold_critical),
         ("boundary", boundary_threshold_critical),
@@ -7441,7 +7468,11 @@ def assess_raw_intensity_quality(
         # 2026-06-22 (qc_drift_analysis): intensity does not track quality
         # post-XOA-4.0, so there is no FAIL tier — `intensity_fail` is no longer
         # read or applied.
-        _ch = _cpct.get(_yaml_keys.get(channel, channel)) or {}
+        # Case-insensitive lookup (the YAML uses DAPI/boundary/intRNA here and
+        # dapi/boundary/intrna under snr:) — the old hand-written casing map
+        # could drift and silently substitute the 0.15 default for the YAML's
+        # value. 0.15 now applies only when no YAML was supplied at all.
+        _ch = _yaml_channel_cfg(_cpct, channel)
         pct_warn_frac = float(_ch.get("intensity_warn", 0.15))
         col_name = f"{channel}_intensity"
         intensities = df_work[col_name].values
@@ -13687,7 +13718,9 @@ def main(
     logging.info(f"  XOA major version for intensity floors: {_xoa_major}")
 
     def _pick_critical(ch_key, default):
-        ch = _ch_cfg.get(ch_key) or {}
+        # Case-insensitive channel lookup so a casing change in the YAML raises
+        # instead of silently reverting every floor to the module default.
+        ch = _yaml_channel_cfg(_ch_cfg, ch_key)
         if _xoa_major is not None:
             v = ch.get(f"intensity_critical_v{_xoa_major}")
             if isinstance(v, (int, float)):
