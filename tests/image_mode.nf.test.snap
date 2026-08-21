@@ -2,6 +2,9 @@
     "-profile test stub": {
         "content": [
             {
+                "ANALYSIS": {
+                    "seaborn": "0.13.2"
+                },
                 "BAYSOR_PREPROCESS_TRANSCRIPTS": {
                     "python": "3.14.4"
                 },
@@ -10,6 +13,9 @@
                 },
                 "CELLPOSE_CELLS": {
                     "torch": "2.10.0+cu128"
+                },
+                "REPORT": {
+                    "quarto": "1.6.42"
                 },
                 "RESIZE_TIF": {
                     "tifffile": "2026.2.24"
@@ -62,6 +68,16 @@
                 "image/multiqc/redefined_bundle/multiqc_plots",
                 "image/multiqc/redefined_bundle/multiqc_plots/.stub",
                 "image/multiqc/redefined_bundle/multiqc_report.html",
+                "image/qc",
+                "image/qc/image_qc",
+                "image/qc/image_qc/figures",
+                "image/qc/image_qc/image_qc.html",
+                "image/qc/image_qc/image_qc_metrics.csv",
+                "image/qc/image_qc/image_qc_metrics.json",
+                "image/qc/transcript_qc",
+                "image/qc/transcript_qc/figures",
+                "image/qc/transcript_qc/transcript_qc.html",
+                "image/qc/transcript_qc/transcript_qc_metrics.json",
                 "image/spatialdata",
                 "image/spatialdata/merge",
                 "image/spatialdata/merge/spatialdata",
@@ -126,6 +142,9 @@
                 ".stub:md5,d41d8cd98f00b204e9800998ecf8427e",
                 ".stub:md5,d41d8cd98f00b204e9800998ecf8427e",
                 "multiqc_report.html:md5,d41d8cd98f00b204e9800998ecf8427e",
+                "image_qc_metrics.csv:md5,d41d8cd98f00b204e9800998ecf8427e",
+                "image_qc_metrics.json:md5,d41d8cd98f00b204e9800998ecf8427e",
+                "transcript_qc_metrics.json:md5,d41d8cd98f00b204e9800998ecf8427e",
                 "fake_file.txt:md5,d41d8cd98f00b204e9800998ecf8427e",
                 "fake_file.txt:md5,d41d8cd98f00b204e9800998ecf8427e",
                 "fake_file.txt:md5,d41d8cd98f00b204e9800998ecf8427e",
@@ -155,7 +174,7 @@
                 "resized_morphology_focus_0000.ome_cp_masks.tif.tif:md5,d41d8cd98f00b204e9800998ecf8427e"
             ]
         ],
-        "timestamp": "2026-08-14T11:37:37.301529638",
+        "timestamp": "2026-08-21T19:48:51.059737492",
         "meta": {
             "nf-test": "0.9.5",
             "nextflow": "26.04.6"

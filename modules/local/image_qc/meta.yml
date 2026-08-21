@@ -25,9 +25,9 @@ input:
         type: list
         description: |
           Flat list of alternating key/value entries with per-sample overrides,
-          collated in pairs by the module. Recognised keys are `STAIN_NAMES`,
-          `ROI_SIZE`, `PIPELINE_SEGMENTATION` and `IS_RESEGMENTED`. Empty or
-          null values are ignored.
+          collated in pairs by the module. Recognised keys are `ROI_SIZE`,
+          `PIPELINE_SEGMENTATION` and `IS_RESEGMENTED`. Empty or null values are
+          ignored.
     - input_files:
         type: directory
         description: |

@@ -19,6 +19,10 @@ Initial release of nf-core/spatialaxe, created with the [nf-core](https://nf-co.
 - samplesheet redefinition: `sample,bundle,image,annotation,stainings`, samplesheet allows for two additional optional columns `annotation,stainings` that are useful for the QC subworkflow.
 - `spatialdata_write_meta_merge/main.nf`: Change to subworkflow to account for proper `qc` mode.
 - Change to `bin/spatialdata_write.py`: Adding an `all` mode to set all available features to `True`, which is important for QC.
+- **Image QC and transcript QC**, ported from the internal nf-xenium-processing repository. Adds the `QC` subworkflow (`subworkflows/local/qc/`) wrapping `IMAGE_QC` and `TRANSCRIPT_QC` (`subworkflows/local/image_qc/`, `subworkflows/local/transcript_qc/`), the `image_qc` and `transcript_qc` local modules, and their analysis scripts, report notebooks and threshold configs in `bin/`. Image QC computes focus, SNR and morphology metrics; transcript QC computes per-transcript, per-cell and per-FoV metrics with a bounded-memory streaming reader. Each renders an HTML report with the nf-core `quarto/notebook` module.
+- 17 new QC parameters under the `qc_options` schema group, including `image_qc_gpus` (image QC is GPU-optional; the value is both the accelerator request and the device cap passed to the script), `tile_size`, `neg_control_prefix`, and figure/SNR/streaming toggles.
+- `conf/base.config`: new `process_gpu_qc` label for the optionally-GPU image QC step, routed to the GPU queue in the `aws` profile.
+- `.github/workflows/python-tests.yml` plus `bin/tests/`: the QC analysis scripts' Python unit tests, which were previously never executed in CI. Run in a runtime environment (`bin/tests/environment.yml`) because the scripts import their heavy dependencies at module scope.
 
 ### `Fixed`
 

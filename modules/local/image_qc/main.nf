@@ -51,15 +51,10 @@ process IMAGE_QC_ANALYSIS {
         }
     }
 
-    // Pass stain-names as a single semicolon-separated string
-    if (param_map.containsKey('STAIN_NAMES') && param_map['STAIN_NAMES']) {
-        def stains_str = param_map['STAIN_NAMES'].toString()
-        args << "--stain-names '${stains_str}'"
-    } else {
-        // Use task.ext.stain_names from config if available, otherwise fall back to defaults
-        def default_stains_str = task.ext.stain_names ?: "DAPI;Boundary (ATP1A1/E-Cadherin/CD45);Interior - RNA (18S);Protein (alphaSMA/Vimentin)"
-        args << "--stain-names '${default_stains_str}'"
-    }
+    // --stain-names is deliberately not passed: the script parses it and then
+    // discards it (every figure title and metric key is hard-coded, and those
+    // keys are the contract the threshold YAML and the report read), so the
+    // pipeline parameter was dropped rather than shipping a knob with no effect.
 
     // Tile size parameter (a.k.a. ROI size internally). Per-sample
     // `parameters` map can override via ROI_SIZE; otherwise the module-level

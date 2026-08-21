@@ -87,3 +87,11 @@ qc/spatialdata/write/spatialdata/test_run/raw_bundle/points/**
 qc/spatialdata/write/spatialdata/test_run/raw_bundle/shapes/**
 qc/spatialdata/write/spatialdata/test_run/raw_bundle/tables/**
 qc/spatialdata/write/spatialdata/test_run/raw_bundle/zarr.json
+
+# Image QC / transcript QC reports embed a render timestamp, and their
+# matplotlib figure PDFs embed a CreationDate, so their content is not
+# run-to-run reproducible; names and existence are still asserted.
+**/qc/image_qc/image_qc.html
+**/qc/image_qc/figures/*.pdf
+**/qc/transcript_qc/transcript_qc.html
+**/qc/transcript_qc/figures/*.pdf

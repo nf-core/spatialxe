@@ -6,7 +6,7 @@ process TRANSCRIPT_QC_PROCESSING {
     // Built from environment.yml in this directory (see the module Dockerfile).
     // Hosted on the author's quay.io namespace for now; to be migrated to the
     // nf-core org before release.
-    container "quay.io/dongzehe/transcript_qc:1.0.0"
+    container "quay.io/dongzehe/transcript_qc:1.1.0"
 
     input:
     tuple val(meta), val(parameters), path(input_files)
@@ -58,11 +58,9 @@ process TRANSCRIPT_QC_PROCESSING {
         args << "--non-gene-prefix ${prefixes}"
     }
 
-    def stain_names = param_map['STAIN_NAMES'] ?: task.ext.stain_names
-    if (stain_names) {
-        def stains = stain_names.toString().split(';').collect { "'${it.trim()}'" }.join(' ')
-        args << "--stain-names ${stains}"
-    }
+    // --stain-names is deliberately not passed: the script parses it and never
+    // uses it, so the pipeline parameter was dropped instead of exposing a knob
+    // with no effect.
 
     def num_row_groups = param_map['NUM_ROW_GROUPS'] ?: task.ext.num_row_groups
     if (num_row_groups) {

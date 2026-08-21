@@ -20,7 +20,7 @@ dependencies:
   - conda-forge::h5py=3.14.0
   - conda-forge::pyyaml=6.0.3
   # transcript_stream.py: pyarrow.dataset / .compute / acero streaming engine
-  - conda-forge::pyarrow=21.0.0
+  - conda-forge::pyarrow=20.0.0
   - conda-forge::numba=0.62.0
   - conda-forge::tqdm=4.67.1
   # Report rendering (Quarto) — this container also renders the transcript QC

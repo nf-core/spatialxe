@@ -124,6 +124,19 @@ The pipeline is built using [Nextflow](https://www.nextflow.io/) and processes d
 <details markdown="1">
 <summary>Output files</summary>
 
+- `<mode>/qc/image_qc/`
+  - `image_qc.html` rendered image QC report (focus, signal-to-noise and morphology assessment)
+  - `image_qc_metrics.json`, `image_qc_metrics.csv` per-sample image QC metrics
+  - `image_qc_cell_metrics.json`, `image_qc_cell_metrics.csv` per-cell metrics, when the bundle contains cell data
+  - `roi_qc_metrics.json`, `grid_roi_focus_scores.csv` per-ROI focus and intensity metrics
+  - `snr_metrics.json`, `SNR_roi_tx.parquet` signal-to-noise metrics and the per-ROI transcript table
+  - `intensity_assessment.json`, `dense_intensity_regions_summary.csv` intensity grading
+  - `image_qc_status.json` analysis status marker; the report renders a QC-FAILED banner when the analysis could not complete
+  - `figures/` figure PDFs and PNGs embedded in the report
+- `<mode>/qc/transcript_qc/`
+  - `transcript_qc.html` rendered transcript QC report (per-transcript, per-cell and per-field-of-view assessment)
+  - `transcript_qc_metrics.json` per-sample transcript QC metrics, including the noise threshold, retained genes, and per-FoV quality summary
+  - `figures/` figure PDFs and PNGs embedded in the report
 - `opt/`
   - `flip/`
     - `*.fa` the forward oriented fasta file

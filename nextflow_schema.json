@@ -453,11 +453,6 @@
                     "minimum": 1,
                     "description": "Image QC ROI/tile size in pixels."
                 },
-                "stain_names": {
-                    "type": "string",
-                    "default": "DAPI;Boundary (ATP1A1/E-Cadherin/CD45);Interior - RNA (18S);Protein (alphaSMA/Vimentin)",
-                    "description": "Semicolon-separated morphology stain names, in channel order."
-                },
                 "neg_control_prefix": {
                     "type": "string",
                     "default": "NegControl",

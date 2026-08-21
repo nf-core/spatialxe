@@ -747,10 +747,13 @@ workflow SPATIALAXE {
             "\"${process}\":\n    ${tool}: ${version}"
         }
 
-    // softwareVersionsToYAML parses YAML *content*, so read the file in.
+    // softwareVersionsToYAML parses YAML *content*, so read the file in. Drop
+    // empty content: -stub runs produce an empty versions.yml, and parsing that
+    // yields null, which the downstream collectEntries would fail on.
     ch_topic_version_files = ch_topic_raw
         .filter { entry -> !(entry instanceof List) }
         .map { versions_file -> file(versions_file).text.trim() }
+        .filter { content -> content }
 
     softwareVersionsToYAML(
         ch_versions.mix(ch_topic_versions).mix(ch_topic_version_files)
