@@ -10,6 +10,11 @@ lint:
     - docs/images/nf-core-spatialaxe_logo_dark.png
     - docs/images/nf-core-spatialaxe_logo_light.png
     - .github/PULL_REQUEST_TEMPLATE.md
+  # The QC report notebooks use doubled braces as Python f-string escapes (they
+  # emit pandoc callout-note divs), which this check reads as leftover Jinja.
+  template_strings:
+    - bin/xenium_image_qc_report.qmd
+    - bin/transcript_qc.qmd
 nf_core_version: 4.0.3
 repository_type: pipeline
 template:
