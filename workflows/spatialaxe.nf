@@ -369,9 +369,15 @@ workflow SPATIALAXE {
             return [meta, gene_panel_file]
         }
     }
-    else {
+    else if (do_relabel) {
 
-        // gene panel to use if only --relabel_genes is provided
+        // Gene panel from the bundle, used when only --relabel_genes is given.
+        // Guarded by do_relabel: the file(checkIfExists:) inside .map runs for
+        // every sample even when the channel is never consumed, so building this
+        // unconditionally fails any bundle without the optional gene_panel.json
+        // (and any remote tarball input). When relabelling is off, ch_gene_panel
+        // keeps its channel.empty() initialisation, and its only consumer is
+        // already inside `if (do_relabel)`.
         ch_gene_panel = ch_input.map { meta, bundle, _image, _annotation, _stainings ->
             def gene_panel_file = file(
                 file(bundle).toUriString().replaceFirst(/\/$/, '') + "/gene_panel.json",

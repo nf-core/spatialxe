@@ -11,3 +11,4 @@ null/
 .nf-test.log
 .nf-test-*
 .mypy_cache/
+.vscode/
