@@ -64,7 +64,10 @@ jobs:
     runs-on: # use self-hosted runners
       - runs-on=${{ github.run_id }}-nf-test
       - runner=4cpu-linux-x64
-      - volume=80gb
+      # 80 GB is no longer enough: a shard that pulls xeniumranger (which bundles
+      # cellranger) alongside the image QC and transcript QC containers ran out of
+      # disk with `docker: failed to register layer: no space left on device`.
+      - volume=120gb
     strategy:
       fail-fast: false
       matrix:

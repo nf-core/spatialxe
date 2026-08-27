@@ -39,7 +39,7 @@ def upscale_mask(mask_path: str, scale_info_path: str, prefix: str) -> None:
     print(f"Upscaling to ({orig_h}, {orig_w})")
 
     pil_mask = Image.fromarray(mask)
-    pil_mask = pil_mask.resize((orig_w, orig_h), Image.NEAREST)
+    pil_mask = pil_mask.resize((orig_w, orig_h), Image.Resampling.NEAREST)
     mask_up = np.array(pil_mask, dtype=mask.dtype)
 
     out_dir = Path(prefix)
@@ -47,9 +47,7 @@ def upscale_mask(mask_path: str, scale_info_path: str, prefix: str) -> None:
     base = Path(mask_path).stem
     out_name = out_dir / f"upscaled_{base}.tif"
     tifffile.imwrite(str(out_name), mask_up, compression="zlib")
-    print(
-        f"Done: {out_name}, unique cells: {len(np.unique(mask_up)) - 1}"
-    )
+    print(f"Done: {out_name}, unique cells: {len(np.unique(mask_up)) - 1}")
 
 
 def parse_args() -> argparse.Namespace:
@@ -58,7 +56,9 @@ def parse_args() -> argparse.Namespace:
         description="Upscale a Cellpose mask back to original resolution."
     )
     parser.add_argument("--mask", required=True, help="Downscaled mask TIFF")
-    parser.add_argument("--scale-info", required=True, help="scale_info.json from downscale step")
+    parser.add_argument(
+        "--scale-info", required=True, help="scale_info.json from downscale step"
+    )
     parser.add_argument("--prefix", required=True, help="Output directory")
     return parser.parse_args()
 

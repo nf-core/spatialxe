@@ -1,0 +1,51 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/nf-core/modules/master/modules/environment-schema.json
+channels:
+  - conda-forge
+  - bioconda
+dependencies:
+  # procps-ng provides `ps`, required by Nextflow for task-metric collection
+  - conda-forge::procps-ng=4.0.4
+  - conda-forge::python=3.11.0
+  - conda-forge::numpy=2.3.3
+  - conda-forge::pandas=2.3.2
+  - conda-forge::scipy=1.16.2
+  - conda-forge::matplotlib=3.10.6
+  - conda-forge::seaborn=0.13.2
+  - conda-forge::scikit-image=0.25.2
+  - conda-forge::scikit-learn=1.7.2
+  - conda-forge::numba=0.62.0
+  - conda-forge::tifffile=2025.9.20
+  - conda-forge::zarr=2.18.7
+  - conda-forge::imagecodecs=2025.8.2
+  - conda-forge::pillow=12.0.0
+  - conda-forge::pyyaml=6.0.3
+  - conda-forge::h5py=3.14.0
+  - conda-forge::pyarrow=21.0.0
+  - conda-forge::click=8.3.0
+  - conda-forge::tqdm=4.67.1
+  - conda-forge::tbb=2023.0.0
+  # Report rendering (Quarto) — this container also renders the image QC HTML report
+  - conda-forge::quarto=1.6.42
+  - conda-forge::jupyter=1.1.1
+  - conda-forge::ipython=9.5.0
+  - conda-forge::ipykernel=6.30.1
+  - conda-forge::papermill=2.6.0
+  - conda-forge::napari-simpleitk-image-processing=0.4.9
+  - conda-forge::napari-skimage-regionprops=0.10.1
+  # GL ES runtime for the napari->vispy import chain pulled in by the two napari
+  # plugins above. Never used for actual rendering (headless run); vispy merely
+  # dlopens libGLESv2 at import. The container sets ES2_LIBRARY to this library
+  # so vispy finds it without ldconfig visibility of /opt/conda/lib.
+  - conda-forge::libgles=1.7.0
+  # Spatial autocorrelation (Moran's I) for the ROI / SNR QC metrics
+  - conda-forge::libpysal=4.14.1
+  - conda-forge::esda=2.9.0
+  - conda-forge::pysal=26.1
+  - conda-forge::pip=26.2.1
+  # GPU acceleration (optional at runtime). cupy imports are guarded by try/except
+  # in image_qc.py, so this environment also runs correctly on CPU-only hosts.
+  - pip:
+      - cupy-cuda12x==14.0.1
+      - nvidia-cuda-nvrtc-cu12==12.9.86
+      - nvidia-cuda-runtime-cu12==12.9.79

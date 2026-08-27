@@ -8,16 +8,30 @@ from pathlib import Path
 import pyarrow as pa
 import pyarrow.csv as pa_csv
 import pytest
-from shapely.geometry import Polygon, mapping
 
-# ---------------------------------------------------------------------------
-# Import the standalone script from module resources
-# ---------------------------------------------------------------------------
-
-_SCRIPT = (
-    Path(__file__).resolve().parents[2]
-    / "modules/local/xenium_patch/stitch/resources/usr/bin/stitch_transcripts.py"
+# stitch_transcripts.py and this module import shapely and sopa at module scope,
+# and those only exist in the stitch module's container. Skip before importing
+# them: an ImportError here aborts collection for the whole pytest run, not just
+# this file. These guards must stay above the shapely import below.
+pytest.importorskip(
+    "shapely", reason="shapely is only installed in the stitch module container"
 )
+pytest.importorskip(
+    "sopa", reason="sopa is only installed in the stitch module container"
+)
+
+from shapely.geometry import Polygon, mapping  # noqa: E402
+
+# ---------------------------------------------------------------------------
+# Import the standalone script from the pipeline's bin/
+# ---------------------------------------------------------------------------
+
+_SCRIPT = Path(__file__).resolve().parents[2] / "bin/stitch_transcripts.py"
+if not _SCRIPT.is_file():
+    raise FileNotFoundError(
+        f"Script under test not found: {_SCRIPT}. This test imports it by path, so a "
+        "stale path silently takes the whole module out of service instead of failing."
+    )
 _spec = importlib.util.spec_from_file_location("stitch_transcripts", _SCRIPT)
 _mod = importlib.util.module_from_spec(_spec)
 sys.modules["stitch_transcripts"] = _mod

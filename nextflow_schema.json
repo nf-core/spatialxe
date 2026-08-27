@@ -122,11 +122,6 @@
             "description": "Options for the segmentation layer of the spatialaxe pipeline",
             "default": "",
             "properties": {
-                "run_qc": {
-                    "type": "boolean",
-                    "description": "Whether to run the qc layer in the pipeline.",
-                    "default": true
-                },
                 "offtarget_probe_tracking": {
                     "type": "boolean",
                     "description": "Whether to run the off-target probe tracking."
@@ -424,8 +419,90 @@
             "description": "",
             "default": "",
             "properties": {
+                "run_qc": {
+                    "type": "boolean",
+                    "description": "Whether to run the qc layer in the pipeline.",
+                    "default": true
+                },
                 "spoqc": {
-                    "type": "boolean"
+                    "type": "boolean",
+                    "description": "Run the spoQC subworkflow."
+                },
+                "image_qc_gpus": {
+                    "type": "integer",
+                    "default": 1,
+                    "minimum": 0,
+                    "description": "Number of GPUs to request for image QC, and the device cap passed to the script.",
+                    "help_text": "0 runs image QC on CPU only. The value is both the `accelerator` request and the `--max-gpus` cap, because `accelerator` does not restrict what CUDA can see."
+                },
+                "roi_image_qc_thresholds_yaml": {
+                    "type": "string",
+                    "format": "file-path",
+                    "pattern": "^\\S+\\.(yml|yaml)$",
+                    "description": "Override the bundled image QC threshold config."
+                },
+                "transcript_qc_thresholds_yaml": {
+                    "type": "string",
+                    "format": "file-path",
+                    "pattern": "^\\S+\\.(yml|yaml)$",
+                    "description": "Override the bundled transcript QC threshold config."
+                },
+                "tile_size": {
+                    "type": "integer",
+                    "default": 35,
+                    "minimum": 1,
+                    "description": "Image QC ROI/tile size in pixels."
+                },
+                "neg_control_prefix": {
+                    "type": "string",
+                    "default": "NegControl",
+                    "description": "Prefix identifying non-gene (negative control) probes for the transcript QC noise model."
+                },
+                "legacy_focus": {
+                    "type": "boolean",
+                    "description": "Compute focus scores with the legacy CPU loop instead of the GPU convolution."
+                },
+                "image_qc_no_snr": {
+                    "type": "boolean",
+                    "description": "Skip the SNR metrics entirely."
+                },
+                "image_qc_snr_no_roi_tx_table": {
+                    "type": "boolean",
+                    "description": "Skip the per-ROI transcript table."
+                },
+                "image_qc_snr_otsu_max_rois": {
+                    "type": "integer",
+                    "minimum": 1,
+                    "description": "Cap the number of ROIs used for Otsu thresholding."
+                },
+                "image_qc_snr_no_moran": {
+                    "type": "boolean",
+                    "default": true,
+                    "description": "Disable Moran's I spatial autocorrelation (default). Set false to opt in."
+                },
+                "image_qc_save_dapi_maps_tiff": {
+                    "type": "boolean",
+                    "description": "Write full-resolution DAPI maps as TIFF."
+                },
+                "image_qc_stream_tiles": {
+                    "type": "boolean",
+                    "default": true,
+                    "description": "Reduce and drop each tile instead of writing full-resolution planes.",
+                    "help_text": "Disabling this writes full-resolution pixel planes, which cost ~154 GB of scratch on a 5.5 gigapixel sample."
+                },
+                "image_qc_figures": {
+                    "type": "boolean",
+                    "default": true,
+                    "description": "Render figures. Set false for a metrics-only fast run."
+                },
+                "image_qc_figure_source_tables": {
+                    "type": "boolean",
+                    "description": "Write per-figure source-data CSV exports."
+                },
+                "image_qc_lap_sigma": {
+                    "type": "number",
+                    "minimum": 0,
+                    "description": "Laplacian-of-Gaussian sigma override for focus scoring."
                 }
             }
         },

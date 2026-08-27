@@ -47,6 +47,7 @@ include { SPATIALDATA_WRITE_META_MERGE                     } from '../subworkflo
 // qc layer subworkflows
 include { OPT_FLIP_TRACK_STAT                              } from '../subworkflows/local/opt_flip_track_stat/main'
 include { SPOQC                                            } from '../subworkflows/local/spoqc/main'
+include { QC                                               } from '../subworkflows/local/qc/main'
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -97,6 +98,8 @@ workflow SPATIALAXE {
     tiling
     xeniumranger_only
     spoqc
+    roi_image_qc_thresholds_yaml
+    transcript_qc_thresholds_yaml
 
     main:
 
@@ -366,9 +369,15 @@ workflow SPATIALAXE {
             return [meta, gene_panel_file]
         }
     }
-    else {
+    else if (do_relabel) {
 
-        // gene panel to use if only --relabel_genes is provided
+        // Gene panel from the bundle, used when only --relabel_genes is given.
+        // Guarded by do_relabel: the file(checkIfExists:) inside .map runs for
+        // every sample even when the channel is never consumed, so building this
+        // unconditionally fails any bundle without the optional gene_panel.json
+        // (and any remote tarball input). When relabelling is off, ch_gene_panel
+        // keeps its channel.empty() initialisation, and its only consumer is
+        // already inside `if (do_relabel)`.
         ch_gene_panel = ch_input.map { meta, bundle, _image, _annotation, _stainings ->
             def gene_panel_file = file(
                 file(bundle).toUriString().replaceFirst(/\/$/, '') + "/gene_panel.json",
@@ -667,6 +676,28 @@ workflow SPATIALAXE {
             )
         }
 
+        // Image QC and transcript QC on the validated Xenium bundle. The
+        // threshold configs and notebooks are resolved inside this block so
+        // their `checkIfExists` never runs when the QC layer is skipped.
+        ch_image_qc_thresholds = channel.fromPath(
+            roi_image_qc_thresholds_yaml ?: "${projectDir}/bin/roi_image_qc_thresholds.yaml",
+            checkIfExists: true,
+        )
+        ch_transcript_qc_thresholds = channel.fromPath(
+            transcript_qc_thresholds_yaml ?: "${projectDir}/bin/transcript_qc_thresholds.yaml",
+            checkIfExists: true,
+        )
+
+        QC(
+            ch_bundle_path,
+            ch_image_qc_thresholds,
+            ch_transcript_qc_thresholds,
+            file("${projectDir}/bin/xenium_image_qc_report.qmd", checkIfExists: true),
+            file("${projectDir}/bin/transcript_qc.qmd", checkIfExists: true),
+            "${outdir}/${mode}/qc/image_qc",
+            "${outdir}/${mode}/qc/transcript_qc",
+        )
+
     }
 
 
@@ -709,13 +740,30 @@ workflow SPATIALAXE {
         SPATIALAXE - COLLATE & SAVE SOFTWARE VERSIONS
     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     */
-    // Collect versions published via topic channels (local modules)
-    ch_topic_versions = channel.topic('versions')
+    // Collect versions published via topic channels. Two shapes arrive here:
+    // local modules emit (process, tool, version) tuples, while some nf-core
+    // modules emit a `versions.yml` path (quarto/notebook builds one from the
+    // versions.csv its notebook exports). Handle both — destructuring a path
+    // would fail, and dropping it would discard real version information.
+    ch_topic_raw = channel.topic('versions')
+
+    ch_topic_versions = ch_topic_raw
+        .filter { entry -> entry instanceof List && entry.size() == 3 }
         .map { process, tool, version ->
             "\"${process}\":\n    ${tool}: ${version}"
         }
 
-    softwareVersionsToYAML(ch_versions.mix(ch_topic_versions))
+    // softwareVersionsToYAML parses YAML *content*, so read the file in. Drop
+    // empty content: -stub runs produce an empty versions.yml, and parsing that
+    // yields null, which the downstream collectEntries would fail on.
+    ch_topic_version_files = ch_topic_raw
+        .filter { entry -> !(entry instanceof List) }
+        .map { versions_file -> file(versions_file).text.trim() }
+        .filter { content -> content }
+
+    softwareVersionsToYAML(
+        ch_versions.mix(ch_topic_versions).mix(ch_topic_version_files)
+    )
         .collectFile(
             storeDir: "${outdir}/pipeline_info",
             name: 'nf_core_' + 'spatialaxe_software_' + 'mqc_' + 'versions.yml',

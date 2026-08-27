@@ -2,6 +2,9 @@
     "-profile test stub": {
         "content": [
             {
+                "ANALYSIS": {
+                    "seaborn": "0.13.2"
+                },
                 "BAYSOR_CREATE_DATASET": {
                     "baysor": "0.7.1"
                 },
@@ -13,6 +16,9 @@
                 },
                 "PARQUET_TO_CSV": {
                     "pyarrow": "24.0.0"
+                },
+                "REPORT": {
+                    "quarto": "1.6.42"
                 },
                 "UNTAR": {
                     "untar": 1.34
@@ -45,6 +51,16 @@
                 "preview/multiqc/redefined_bundle/multiqc_plots",
                 "preview/multiqc/redefined_bundle/multiqc_plots/.stub",
                 "preview/multiqc/redefined_bundle/multiqc_report.html",
+                "preview/qc",
+                "preview/qc/image_qc",
+                "preview/qc/image_qc/figures",
+                "preview/qc/image_qc/image_qc.html",
+                "preview/qc/image_qc/image_qc_metrics.csv",
+                "preview/qc/image_qc/image_qc_metrics.json",
+                "preview/qc/transcript_qc",
+                "preview/qc/transcript_qc/figures",
+                "preview/qc/transcript_qc/transcript_qc.html",
+                "preview/qc/transcript_qc/transcript_qc_metrics.json",
                 "preview/untar",
                 "preview/untar/test_run",
                 "preview/untar/test_run/.end-of-run",
@@ -91,6 +107,9 @@
                 ".stub:md5,d41d8cd98f00b204e9800998ecf8427e",
                 ".stub:md5,d41d8cd98f00b204e9800998ecf8427e",
                 "multiqc_report.html:md5,d41d8cd98f00b204e9800998ecf8427e",
+                "image_qc_metrics.csv:md5,d41d8cd98f00b204e9800998ecf8427e",
+                "image_qc_metrics.json:md5,d41d8cd98f00b204e9800998ecf8427e",
+                "transcript_qc_metrics.json:md5,d41d8cd98f00b204e9800998ecf8427e",
                 ".end-of-run:md5,d41d8cd98f00b204e9800998ecf8427e",
                 "analysis.tar.gz:md5,d41d8cd98f00b204e9800998ecf8427e",
                 "analysis.zarr.zip:md5,d41d8cd98f00b204e9800998ecf8427e",
@@ -121,7 +140,7 @@
                 "umap_mqc.tsv:md5,d41d8cd98f00b204e9800998ecf8427e"
             ]
         ],
-        "timestamp": "2026-08-14T11:36:14.951666276",
+        "timestamp": "2026-08-21T19:49:15.173411089",
         "meta": {
             "nf-test": "0.9.5",
             "nextflow": "26.04.6"

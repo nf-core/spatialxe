@@ -1,0 +1,160 @@
+name: "transcript_qc_processing"
+description: Transcript-level quality control for a Xenium output bundle - codeword category breakdown, quality-value (QV) distributions, per-FoV consistency and density, per-feature and per-cell transcript counts, transcript-to-cell assignment and QC figures.
+keywords:
+  - quality control
+  - spatialomics
+  - transcriptomics
+  - xenium
+  - transcripts
+tools:
+  - "transcript_qc":
+      description: "Streaming transcript QC for Xenium bundles: reads transcripts.parquet with a pyarrow acero pipeline, derives sample-, FoV-, feature- and cell-level QC metrics and renders the accompanying figures."
+      homepage: "https://github.com/nf-core/spatialaxe"
+      documentation: "https://nf-co.re/spatialaxe"
+      tool_dev_url: "https://github.com/nf-core/spatialaxe"
+      doi: ""
+      licence: ["MIT"]
+
+input:
+  - - meta:
+        type: map
+        description: |
+          Groovy Map containing sample information
+          e.g. `[ id:'sample_id' ]`
+    - parameters:
+        type: list
+        description: |
+          Flat list of alternating key/value entries with per-sample overrides,
+          collated in pairs by the module. Recognised keys are
+          `NON_GENE_PREFIX`, `NUM_ROW_GROUPS`,
+          `PIPELINE_SEGMENTATION` and `IS_RESEGMENTED`. Empty or null values are
+          ignored and the corresponding `task.ext.*` fallback is used instead.
+    - input_files:
+        type: directory
+        description: |
+          Staged input paths for the sample. The first element is the Xenium
+          output bundle directory. An optional second element is a run-global
+          segmentation `versions.yml`, used to label the segmentation software
+          on post-segmentation runs.
+
+output:
+  outdir:
+    - - meta:
+          type: map
+          description: |
+            Groovy Map containing sample information
+            e.g. `[ id:'sample_id' ]`
+      - "${prefix}":
+          type: directory
+          description: |
+            Transcript QC output directory containing
+            `transcript_qc_metrics.json`, `versions.yml`,
+            `num_transcripts_per_cell.csv`, `num_genes_per_cell.csv`, a
+            `figures/` subdirectory of PDF/PNG figures and a `figures_source/`
+            subdirectory of per-figure CSV source data.
+  versions_python:
+    - - ${task.process}:
+          type: string
+          description: The process the versions were collected from
+      - python:
+          type: string
+          description: The tool name
+      - "python3 --version | sed 's/Python //'":
+          type: eval
+          description: The expression to obtain the version of the tool
+  versions_numpy:
+    - - ${task.process}:
+          type: string
+          description: The process the versions were collected from
+      - numpy:
+          type: string
+          description: The tool name
+      - "python3 -c 'import numpy; print(numpy.__version__)'":
+          type: eval
+          description: The expression to obtain the version of the tool
+  versions_pandas:
+    - - ${task.process}:
+          type: string
+          description: The process the versions were collected from
+      - pandas:
+          type: string
+          description: The tool name
+      - "python3 -c 'import pandas; print(pandas.__version__)'":
+          type: eval
+          description: The expression to obtain the version of the tool
+  versions_pyarrow:
+    - - ${task.process}:
+          type: string
+          description: The process the versions were collected from
+      - pyarrow:
+          type: string
+          description: The tool name
+      - "python3 -c 'import pyarrow; print(pyarrow.__version__)'":
+          type: eval
+          description: The expression to obtain the version of the tool
+  versions_scanpy:
+    - - ${task.process}:
+          type: string
+          description: The process the versions were collected from
+      - scanpy:
+          type: string
+          description: The tool name
+      - "python3 -c 'import scanpy; print(scanpy.__version__)'":
+          type: eval
+          description: The expression to obtain the version of the tool
+  versions_anndata:
+    - - ${task.process}:
+          type: string
+          description: The process the versions were collected from
+      - anndata:
+          type: string
+          description: The tool name
+      - "python3 -c 'import anndata; print(anndata.__version__)'":
+          type: eval
+          description: The expression to obtain the version of the tool
+  versions_scipy:
+    - - ${task.process}:
+          type: string
+          description: The process the versions were collected from
+      - scipy:
+          type: string
+          description: The tool name
+      - "python3 -c 'import scipy; print(scipy.__version__)'":
+          type: eval
+          description: The expression to obtain the version of the tool
+  versions_matplotlib:
+    - - ${task.process}:
+          type: string
+          description: The process the versions were collected from
+      - matplotlib:
+          type: string
+          description: The tool name
+      - "python3 -c 'import matplotlib; print(matplotlib.__version__)'":
+          type: eval
+          description: The expression to obtain the version of the tool
+  versions_seaborn:
+    - - ${task.process}:
+          type: string
+          description: The process the versions were collected from
+      - seaborn:
+          type: string
+          description: The tool name
+      - "python3 -c 'import seaborn; print(seaborn.__version__)'":
+          type: eval
+          description: The expression to obtain the version of the tool
+topics:
+  versions:
+    - - ${task.process}:
+          type: string
+          description: The process the versions were collected from
+      - python:
+          type: string
+          description: The tool name
+      - "python3 --version | sed 's/Python //'":
+          type: eval
+          description: The expression to obtain the version of the tool
+
+authors:
+  - "@an-altosian"
+maintainers:
+  - "@an-altosian"

@@ -1,0 +1,56 @@
+name: Python tests
+# Runs the Python unit tests for the QC analysis scripts.
+#
+# The nf-test suites exercise the Nextflow layer, and the pipeline-level QC
+# tests run with `-stub`, so without this workflow none of the QC Python code is
+# ever executed in CI.
+#
+# The scripts import their heavy dependencies at module scope, so the tests need
+# a real runtime environment (matplotlib, tifffile, scanpy, ...), not a linting
+# environment. The env is therefore built from the QC modules' own
+# environment.yml files plus the test-only extras, which keeps every runtime pin
+# declared in exactly one place.
+on:
+  push:
+    branches:
+      - dev
+      - master
+  pull_request:
+  release:
+    types: [published]
+
+env:
+  NXF_ANSI_LOG: false
+
+concurrency:
+  group: "${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}"
+  cancel-in-progress: true
+
+jobs:
+  pytest:
+    name: Run Python tests
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out pipeline code
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4
+
+      - name: Set up the QC runtime environment
+        uses: mamba-org/setup-micromamba@0dea6379afdaffa5d528b3d1dabc45da37f443fc # v2
+        with:
+          environment-name: qc-tests
+          # One self-contained environment, not a merge of the two QC module
+          # environments: those cannot be co-installed (image QC pins
+          # pyarrow 21, while transcript QC's anndata requires pyarrow <21), so
+          # the test environment declares its own coherent set.
+          environment-file: bin/tests/environment.yml
+          cache-environment: true
+
+      - name: Show environment
+        shell: bash -el {0}
+        run: |
+          python --version
+          python -c "import numpy, pandas, matplotlib, tifffile, scanpy; print('runtime imports OK')"
+
+      - name: Run pytest
+        shell: bash -el {0}
+        run: pytest tests/ bin/tests/ -v -n auto

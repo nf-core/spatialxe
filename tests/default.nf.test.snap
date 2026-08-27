@@ -2,11 +2,17 @@
     "-profile test stub": {
         "content": [
             {
+                "ANALYSIS": {
+                    "seaborn": "0.13.2"
+                },
                 "PROSEG2BAYSOR": {
                     "proseg": "3.1.0"
                 },
                 "PROSEG": {
                     "proseg": "3.1.0"
+                },
+                "REPORT": {
+                    "quarto": "1.6.42"
                 },
                 "SPATIALDATA_MERGE_RAW_REDEFINED": {
                     "spatialdata": "0.7.2"
@@ -55,6 +61,16 @@
                 "coordinate/proseg/proseg2baysor/test_run",
                 "coordinate/proseg/proseg2baysor/test_run/cell-polygons.geojson",
                 "coordinate/proseg/proseg2baysor/test_run/transcript-metadata.csv",
+                "coordinate/qc",
+                "coordinate/qc/image_qc",
+                "coordinate/qc/image_qc/figures",
+                "coordinate/qc/image_qc/image_qc.html",
+                "coordinate/qc/image_qc/image_qc_metrics.csv",
+                "coordinate/qc/image_qc/image_qc_metrics.json",
+                "coordinate/qc/transcript_qc",
+                "coordinate/qc/transcript_qc/figures",
+                "coordinate/qc/transcript_qc/transcript_qc.html",
+                "coordinate/qc/transcript_qc/transcript_qc_metrics.json",
                 "coordinate/spatialdata",
                 "coordinate/spatialdata/merge",
                 "coordinate/spatialdata/merge/spatialdata",
@@ -111,13 +127,16 @@
                 ".stub:md5,d41d8cd98f00b204e9800998ecf8427e",
                 ".stub:md5,d41d8cd98f00b204e9800998ecf8427e",
                 "multiqc_report.html:md5,d41d8cd98f00b204e9800998ecf8427e",
+                "image_qc_metrics.csv:md5,d41d8cd98f00b204e9800998ecf8427e",
+                "image_qc_metrics.json:md5,d41d8cd98f00b204e9800998ecf8427e",
+                "transcript_qc_metrics.json:md5,d41d8cd98f00b204e9800998ecf8427e",
                 "fake_file.txt:md5,d41d8cd98f00b204e9800998ecf8427e",
                 "fake_file.txt:md5,d41d8cd98f00b204e9800998ecf8427e",
                 "fake_file.txt:md5,d41d8cd98f00b204e9800998ecf8427e",
                 "fake_file.txt:md5,d41d8cd98f00b204e9800998ecf8427e"
             ]
         ],
-        "timestamp": "2026-08-14T11:35:32.776028015",
+        "timestamp": "2026-08-21T19:48:17.283517278",
         "meta": {
             "nf-test": "0.9.5",
             "nextflow": "26.04.6"
