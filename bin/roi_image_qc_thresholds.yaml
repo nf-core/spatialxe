@@ -44,8 +44,9 @@ image_qc:
       intensity_critical_v3: 50
       intensity_critical_v4: 50
       intensity_critical: 500 # fallback when XOA version is unknown
-      # Fraction of tissue tiles (coverage >= 0.5) below intensity_critical that
-      # triggers WARN.
+      # Fraction of tissue tiles below intensity_critical that triggers WARN.
+      # "Tissue tile" here means coverage >= min_tissue_coverage_for_intensity_qc
+      # (0.2 since 2026-06-26); this comment said 0.5 until 2026-08-24.
       #
       # 2026-06-22 (qc_drift_analysis): WARN-only — the FAIL tier (intensity_fail)
       # is removed. Intensity does not track quality post-XOA-4.0, so a dim sample

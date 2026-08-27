@@ -630,7 +630,16 @@ _gmm_reliable = (
     and float(_comp_sep) >= float(_cs_warn)
 )
 
-blur = roi_metrics.get("blur_gmm_1d") or roi_metrics.get("blur_gmm_2d")
+# 2D first, matching :1119 / :1176 and the cutoffs this is graded against:
+# conf/roi_image_qc_thresholds.yaml focus_warn/focus_fail were "empirically calibrated
+# 2026-05-14" on GMM-2D, and the reliability gate just above reads
+# gmm_2d_laplacian_component_separation. blur_gmm_1d is effectively always written, so
+# with 1d first the 2D branch was dead code and a 1D number was graded against a 2D
+# yardstick. Measured on 11 calibration samples: 2 FAIL -> WARN, 2 WARN -> PASS, nothing
+# degrades; direction is sample-dependent (5 up, 6 down). blur_gmm_2d is genuinely
+# optional (image_qc.py:8611), so the 1d fallback stays. See
+# docs/plans/2026-08-24_SPIKE_blur-precedence.md.
+blur = roi_metrics.get("blur_gmm_2d") or roi_metrics.get("blur_gmm_1d")
 
 if not _mask_ok_aag:
     roi_focus_status = "N/A"
@@ -817,7 +826,7 @@ if cell_metrics:
             if any("blurry cells (GMM)" in _d for _d in _drivers):
                 _why += (
                     "<br>Note: blurry cells (GMM) is measured over solid-tissue "
-                    "cells (tile coverage ≥ 0.5) to match the tile-level 'tiles in "
+                    "cells (tile coverage ≥ 0.2) to match the tile-level 'tiles in "
                     "focus' in Section 3.2; it is per-cell rather than per-tile, so "
                     "small differences from the tile figure are expected."
                 )
@@ -1479,7 +1488,8 @@ display(HTML(_sty_cov.to_html()))
 rows = []
 
 # Inputs / cutoffs
-blur = roi_metrics.get("blur_gmm_1d") or roi_metrics.get("blur_gmm_2d") or {}
+# 2D first, for the same reason as the overall verdict above.
+blur = roi_metrics.get("blur_gmm_2d") or roi_metrics.get("blur_gmm_1d") or {}
 lap = roi_metrics.get("laplacian_sharpness") or {}
 dapi_cut = (((roi_cutoffs.get("image_qc") or {}).get("channels") or {}).get("DAPI") or {})
 focus_cut = ((roi_cutoffs.get("image_qc") or {}).get("focus") or {})
@@ -2752,9 +2762,9 @@ else:
 
     display(Markdown(
         """::: {.callout-note collapse="true" title="Metric explanation"}
-**Blurry cells (GMM)** — inherits the tile-level blurriness classification (the 2D GMM in [Section 3.2](#sec-3-2)) for each cell via spatial overlap. Computed over **solid-tissue cells only** (tile coverage ≥ 0.5), to match the tile-level "tiles in focus" in [Section 3.2](#sec-3-2). Cells in low-coverage tiles are excluded here (counted in the next row instead) because they are force-labelled blurry for coverage reasons, not optical focus — including them otherwise pushes this % far above the tile figure.
+**Blurry cells (GMM)** — inherits the tile-level blurriness classification (the 2D GMM in [Section 3.2](#sec-3-2)) for each cell via spatial overlap. Computed over **solid-tissue cells only** (tile coverage ≥ 0.2), to match the tile-level "tiles in focus" in [Section 3.2](#sec-3-2). Cells in the emptiest tiles are left out because they are force-labelled blurry for coverage reasons, not optical focus, and including them pushes this % far above the tile figure. The exact cutoff is reported as `pct_blurred_gmm_2d_roi_denominator` in `image_qc_metrics.json`.
 
-**Cells in low-coverage tiles** — flags cells whose assigned tile lies in low-coverage tissue (`roi_tissue_coverage` < 0.5).
+**Cells in low-coverage tiles** — flags cells whose assigned tile lies in low-coverage tissue (`roi_tissue_coverage` < 0.5). This uses a different cutoff from the row above, so the two rows overlap: a cell in a tile at 0.35 coverage is counted in both, and the two counts can add up to more than the total cell count. Read each on its own rather than as a split of the cells.
 :::"""
     ))
 

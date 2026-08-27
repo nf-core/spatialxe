@@ -74,12 +74,38 @@ _NEG_PATTERNS = (
     re.compile(r"^BLANK[-_]", re.I),
     re.compile(r"^antisense_", re.I),
 )
+_NEG_REGEX = r"^(?:NegControlProbe_|NegControlCodeword_|Blank[-_]|antisense_)"
+
+# Features that are neither real signal NOR a background estimate, and so are
+# dropped from both sides of the SNR ratio rather than being reclassified.
+#
+# `UnassignedCodeword_*` is a decoding failure: the readout did not match any valid
+# barcode. It was previously counted as real gene signal (`is_real = ~is_neg` had no
+# third category), which inflated the numerator of the transcript SNR ratio and
+# biased the verdict toward PASS. Counting it as a negative control would be equally
+# wrong -- a negative-control probe measures background because it is designed not to
+# bind, whereas a failed read measures nothing at all. So it is excluded from real,
+# from neg, and from the total.
+#
+# NOT included, deliberately: `DeprecatedCodeword_*`. Those are retired-but-valid
+# barcodes, so they may be genuine detections of a gene no longer in the panel
+# definition. That is a different question and needs its own decision; adding the
+# prefix here is the whole change if that decision comes out the same way.
+_EXCLUDED_PATTERNS = (re.compile(r"^UnassignedCodeword_", re.I),)
+_EXCLUDED_REGEX = r"^(?:UnassignedCodeword_)"
 
 
 def is_neg_probe_feature(name: str) -> bool:
     if not isinstance(name, str) or not name:
         return False
     return any(p.search(name) for p in _NEG_PATTERNS)
+
+
+def is_excluded_feature(name: str) -> bool:
+    """True for features that count as neither signal nor background."""
+    if not isinstance(name, str) or not name:
+        return False
+    return any(p.search(name) for p in _EXCLUDED_PATTERNS)
 
 
 # ---------------------------------------------------------------------------
@@ -525,20 +551,50 @@ def compute_image_snr_from_pixel_maps(
     if not dbs:
         return {"status": "skipped", "reason": "no_valid_roi_tiles"}
 
+    # Aggregate over TISSUE tiles only, matching the tissue filter in the sibling
+    # compute_image_snr_from_roi_df -- both feed the same image_snr_db warn/fail
+    # pair, so grading one on tissue and the other on the whole slide made the two
+    # incomparable. An empty tile splits its own noise and can score HIGHER than
+    # real tissue, so on a slide with a small tissue footprint (a TMA core, a
+    # biopsy, a diagonal section) the median reported the coverslip and passed.
+    #
+    # per_tile_db above stays unfiltered on purpose: it is written back to
+    # df_grid_roi["snr_image_otsu_db"] and consumed by the §3.4 concordance
+    # scatter, so scoping it here would silently change that figure. Only the
+    # median and the verdict are tissue-scoped.
+    if "overlaps_tissue" in df.columns:
+        _is_tissue = df["overlaps_tissue"].to_numpy(dtype=bool)
+    elif "tissue_coverage" in df.columns:
+        _is_tissue = (df["tissue_coverage"] > 0).to_numpy(dtype=bool)
+    else:
+        _is_tissue = np.ones(len(df), dtype=bool)
+    _agg = per_tile_db[_is_tissue & ~np.isnan(per_tile_db)]
+    if _agg.size == 0:
+        # Tiles produced values but none of them are tissue. Reporting the
+        # background median here is what this fix exists to stop, so decline
+        # instead. aggregate_snr_verdict maps a verdict-less part to NOT_COMPUTED.
+        return {
+            "status": "skipped",
+            "reason": "no_valid_tissue_roi_tiles",
+            "n_rois_all_tiles": len(dbs),
+        }
+
     _t = snr_thresholds or {}
     _img = _t.get("image_snr_db") or {}
     warn_db = float(_img.get("warn", 15.0))
     fail_db = float(_img.get("fail", 10.0))
-    med_db = float(np.median(dbs))
+    med_db = float(np.median(_agg))
     return {
         "status": "ok",
         "method": "per_roi_otsu",
         "map_key": map_key,
-        "n_rois_computed": len(dbs),
+        "scope": "tissue_tiles",
+        "n_rois_computed": int(_agg.size),
+        "n_rois_all_tiles": len(dbs),
         "snr_db_median": med_db,
-        "snr_db_mean": float(np.mean(dbs)),
-        "snr_db_p25": float(np.percentile(dbs, 25)),
-        "snr_db_p75": float(np.percentile(dbs, 75)),
+        "snr_db_mean": float(np.mean(_agg)),
+        "snr_db_p25": float(np.percentile(_agg, 25)),
+        "snr_db_p75": float(np.percentile(_agg, 75)),
         "verdict": "PASS"
         if med_db >= warn_db
         else ("WARN" if med_db >= fail_db else "FAIL"),
@@ -775,15 +831,24 @@ def _roi_grid_assign(
     return rid_out
 
 
-def _neg_mask_vectorized(feats: np.ndarray) -> np.ndarray:
-    """Same logic as ``is_neg_probe_feature``, vectorised for large transcript tables."""
+def _prefix_mask_vectorized(feats: np.ndarray, regex: str) -> np.ndarray:
+    """Vectorised prefix match, for large transcript tables."""
     s = pd.Series(feats, dtype="string")
-    pat = r"^(?:NegControlProbe_|NegControlCodeword_|Blank[-_]|antisense_)"
-    return s.str.match(pat, case=False).fillna(False).to_numpy(dtype=bool)
+    return s.str.match(regex, case=False).fillna(False).to_numpy(dtype=bool)
 
 
-def _neg_mask_for_column(values: pd.Series) -> np.ndarray:
-    """Negative-control mask for a transcript ``feature_name`` column.
+def _neg_mask_vectorized(feats: np.ndarray) -> np.ndarray:
+    """Same logic as ``is_neg_probe_feature``, vectorised."""
+    return _prefix_mask_vectorized(feats, _NEG_REGEX)
+
+
+def _excluded_mask_vectorized(feats: np.ndarray) -> np.ndarray:
+    """Same logic as ``is_excluded_feature``, vectorised."""
+    return _prefix_mask_vectorized(feats, _EXCLUDED_REGEX)
+
+
+def _mask_for_column(values: pd.Series, regex: str) -> np.ndarray:
+    """Prefix mask for a transcript ``feature_name`` column.
 
     When the column is dictionary-encoded -- which is how Xenium writes it, and what
     ``ParquetFile.iter_batches`` hands back -- the regex runs over the ~13 k distinct
@@ -791,13 +856,23 @@ def _neg_mask_for_column(values: pd.Series) -> np.ndarray:
     Python string per transcript. The mask is identical either way.
     """
     if isinstance(values.dtype, pd.CategoricalDtype):
-        cats = _neg_mask_vectorized(values.cat.categories.to_numpy())
+        cats = _prefix_mask_vectorized(values.cat.categories.to_numpy(), regex)
         codes = values.cat.codes.to_numpy()
         out = np.zeros(codes.shape[0], dtype=bool)
         known = codes >= 0
         out[known] = cats[codes[known]]
         return out
-    return _neg_mask_vectorized(values.astype(str).to_numpy())
+    return _prefix_mask_vectorized(values.astype(str).to_numpy(), regex)
+
+
+def _neg_mask_for_column(values: pd.Series) -> np.ndarray:
+    """Negative-control mask for a transcript ``feature_name`` column."""
+    return _mask_for_column(values, _NEG_REGEX)
+
+
+def _excluded_mask_for_column(values: pd.Series) -> np.ndarray:
+    """Mask of features that count as neither signal nor background."""
+    return _mask_for_column(values, _EXCLUDED_REGEX)
 
 
 def _accumulate_roi_tx_counts(
@@ -810,6 +885,7 @@ def _accumulate_roi_tx_counts(
     stride_xy: Optional[Tuple[int, int]],
     lookup: Optional["_UniformRoiLookup"] = None,
     roi_id_is_arange: bool = False,
+    is_excluded: Optional[np.ndarray] = None,
 ) -> None:
     """Fold one batch of transcripts into the per-ROI counters.
 
@@ -822,9 +898,16 @@ def _accumulate_roi_tx_counts(
       the grid), the ``roi_id -> row index`` map is the identity: a valid id maps to
       itself and an out-of-grid ``-1`` stays ``-1``. The pandas ``reindex`` is then a
       no-op, so ``j`` is ``assign`` directly.
-    * ``real = total - neg`` instead of a third ``bincount``. Every counted transcript
-      is exactly one of neg / real, so this is the same integer per ROI -- two
-      ``bincount`` passes rather than three.
+    * ``real = total - neg`` instead of a third ``bincount``. Every *counted*
+      transcript is exactly one of neg / real, so this is the same integer per ROI --
+      two ``bincount`` passes rather than three.
+
+    ``is_excluded`` marks features that are neither (decoding failures, see
+    ``_EXCLUDED_PATTERNS``). They are removed from ``ok`` before any counting, so they
+    leave ``total``, ``neg`` and ``real`` alike, which is what keeps the
+    ``real = total - neg`` identity above true. Excluding them from ``total`` also
+    keeps ``neg_pct = neg / total`` a fraction of *decoded* transcripts rather than of
+    everything the instrument emitted.
     """
     if lookup is not None:
         assign = lookup.assign(x_px, y_px)
@@ -836,6 +919,8 @@ def _accumulate_roi_tx_counts(
     else:
         j = row_ix.reindex(assign, fill_value=-1).to_numpy()
     ok = (j >= 0) & (assign >= 0)
+    if is_excluded is not None:
+        ok &= ~is_excluded
     real_c, neg_c, total_c = counters
     n = real_c.shape[0]
     total_b = np.bincount(j[ok], minlength=n)
@@ -928,6 +1013,7 @@ def _stream_roi_tx_counts(
             stride_xy,
             lookup=lookup,
             roi_id_is_arange=roi_id_is_arange,
+            is_excluded=_excluded_mask_for_column(frame["feature_name"]),
         )
         return len(frame)
 
@@ -1036,6 +1122,7 @@ def compute_roi_snr(
             counters,
             roi_grid_stride,
             roi_id_is_arange=roi_id_is_arange,
+            is_excluded=_excluded_mask_for_column(df_tx["feature_name"]),
         )
         n_used = int(len(df_tx))
     real_c, neg_c, total_c = counters
@@ -1064,6 +1151,29 @@ def compute_roi_snr(
     ratio_fail = float(_rt.get("ratio_fail", 1.5))
     neg_pct_warn = float(_rt.get("neg_pct_warn", 0.15))
     neg_pct_fail = float(_rt.get("neg_pct_fail", 0.30))
+    # A bundle with no negative-control probes leaves every ratio NaN (the divide
+    # below is masked to neg_c > 0), so med_ratio is NaN. Both comparisons then
+    # evaluate False -- NaN < warn is False, NaN > warn is False -- and the verdict
+    # would stay at its initial "PASS" while a bare NaN went into the JSON. Decline
+    # explicitly instead: aggregate_snr_verdict maps a verdict-less part to
+    # NOT_COMPUTED. Note this is the all-NaN case only; the separate question of
+    # whether zero-neg tiles should be admitted via a pseudocount is a live
+    # calibration decision and is NOT changed here (it would move
+    # median_roi_tx_snr_ratio and re-open the ratio_warn/ratio_fail pair).
+    _ratio_undefined = not math.isfinite(med_ratio)
+    if _ratio_undefined:
+        summary = {
+            "status": "skipped",
+            "method": "roi_tx_target_vs_neg",
+            "reason": "no_negative_control_transcripts",
+            "n_transcripts_used": int(n_used),
+            "n_rois_with_tx": int(np.sum(total_c > 0)),
+            "median_neg_pct": med_neg_pct if math.isfinite(med_neg_pct) else None,
+        }
+        # run_snr_module owns serialisation (it files this into parts[SNR_CKEY_ROI_TX]
+        # and writes snr_metrics.json), so just hand the skipped summary back.
+        return df, summary
+
     verdict = "PASS"
     if med_ratio < ratio_warn or med_neg_pct > neg_pct_warn:
         verdict = "WARN"
@@ -1316,8 +1426,16 @@ def _mean_per_feature(feature_by_cell: Any) -> np.ndarray:
 
 
 def _build_feature_masks(feature_names: List[str]) -> tuple[np.ndarray, np.ndarray]:
+    """Signal / background masks for the slide expression matrix.
+
+    ``is_real`` is NOT simply ``~is_neg``: features matching
+    ``_EXCLUDED_PATTERNS`` (decoding failures) are neither, and were previously
+    swept into ``is_real``, inflating the signal side of the ratio. They are now
+    absent from both masks, so a feature is real, negative, or neither.
+    """
     is_neg = np.array([is_neg_probe_feature(n) for n in feature_names], dtype=bool)
-    is_real = ~is_neg
+    is_excluded = np.array([is_excluded_feature(n) for n in feature_names], dtype=bool)
+    is_real = ~is_neg & ~is_excluded
     return is_real, is_neg
 
 
@@ -1483,13 +1601,58 @@ def save_snr_roi_tx_table(
         return None
 
 
+def _write_snr_json(summary: Dict[str, Any], outdir: Path) -> None:
+    """Write snr_metrics.json, refusing to emit a bare NaN token.
+
+    ``json.dump(..., default=str)`` does NOT catch float NaN: ``default`` only fires
+    for objects json cannot serialise, and Python happily writes NaN as the bare
+    non-standard ``NaN`` literal, which strict JSON parsers reject. ``allow_nan=False``
+    turns that into a loud ValueError, and any non-finite value is replaced with null
+    first so a real metric never silently becomes the string "nan".
+    """
+
+    def _clean(v: Any) -> Any:
+        if isinstance(v, dict):
+            return {k: _clean(x) for k, x in v.items()}
+        if isinstance(v, (list, tuple)):
+            return [_clean(x) for x in v]
+        if isinstance(v, float) and not math.isfinite(v):
+            return None
+        return v
+
+    try:
+        out_json = outdir / "snr_metrics.json"
+        with open(out_json, "w") as f:
+            json.dump(_clean(summary), f, indent=2, default=str, allow_nan=False)
+        logger.info("Wrote %s", out_json)
+    except Exception as e:
+        logger.warning("Could not write snr_metrics.json: %s", e)
+
+
 def aggregate_snr_verdict(parts: Dict[str, Dict[str, Any]]) -> Dict[str, Any]:
-    """Any FAIL → overall FAIL; clustered neg (FAIL) escalates WARN → FAIL."""
+    """Any FAIL → overall FAIL; clustered neg (FAIL) escalates WARN → FAIL.
+
+    Components that could not run return ``{"status": "skipped"/"error"}`` with no
+    ``verdict`` key at all. Those match neither branch below, so an aggregate that
+    starts at "PASS" and only ever moves on FAIL or WARN reported PASS for a module
+    where nothing was measured -- a green report on an unreadable input, which is
+    worse than a crash because nothing about the run looks wrong. If NO component
+    produced a verdict, say NOT_COMPUTED, matching what the whole-module failure
+    path in image_qc.py already emits. Components that did not report are always
+    listed, so a partial PASS cannot be mistaken for a complete one.
+    """
     overall = "PASS"
-    for sub in parts.values():
+    n_verdicts = 0
+    not_computed: list[str] = []
+    for key, sub in parts.items():
         if not isinstance(sub, dict):
+            not_computed.append(str(key))
             continue
         v = sub.get("verdict")
+        if v is None:
+            not_computed.append(str(key))
+            continue
+        n_verdicts += 1
         if v == "FAIL":
             overall = "FAIL"
         elif v == "WARN" and overall != "FAIL":
@@ -1497,7 +1660,12 @@ def aggregate_snr_verdict(parts: Dict[str, Dict[str, Any]]) -> Dict[str, Any]:
     ns = parts.get(SNR_CKEY_ROI_NEG_SPATIAL) or {}
     if ns.get("verdict") == "FAIL" and overall == "WARN":
         overall = "FAIL"
-    return {"overall_snr_verdict": overall}
+    if n_verdicts == 0:
+        overall = "NOT_COMPUTED"
+    out: Dict[str, Any] = {"overall_snr_verdict": overall}
+    if not_computed:
+        out["components_not_computed"] = sorted(not_computed)
+    return out
 
 
 def run_snr_module(
@@ -1641,13 +1809,7 @@ def run_snr_module(
     }
 
     if write_snr_json:
-        try:
-            out_json = outdir / "snr_metrics.json"
-            with open(out_json, "w") as f:
-                json.dump(summary, f, indent=2, default=str)
-            logger.info("Wrote %s", out_json)
-        except Exception as e:
-            logger.warning("Could not write snr_metrics.json: %s", e)
+        _write_snr_json(summary, outdir)
 
     return df, summary
 
@@ -1719,6 +1881,7 @@ __all__ = [
     "compute_slide_snr_plummer_corrected",
     "compute_slide_snr_spatialqm_corrected",
     "is_neg_probe_feature",
+    "is_excluded_feature",
     "load_expression_matrix_h5",
     "load_transcripts",
     "read_xenium_pixel_size_um",

@@ -810,10 +810,21 @@ def generate_tissue_mask(
     distance_map = nsitk.signed_maurer_distance_map(edge_sample)
     distance_map2 = nsitk.signed_maurer_distance_map(holes)
 
-    # Detecting dense intensity regions — multi-channel co-thresholding when
-    # Boundary / IntRNA channels are present, DAPI-only fallback otherwise.
-    # `small1` / `small2` are None for DAPI-only bundles (returned from
-    # `_load_morphology_channels`); blindly indexing them would crash.
+    # Detecting dense intensity regions — a pixel counts as artefact when it is
+    # bright in ANY available channel. `small1` / `small2` are None for DAPI-only
+    # bundles (returned from `_load_morphology_channels`); blindly indexing them
+    # would crash.
+    #
+    # The `> 0` below is load-bearing: from 2025-06-06 to 2026-05-06 this block
+    # added three *bool* arrays, and NumPy `+` on bool dtype is logical OR
+    # returning bool, so binary_fill_holes received a genuine union. 119cff9 added
+    # .astype(np.int_) while making the block None-tolerant, turning the OR into a
+    # 0..3 count -- and BinaryFillhole treats only value 1 as foreground, so pixels
+    # bright in 2 or 3 channels (the strongest artefact evidence) were dropped. The
+    # count is kept because it is informative, but the reduction is now written down
+    # rather than riding on a dtype. `>= 2` was rejected on measured data in
+    # plans/2026-06-26_SPIKE_multistain-mask.md and is impossible on DAPI-only
+    # bundles. See tests/test_dense_intensity_mask.py.
     t0 = np.percentile(small0, dense_intensity_region_percentile)
     thresh_sum = (small0 >= t0).astype(np.int_)
     if small1 is not None:
@@ -822,7 +833,7 @@ def generate_tissue_mask(
     if small2 is not None:
         t2 = np.percentile(small2, dense_intensity_region_percentile)
         thresh_sum = thresh_sum + (small2 >= t2).astype(np.int_)
-    thresh_fill = nsitk.binary_fill_holes(thresh_sum)
+    thresh_fill = nsitk.binary_fill_holes(thresh_sum > 0)
     objects_art = measure.label(thresh_fill)
     dense_intensity_regions = morphology.remove_small_objects(
         objects_art, min_size=min_size_dense_intensity_region
@@ -1405,6 +1416,15 @@ class _LazyTiffChannel:
     Thread-safe: a lock serialises file-handle reads so that
     ``_process_tile_on_gpu`` can call ``[slice]`` from multiple threads.
     """
+
+    #: Class-level default. ``_open_morphology_lazy`` builds instances via
+    #: ``__new__`` for single-3D-page TIFFs, which skips ``__init__`` and set five
+    #: attributes by hand -- missing this one, while ``__getitem__`` reads it
+    #: unguarded on every region request. That raised AttributeError on the first
+    #: tile read, inside a thread pool. Those instances are always backed by a
+    #: cached full read, so False (the fallback path) is the correct default, and
+    #: keeping it here means a future ``__new__`` site cannot reintroduce the bug.
+    _is_tiled: bool = False
 
     def __init__(self, page, source: tuple[str, int] | None = None):
         """Accept a ``TiffPage`` or ``TiffFrame``.
@@ -9404,12 +9424,19 @@ def map_grid_roi_to_cells(df_grid_roi, df_cells, overlapping=False):
             # Populate grid (vectorized)
             grid_lookup[gy_arr, gx_arr] = np.arange(len(df_grid_roi))
 
-            # Vectorized lookup for all cells -- O(n_cells)
+            # Vectorized lookup for all cells -- O(n_cells).
+            # floor, NOT round: tile x1/y1 above are exact multiples of stride so
+            # rounding them is a no-op, but cell centroids fall anywhere inside a
+            # tile. Rounding pushed every cell past the half-stride mark into the
+            # next tile, misassigning ~74% of cells (measured on 4 calibration
+            # samples) and manufacturing cell-vs-tile disagreement. The slow
+            # containment path below is the reference; see
+            # tests/test_cell_roi_mapping.py.
             cell_gx = np.clip(
-                np.round((cell_x - x_min) / stride).astype(int), 0, n_cols - 1
+                np.floor((cell_x - x_min) / stride).astype(int), 0, n_cols - 1
             )
             cell_gy = np.clip(
-                np.round((cell_y - y_min) / stride).astype(int), 0, n_rows - 1
+                np.floor((cell_y - y_min) / stride).astype(int), 0, n_rows - 1
             )
             cell_roi_idx = grid_lookup[cell_gy, cell_gx]  # vectorized!
 
@@ -14122,6 +14149,12 @@ def main(
         # (roi_tissue_coverage < 0.5). Informational; no PASS/WARN/FAIL pill until
         # calibration. NaN coverage cells are excluded (NaN < 0.5 → False), so the
         # count reflects only cells with assigned ROI tile coverage data.
+        # NOT disjoint from cells_evaluated_for_blur below, which uses
+        # ROI_MIN_TISSUE_COVERAGE_FOR_INTENSITY_QC (0.2) as its floor: a cell at
+        # coverage 0.35 is counted in both, so the two do not partition the cells and
+        # can sum above n_total. The 0.5 here is deliberately independent of the blur
+        # denominator -- do not "tidy" it to the constant without recalibrating, since
+        # it would move a published number.
         # 2026-06-26 (multi-stain): roi_tissue_coverage here is DAPI-based (it is also the
         # denominator of pct_blurred_gmm_2d_roi below, which MUST stay DAPI to match the
         # tile-level DAPI blur figure). A multi-stain cell-coverage view for this
@@ -14136,7 +14169,8 @@ def main(
 
         # GMM-ROI blur metrics (if cell-to-ROI mapping was performed).
         # 2026-06-24: pct_blurred_gmm_2d_roi is reported over SOLID-tissue cells
-        # (roi_tissue_coverage >= 0.5) so it matches the tile-level "tiles in
+        # (roi_tissue_coverage >= ROI_MIN_TISSUE_COVERAGE_FOR_INTENSITY_QC) so it
+        # matches the tile-level "tiles in
         # focus" metric (also tissue-filtered). Cells in low-coverage / edge tiles
         # are force-labelled blurred regardless of optical focus and otherwise
         # inflate this far above the tile figure (e.g. 50% cells vs 9% tiles).
@@ -14163,7 +14197,11 @@ def main(
                 round(100.0 * n_gmm / _n_solid, 4) if _n_solid > 0 else 0.0
             )
             qc_metrics["pct_blurred_gmm_2d_roi_denominator"] = (
-                "solid_tissue_cells_coverage_ge_0.5"
+                # Derived from the constant actually applied above. It was
+                # hardcoded "..._ge_0.5" while the filter used 0.2, so the
+                # published label named a cutoff the code did not use.
+                "solid_tissue_cells_coverage_ge_"
+                f"{ROI_MIN_TISSUE_COVERAGE_FOR_INTENSITY_QC:g}"
                 if "roi_tissue_coverage" in new_df.columns
                 else "all_cells"
             )
