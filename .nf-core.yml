@@ -2,13 +2,14 @@ lint:
   files_exist:
     - .github/workflows/awsfulltest.yml
     - .github/workflows/awstest.yml
+    - .github/workflows/linting_comment.yml
   files_unchanged:
     - .gitignore
     - assets/nf-core-spatialaxe_logo_light.png
     - docs/images/nf-core-spatialaxe_logo_dark.png
     - docs/images/nf-core-spatialaxe_logo_light.png
     - .github/PULL_REQUEST_TEMPLATE.md
-nf_core_version: 4.0.3
+nf_core_version: 4.1.0
 repository_type: pipeline
 template:
   author: Sameesh Kher, Dongze He, Florian Heyl
@@ -20,4 +21,4 @@ template:
   outdir: .
   skip_features:
     - igenomes
-  version: 1.0.0dev
+  version: 1.0.1dev
